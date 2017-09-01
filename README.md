@@ -6,7 +6,9 @@ redistributable. All source code and documentation is Copyright Matthew
 Galati, Ted Ralphs, Lehigh University, and others. This README may be 
 redistributed freely.
 
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/be30097aefec458db71ee67b3a7439e5)](https://www.codacy.com/app/jiadongwang/Dip?utm_source=github.com&utm_medium=referral&utm_content=jiadongwang/Dip&utm_campaign=badger)
+
 
 ## Current Testing Status
 
