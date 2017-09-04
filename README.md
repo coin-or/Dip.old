@@ -6,8 +6,7 @@ redistributable. All source code and documentation is Copyright Matthew
 Galati, Ted Ralphs, Lehigh University, and others. This README may be 
 redistributed freely.
 
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/be30097aefec458db71ee67b3a7439e5)](https://www.codacy.com/app/jiadongwang/Dip?utm_source=github.com&utm_medium=referral&utm_content=jiadongwang/Dip&utm_campaign=badger)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/de1e8c484f254a178723302fcd198a29)](https://www.codacy.com/app/jiadongwang/Dip?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jiadongwang/Dip&amp;utm_campaign=Badge_Grade)
 
 [![codecov](https://codecov.io/gh/jiadongwang/Dip/branch/master/graph/badge.svg)](https://codecov.io/gh/jiadongwang/Dip)
 
