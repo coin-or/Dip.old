@@ -9,6 +9,7 @@ redistributed freely.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/be30097aefec458db71ee67b3a7439e5)](https://www.codacy.com/app/jiadongwang/Dip?utm_source=github.com&utm_medium=referral&utm_content=jiadongwang/Dip&utm_campaign=badger)
 
+[![codecov](https://codecov.io/gh/jiadongwang/Dip/branch/master/graph/badge.svg)](https://codecov.io/gh/jiadongwang/Dip)
 
 ## Current Testing Status
 
