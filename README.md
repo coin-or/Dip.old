@@ -8,13 +8,12 @@ redistributed freely.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/de1e8c484f254a178723302fcd198a29)](https://www.codacy.com/app/jiadongwang/Dip?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jiadongwang/Dip&amp;utm_campaign=Badge_Grade)
 
-[![codecov](https://codecov.io/gh/jiadongwang/Dip/branch/master/graph/badge.svg)](https://codecov.io/gh/jiadongwang/Dip)
 
 ## Current Testing Status
 
-[![Build Status](https://travis-ci.org/coin-or/Dip.svg?branch=master)](https://travis-ci.org/coin-or/Dip)
+[![Build Status](https://travis-ci.org/jiadongwang/Dip.svg?branch=master)](https://travis-ci.org/jiadongwang/Dip)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/omb0lhiutlh6qnco/branch/master?svg=true)](https://ci.appveyor.com/project/tkralphs/dip/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/3ect0wcmpc4wlag5/branch/master?svg=true)](https://ci.appveyor.com/project/jiadongwang/Dip/branch/master)
 
 ## Download
 
