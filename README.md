@@ -11,6 +11,8 @@ redistributed freely.
 [![codecov](https://codecov.io/gh/jiadongwang/Dip/branch/master/graph/badge.svg)](https://codecov.io/gh/jiadongwang/Dip)
 ## Current Testing Status
 
+[![Gitter](https://badges.gitter.im/codecov/support.svg)](https://gitter.im/DecompositionInOptimization/Lobby)
+
 [![Build Status](https://travis-ci.org/jiadongwang/Dip.svg?branch=master)](https://travis-ci.org/jiadongwang/Dip)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/3ect0wcmpc4wlag5/branch/master?svg=true)](https://ci.appveyor.com/project/jiadongwang/Dip/branch/master)
