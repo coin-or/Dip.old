@@ -46,6 +46,3 @@ after_build:
   - 7z a %APPVEYOR_PROJECT_NAME%-%VERSION%-%ARCH%.zip %APPVEYOR_BUILD_FOLDER%\INSTALL
   - 7z a %APPVEYOR_PROJECT_NAME%-%VERSION%-%ARCH%.zip %APPVEYOR_BUILD_FOLDER%\Dip\AUTHORS
   - curl -T %APPVEYOR_PROJECT_NAME%-%VERSION%-%ARCH%.zip -utkralphs:%BINTRAY_API% -H "X-Bintray-Publish:1" -H "X-Bintray-Override:1" https://api.bintray.com/content/coin-or/download/%APPVEYOR_PROJECT_NAME%/%VERSION%/%APPVEYOR_PROJECT_NAME%-%VERSION%-%ARCH%.zip
-after_test:
-  - pip install codecov
-  - codecov -f "coverage.xml" -t 40f11273-c591-4e39-a9a4-86f1d1338c8c

@@ -42,5 +42,3 @@ after_script:
   - echo $TGZ_FILE
   - tar -czvf $TGZ_FILE build/lib/* build/bin/* build/include/* build/share/* README.md INSTALL LICENSE Dip/AUTHORS
   - curl -T $TGZ_FILE -utkralphs:$BINTRAY_API -H "X-Bintray-Publish:1" -H "X-Bintray-Override:1" https://api.bintray.com/content/coin-or/download/$PROJECT/$VERSION/$TGZ_FILE
-after_success:
-  - bash <(curl -s https://codecov.io/bash) -t  40f11273-c591-4e39-a9a4-86f1d1338c8c
