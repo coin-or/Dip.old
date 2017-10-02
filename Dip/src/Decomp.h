@@ -157,7 +157,15 @@ const std::string DecompAlgoStopStr[7] = {
    "DecompStopIterLimit"
 };
 
-
+//---
+//--- This Subprob solving phase is used to dynamically adapt the optimality
+//--- tolerance
+//---
+enum DecompSubSolvePhase
+{
+   SUBSOLVE_PHASE_INEXACT,
+   SUBSOLVE_PHASE_EXACT
+};
 //===========================================================================//
 //---
 //--- DECOMP enums (for phases)

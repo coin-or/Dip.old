@@ -281,9 +281,14 @@ void DecompSubModel::solveAsMIPSym(DecompSolverResult*  result,
    if (param.WarmStart) {
       sym_set_int_param(env, "do_reduced_cost_fixing", 0);
 
+      sym_set_dbl_param(env, "warm_start_node_ratio", param.WarmStartNodeRatio);
+      sym_set_int_param(env, "warm_start_node_limit", param.WarmStartNodeLimit);
+      sym_set_dbl_param(env, "warm_start_node_level_ratio",
+                          param.WarmStartNodeLevelRatio);
+      sym_set_int_param(env, "warm_start_node_level", param.WarmStartNodeLevel);
       osiSym->setSymParam(OsiSymKeepWarmStart, true);
       //whether to trim the warm start tree before re-solving.
-      osiSym->setSymParam(OsiSymTrimWarmTree, true);
+      osiSym->setSymParam(OsiSymTrimWarmTree, false);
 
       //This call automatically detects whether to warm start or not
       osiSym->resolve();
@@ -430,14 +435,12 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    string cbcSLogSet   = "2";
 
    if (doExact) {
-      cbcTimeSet = UtilDblToStr(min(param.SubProbTimeLimitExact, 
-				    param.TimeLimit), -1, 
+      cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitExact, -1, 
 				COIN_DBL_MAX);
       cbcGapSet  = UtilDblToStr(param.SubProbGapLimitExact, -1, 
 				COIN_DBL_MAX);
    } else {
-      cbcTimeSet = UtilDblToStr(min(param.SubProbTimeLimitInexact, 
-				    param.TimeLimit), -1, 
+      cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitInexact, -1, 
 				COIN_DBL_MAX);
       cbcGapSet  = UtilDblToStr(param.SubProbGapLimitInexact, -1, 
 				COIN_DBL_MAX);
@@ -566,7 +569,7 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
          //---
          //--- else it must have stopped on gap
          //---
-         result->m_nSolutions = 1;
+         result->m_nSolutions = cbc.numberSavedSolutions();
          result->m_isCutoff   = doCutoff;
          result->m_isOptimal  = false;
       }
@@ -576,8 +579,8 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    //--- get copy of solution(s)
    //---
    result->m_objLB = cbc.getBestPossibleObjValue();
-   int nSols = std::min<int>(result->m_nSolutions,
-			     param.SubProbNumSolLimit);
+   int nSols = result->m_nSolutions;
+
    for(int i = 0; i < nSols; i++){
       //result->m_objUB = cbc.getObjValue();
       const double* solDbl = cbc.savedSolution(i);
