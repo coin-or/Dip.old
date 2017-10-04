@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -260,7 +260,9 @@ protected:
 
    DecompBranchingImplementation m_branchingImplementation;
 
-
+   // variable tracking the subproblem solving phase
+   // not for initial columns generation (always inexact)
+   DecompSubSolvePhase subProbSolvePhase;
 
 public:
    /**
@@ -361,7 +363,7 @@ public:
          phase = PHASE_PRICE1;
       }
    }
-
+   std::vector<int>   m_branchedMasterOnly;
    /**
     * Run the done phase for processing node.
     */
@@ -452,7 +454,7 @@ public:
                      const double   feasConTol = 1.0e-5); //0.01%
 
    //fugly
-   DecompStatus solveRelaxed(const double*          redCostX,
+   void solveRelaxed(const double*          redCostX,
                              const double*          origCost,
                              const double           alpha,
                              const int              n_origCols,
@@ -955,6 +957,47 @@ public:
    void checkBlocksColumns();
 
 
+   int branchOnMasterOnly()
+   {
+      //   const double* primSol = m_masterSI->getColSolution();   
+      DecompConstraintSet* modelCore = m_modelCore.getModel();
+      std::vector<int>::iterator intIt;
+      double temp(0.0);
+      for (intIt = modelCore->masterOnlyCols.begin(); intIt != modelCore->masterOnlyCols.end();
+         ++intIt)
+      {
+         if (std::find(modelCore->integerVars.begin(), modelCore->integerVars.end(),
+            *intIt) != modelCore->integerVars.end())
+         {
+            std::cout << "The master only index is " << *intIt << std::endl;
+            //          temp = primSol[m_masterOnlyColsMap[*intIt]];
+
+            if (
+               std::find(m_branchedMasterOnly.begin(), m_branchedMasterOnly.end(),
+               *intIt) != m_branchedMasterOnly.end())
+            {
+               //           temp = primSol[m_masterOnlyColsMap[*intIt]];             
+               //        if (temp <= fabs(temp)+0.0001 && temp >= fabs(temp) -0.0001){
+               continue;
+            }
+            else
+            {
+               m_branchedMasterOnly.push_back(*intIt);
+               return *intIt;
+
+            }
+
+         }
+         else
+         {
+            return -1;
+
+         }
+
+      }
+      return -1;
+
+   }
    /**
     * @}
     */
@@ -1023,6 +1066,7 @@ public:
       m_firstPhase2Call(false),
       m_isStrongBranch(false),
       m_masterOnlyCols(),
+      subProbSolvePhase(SUBSOLVE_PHASE_INEXACT),
       m_branchingImplementation(DecompBranchInSubproblem)
    {
       std::string paramSection = DecompAlgoStr[algo];
@@ -1045,7 +1089,7 @@ public:
       if (m_param.LogLevel > 1) {
 	 m_param.dumpSettings(paramSection, m_osLog);
       }
-
+   
       m_app->m_decompAlgo = this;
 
       //---

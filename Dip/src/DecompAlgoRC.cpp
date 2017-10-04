@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -168,7 +168,7 @@ void DecompAlgoRC::phaseDone()
    UTIL_DELARR(obj);
    UTIL_DELARR(zeroSol);
 #endif
-   m_status = DecompAlgo::solutionUpdate(PHASE_UNKNOWN, 99999, 99999);
+   m_status = DecompAlgo::solutionUpdate(PHASE_UNKNOWN, true, 99999, 99999);
 
    //---
    //--- check if IP feasible (are we done?)
