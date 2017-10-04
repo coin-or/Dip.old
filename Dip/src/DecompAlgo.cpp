@@ -1879,6 +1879,15 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
          m_nodeStats.priceCallsRound++;
          m_nodeStats.priceCallsTotal++;
 
+         if (m_nodeStats.priceCallsRound >= m_param.IterLimitInexactSubSolving)
+               {
+                         subProbSolvePhase = SUBSOLVE_PHASE_EXACT;
+                    }             else
+                       {
+                                    double subProbDynamicGap = std::max((m_param.InitialOptimalityGapInexactSubSolving - (m_nodeStats.priceCallsRound - 1) *
+        	                                 m_param.OptimalGapStepSizeInexactSubSolving), 0.0);
+                                    m_param.SubProbGapLimitInexact = std::min(subProbDynamicGap, m_param.SubProbGapLimitInexact); 
+         }
          //---
          //--- after adding some rows, the columns in the var pool
          //--- might no longer be valid, so we need to re-expand everything
@@ -2613,7 +2622,7 @@ DecompStatus DecompAlgo::solutionUpdate(const DecompPhase phase,
 	 CPXENVptr env = masterCpxSI->getEnvironmentPtr();
 	 CPXLPptr lp = 
 	    masterCpxSI->getLpPtr(OsiCpxSolverInterface::KEEPCACHED_ALL);
-	 //CPXhybbaropt(env, lp, 0);//if crossover, defeat purpose
+	 //CPXhybopt(env, lp, 0);//if crossover, defeat purpose
 	 CPXbaropt(env, lp);
 	 //cpxMethod = CPXgetmethod(env, lp);
 	 //cpxStat = CPXgetstat(env, lp);
@@ -3396,6 +3405,8 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
    int          c, attempts;
    double       aveC;
    DecompConstraintSet* modelCore = m_modelCore.getModel();
+   // the LimitInitVars could be related to the number of constraints in the model
+   // sometimes the default value is too small
    const int      limit      = m_param.InitVarsLimit;
    // Need to get the different strategies for generating initial Vars
    const int      limit2     = 2 * limit;
@@ -4140,7 +4151,7 @@ void DecompAlgo::phaseUpdate(DecompPhase&   phase,
          m_nodeStats.resetCutRound();
          m_nodeStats.resetPriceRound();
          m_nodeStats.resetBestLB();
-
+         subProbSolvePhase = SUBSOLVE_PHASE_INEXACT;
          if (m_algo == DECOMP) {
             nextPhase  = PHASE_DONE;
             nextStatus = STAT_FEASIBLE;
@@ -6310,7 +6321,7 @@ FUNC_EXIT:
 }
 
 //--------------------------------------------------------------------- //
-DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
+void DecompAlgo::solveRelaxed(const double*         redCostX,
                                       const double*         origCost,
                                       const double          alpha,
                                       const int             n_origCols,
@@ -6365,6 +6376,10 @@ DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
    bool doCutoff = m_param.SubProbUseCutoff;
    bool doExact  = isNested ? false : true;
    doExact       = m_function == DecompFuncGenerateInitVars ? false : doExact;
+   if (subProbSolvePhase == SUBSOLVE_PHASE_INEXACT)
+   {
+ 	   doExact = false;   
+  	}
    DecompSolverStatus solverStatus = DecompSolStatNoSolution;
    DecompVarList userVars;
 
@@ -6641,7 +6656,6 @@ DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
 
    UtilPrintFuncEnd(m_osLog, m_classTag,
                     "solveRelaxed()", m_param.LogDebugLevel, 2);
-   return STAT_UNKNOWN;
 }
 
 
