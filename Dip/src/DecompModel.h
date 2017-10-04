@@ -61,6 +61,7 @@ public:
       m_utilParam = appModel.m_utilParam;
    }
    
+   DecompModel() {}; 
    DecompModel& operator=(const DecompModel& rhs) {
       m_model     = rhs.m_model;
       m_modelName = rhs.m_modelName;

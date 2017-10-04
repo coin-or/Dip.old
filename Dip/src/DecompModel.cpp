@@ -19,8 +19,8 @@
 #include "DecompSolverResult.h"
 //===========================================================================//
 using namespace std;
-
 //===========================================================================//
+
 bool DecompSubModel::isPointFeasible(const double* x,
                                       const bool     isXSparse,
                                       const int      logLevel,
@@ -542,7 +542,7 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    result->m_nSolutions = 0;
    result->m_isOptimal  = false;
    result->m_isCutoff   = false;
-
+   result->m_isUnbounded = false; 
    if (cbc.isContinuousUnbounded()) {
       OsiClpSolverInterface* m_relax = dynamic_cast<OsiClpSolverInterface*>(m_osi);
       m_relax->initialSolve();
@@ -579,23 +579,24 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    //--- get copy of solution(s)
    //---
    result->m_objLB = cbc.getBestPossibleObjValue();
-   int nSols = result->m_nSolutions;
+   int nSols = std::min<int>(result->m_nSolutions,param.SubProbNumSolLimit);
+   result->m_solution.clear(); 
 
    for(int i = 0; i < nSols; i++){
       //result->m_objUB = cbc.getObjValue();
       const double* solDbl = cbc.savedSolution(i);
       vector<double> solVec(solDbl, solDbl + numCols);
       result->m_solution.push_back(solVec);
+      result->m_nSolutions = cbc.numberSavedSolutions(); 
       /*
       for(unsigned i=0; i < solVec.size(); i++){
       	std::cout << "index " << i <<"  "<< solVec[i] << std::endl;
       }
       */
       //memcpy(result->m_solution,
-      //  cbc.getColSolution(), numCols * sizeof(double));
-      assert(result->m_nSolutions ==
-             static_cast<int>(result->m_solution.size()));
+      //  cbc.getColSolution(), numCols * sizeof(double));      
    }
+   s
 #else
       throw UtilException("Cbc selected as solver, but it's not available",
 			  "solveAsMIPCbc", "DecompSubModel");
@@ -890,10 +891,21 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
    //printf("solStatus = %d\n", result->m_solStatus);
 
    if (result->m_solStatus == CPXMIP_OPTIMAL ||
-         result->m_solStatus == CPX_STAT_OPTIMAL ||
-         result->m_solStatus == CPXMIP_OPTIMAL_TOL) {
+         result->m_solStatus == CPX_STAT_OPTIMAL) {
       result->m_isOptimal  = true;
-   } else if (result->m_solStatus == CPXMIP_UNBOUNDED ||
+   } 
+   // If solver stops at the predefined optimality gap,
+   // we cannot claim the result is optimal so that
+   // later m_isColGenExact is false and the lower bound
+   // calculation is different from the case when m_isColGenExact
+   // is true
+   else if (result->m_solStatus == CPXMIP_OPTIMAL_TOL)
+   {
+ 	    result->m_isOptimal = false;
+  	    result->m_isUnbounded = false;
+   } 
+   
+   else if (result->m_solStatus == CPXMIP_UNBOUNDED ||
               result->m_solStatus == CPX_STAT_UNBOUNDED) {
       //      std::cout << "We are generating extreme rays " << std::endl;
       result->m_isUnbounded = true;

@@ -656,7 +656,7 @@ public:
       LogIpLevel           = 0;
       LogDumpModel         = 0;
       LogObjHistory        = 0;
-      InitVarsLimit        = 5;
+      InitVarsLimit        = 15;
       DebugLevel           = 0;
       TolZero              = DecompEpsilon;
       TotalCutItersLimit   = COIN_INT_MAX;
@@ -735,7 +735,7 @@ public:
       NumBlocksCand            = 4;
       ConcurrentCutOffTime     = 100;
       CurrentWorkingDir        = "";
-      SubProbParallel          = false;
+      SubProbParallel          = true;
       SubProbParallelType      = SubProbScheduleDynamic;
       SubProbParallelChunksize = 1;
       ConcurrentThreadsNum     = 4;
@@ -754,7 +754,7 @@ public:
       WarmStartNodeLevel       = 3;
       WarmStartNodeLevelRatio  = 0.5;
       IterLimitInexactSubSolving = 5;
-      InitialOptimalityGapInexactSubSolving = 0.1;
+      InitialOptimalityGapInexactSubSolving = 0.9;
       OptimalGapStepSizeInexactSubSolving = 0.1;
       DecompIPSolver           = "Cbc";
       DecompLPSolver           = "Clp";
