@@ -3496,8 +3496,9 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
        omp_set_num_threads(numThreads);
 #pragma omp parallel for schedule(dynamic, m_param.SubProbParallelChunksize)
 #endif
-         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
-            DecompSubModel& subModel = (*mit).second;
+       for (size_t i = 0; i < m_modelRelax.size(); ++i)
+       {
+          DecompSubModel & subModel = m_modelRelax[i]; 
 	    timeLimit = max(m_param.SubProbTimeLimitExact - 
 			    m_stats.timerOverall.getRealTime(), 0.0);
             solveRelaxed(costeps,               //reduced cost (fake here)
