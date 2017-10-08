@@ -3782,11 +3782,13 @@ bool DecompAlgo::updateObjBound(const double mostNegRC)
    double masterOnlyContri(0.0);
    DecompConstraintSet* modelCore = m_modelCore.getModel();
    std::vector<int>::iterator intIt;
+   /*
    for (intIt = modelCore->masterOnlyCols.begin(); intIt != modelCore->masterOnlyCols.end();
         ++ intIt)
    {
       masterOnlyContri += sol[m_masterOnlyColsMap[*intIt]] * mostNegRC;
    }
+   */
    //zDW_LB = zDW_UBDual + mostNegRC + masterOnlyContri;
    zDW_LB = zDW_UBPrimal + mostNegRC + masterOnlyContri;
    setObjBound(zDW_LB, zDW_UBPrimal);
