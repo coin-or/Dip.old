@@ -157,7 +157,11 @@ const std::string DecompAlgoStopStr[7] = {
    "DecompStopIterLimit"
 };
 
-
+enum DecompSubSolvePhase
+{
+   SUBSOLVE_PHASE_INEXACT,
+   SUBSOLVE_PHASE_EXACT
+};
 //===========================================================================//
 //---
 //--- DECOMP enums (for phases)
