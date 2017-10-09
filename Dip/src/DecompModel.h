@@ -261,13 +261,7 @@ public:
       return *this;
    }
 
-   DecompSubModel& operator=(const DecompSubModel & model)
-   {
-      m_osi = model.m_osi;
-      m_numCols = model.m_numCols;
-      m_colIndices = model.m_colIndices;
-      m_counter = model.m_counter;
-   }
+
    
    DecompSubModel() :
       DecompModel(),
