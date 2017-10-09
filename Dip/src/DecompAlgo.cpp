@@ -3494,11 +3494,12 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
          numThreads = m_param.NumConcurrentThreadsSubProb;
        }
        omp_set_num_threads(numThreads);
-#pragma omp parallel for schedule(dynamic, m_param.SubProbParallelChunksize)
+//#pragma omp parallel for schedule(dynamic, m_param.SubProbParallelChunksize)
 #endif
-       for (size_t i = 0; i < m_modelRelax.size(); ++i)
+       for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++)
        {
-          DecompSubModel & subModel = m_modelRelax[i]; 
+          DecompSubModel& subModel = (*mit).second;
+      
 	    timeLimit = max(m_param.SubProbTimeLimitExact - 
 			    m_stats.timerOverall.getRealTime(), 0.0);
             solveRelaxed(costeps,               //reduced cost (fake here)
