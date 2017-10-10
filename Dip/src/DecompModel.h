@@ -54,7 +54,7 @@ public:
    }
 
 public:
-
+   /*
    DecompModel() :
       m_model(NULL),
       m_modelName(""),
@@ -62,6 +62,7 @@ public:
       m_utilParam(NULL)
    {
    }
+   */
    DecompModel(const DecompModel& appModel) {
       m_model     = appModel.m_model;
       m_modelName = appModel.m_modelName;
@@ -262,7 +263,7 @@ public:
    }
 
 
-   
+   /*
    DecompSubModel() :
       DecompModel(),
       m_osi(NULL),
@@ -271,6 +272,7 @@ public:
       m_counter(0)
    {
    }
+   */
    DecompSubModel(UtilParameters &utilParam) :
       DecompModel(utilParam),
       m_osi         (NULL),
