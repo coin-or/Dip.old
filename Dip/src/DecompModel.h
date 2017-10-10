@@ -54,6 +54,15 @@ public:
    }
 
 public:
+   /*
+   DecompModel() :
+      m_model(NULL),
+      m_modelName(""),
+      m_blockId(0),
+      m_utilParam(NULL)
+   {
+   }
+   */
    DecompModel(const DecompModel& appModel) {
       m_model     = appModel.m_model;
       m_modelName = appModel.m_modelName;
@@ -239,6 +248,7 @@ public:
                         const double   feasConTol = 1.0e-4);
 
 public:
+
    DecompSubModel(const DecompModel& appModel) :
       DecompModel(appModel),
       m_osi         (NULL),
@@ -252,6 +262,17 @@ public:
       return *this;
    }
 
+
+   /*
+   DecompSubModel() :
+      DecompModel(),
+      m_osi(NULL),
+      m_numCols(0),
+      m_colIndices(NULL),
+      m_counter(0)
+   {
+   }
+   */
    DecompSubModel(UtilParameters &utilParam) :
       DecompModel(utilParam),
       m_osi         (NULL),
