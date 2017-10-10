@@ -748,7 +748,7 @@ public:
       WarmStartNodeRatio = 0.5;
       WarmStartNodeLevel = 3;
       WarmStartNodeLevelRatio = 0.5;
-      IterLimitInexactSubSolving = 5;
+      IterLimitInexactSubSolving = 100;
       InitialOptimalityGapInexactSubSolving = 0.1;
       OptimalGapStepSizeInexactSubSolving = 0.1;
       DecompIPSolver           = "Cbc";
