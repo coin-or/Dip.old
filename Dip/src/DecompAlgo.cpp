@@ -6313,7 +6313,7 @@ FUNC_EXIT:
 }
 
 //--------------------------------------------------------------------- //
-DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
+void DecompAlgo::solveRelaxed(const double*         redCostX,
                                       const double*         origCost,
                                       const double          alpha,
                                       const int             n_origCols,
@@ -6644,7 +6644,6 @@ DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
 
    UtilPrintFuncEnd(m_osLog, m_classTag,
                     "solveRelaxed()", m_param.LogDebugLevel, 2);
-   return STAT_UNKNOWN;
 }
 
 
