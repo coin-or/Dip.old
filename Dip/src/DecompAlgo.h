@@ -1065,7 +1065,7 @@ public:
       m_firstPhase2Call(false),
       m_isStrongBranch(false),
       m_masterOnlyCols(),
-      subProbSolvePhase(SUBSOLVE_PHASE_INEXACT),
+      subProbSolvePhase(SUBSOLVE_PHASE_EXACT),
       m_branchingImplementation(DecompBranchInSubproblem)
    {
       std::string paramSection = DecompAlgoStr[algo];
