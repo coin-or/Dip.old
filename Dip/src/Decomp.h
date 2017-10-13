@@ -157,6 +157,11 @@ const std::string DecompAlgoStopStr[7] = {
    "DecompStopIterLimit"
 };
 
+
+//---
+//--- This Subprob solving phase is used to dynamically adapt the optimality
+//--- tolerance
+//---
 enum DecompSubSolvePhase
 {
    SUBSOLVE_PHASE_INEXACT,
@@ -287,21 +292,21 @@ enum DecompColType {
    DecompCol_Structural_NoDelete,
    //master-only column
    DecompCol_MasterOnly,
-   //artifical column for original row (L for <=)
+   //artificial column for original row (L for <=)
    DecompCol_ArtForRowL,
-   //artifical column for original row (G for >=)
+   //artificial column for original row (G for >=)
    DecompCol_ArtForRowG,
-   //artifical column for branching row (L for <=)
+   //artificial column for branching row (L for <=)
    DecompCol_ArtForBranchL,
-   //artifical column for branching row (G for >=)
+   //artificial column for branching row (G for >=)
    DecompCol_ArtForBranchG,
-   //artifical column for convexity row (L for <=)
+   //artificial column for convexity row (L for <=)
    DecompCol_ArtForConvexL,
-   //artifical column for convexity row (G for >=)
+   //artificial column for convexity row (G for >=)
    DecompCol_ArtForConvexG,
-   //artifical column for cut (L for <=)
+   //artificial column for cut (L for <=)
    DecompCol_ArtForCutL,
-   //artifical column for cutG(L for >=)
+   //artificial column for cutG(L for >=)
    DecompCol_ArtForCutG,
    //marker used for deletion
    DecompCol_ToBeDeleted

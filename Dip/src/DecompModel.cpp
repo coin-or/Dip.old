@@ -19,8 +19,8 @@
 #include "DecompSolverResult.h"
 //===========================================================================//
 using namespace std;
-
 //===========================================================================//
+
 bool DecompSubModel::isPointFeasible(const double* x,
                                       const bool     isXSparse,
                                       const int      logLevel,
@@ -284,11 +284,19 @@ void DecompSubModel::solveAsMIPSym(DecompSolverResult*  result,
       sym_set_dbl_param(env, "warm_start_node_ratio", param.WarmStartNodeRatio);
       sym_set_int_param(env, "warm_start_node_limit", param.WarmStartNodeLimit);
       sym_set_dbl_param(env, "warm_start_node_level_ratio",
+<<<<<<< HEAD
                         param.WarmStartNodeLevelRatio);
       sym_set_int_param(env, "warm_start_node_level", param.WarmStartNodeLevel);
       osiSym->setSymParam(OsiSymKeepWarmStart, true);
       //whether to trim the warm start tree before re-solving.
       osiSym->setSymParam(OsiSymTrimWarmTree, false );
+=======
+                          param.WarmStartNodeLevelRatio);
+      sym_set_int_param(env, "warm_start_node_level", param.WarmStartNodeLevel);
+      osiSym->setSymParam(OsiSymKeepWarmStart, true);
+      //whether to trim the warm start tree before re-solving.
+      osiSym->setSymParam(OsiSymTrimWarmTree, false);
+>>>>>>> 9e14aadc5c56c96c112b139b23a4f10f2717c29e
 
       //This call automatically detects whether to warm start or not
       osiSym->resolve();
@@ -435,6 +443,7 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    string cbcSLogSet   = "2";
 
    if (doExact) {
+<<<<<<< HEAD
       cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitExact, 
 				      -1, COIN_DBL_MAX);
       cbcGapSet  = UtilDblToStr(param.SubProbGapLimitExact, -1, 
@@ -442,6 +451,15 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    } else {
       cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitInexact, 
 				     -1, COIN_DBL_MAX);
+=======
+      cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitExact, -1, 
+				COIN_DBL_MAX);
+      cbcGapSet  = UtilDblToStr(param.SubProbGapLimitExact, -1, 
+				COIN_DBL_MAX);
+   } else {
+      cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitInexact, -1, 
+				COIN_DBL_MAX);
+>>>>>>> 9e14aadc5c56c96c112b139b23a4f10f2717c29e
       cbcGapSet  = UtilDblToStr(param.SubProbGapLimitInexact, -1, 
 				COIN_DBL_MAX);
    }
@@ -542,7 +560,7 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    result->m_nSolutions = 0;
    result->m_isOptimal  = false;
    result->m_isCutoff   = false;
-
+   result->m_isUnbounded = false; 
    if (cbc.isContinuousUnbounded()) {
       OsiClpSolverInterface* m_relax = dynamic_cast<OsiClpSolverInterface*>(m_osi);
       m_relax->initialSolve();
@@ -579,23 +597,28 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    //--- get copy of solution(s)
    //---
    result->m_objLB = cbc.getBestPossibleObjValue();
+<<<<<<< HEAD
    int nSols = result->m_nSolutions;
+=======
+   int nSols = std::min<int>(result->m_nSolutions,param.SubProbNumSolLimit);
+   result->m_solution.clear(); 
+>>>>>>> 9e14aadc5c56c96c112b139b23a4f10f2717c29e
 
    for(int i = 0; i < nSols; i++){
       //result->m_objUB = cbc.getObjValue();
       const double* solDbl = cbc.savedSolution(i);
       vector<double> solVec(solDbl, solDbl + numCols);
       result->m_solution.push_back(solVec);
+      result->m_nSolutions = cbc.numberSavedSolutions(); 
       /*
       for(unsigned i=0; i < solVec.size(); i++){
       	std::cout << "index " << i <<"  "<< solVec[i] << std::endl;
       }
       */
       //memcpy(result->m_solution,
-      //  cbc.getColSolution(), numCols * sizeof(double));
-      assert(result->m_nSolutions ==
-             static_cast<int>(result->m_solution.size()));
+      //  cbc.getColSolution(), numCols * sizeof(double));      
    }
+   s
 #else
       throw UtilException("Cbc selected as solver, but it's not available",
 			  "solveAsMIPCbc", "DecompSubModel");
@@ -890,10 +913,21 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
    //printf("solStatus = %d\n", result->m_solStatus);
 
    if (result->m_solStatus == CPXMIP_OPTIMAL ||
-         result->m_solStatus == CPX_STAT_OPTIMAL ||
-         result->m_solStatus == CPXMIP_OPTIMAL_TOL) {
+         result->m_solStatus == CPX_STAT_OPTIMAL) {
       result->m_isOptimal  = true;
-   } else if (result->m_solStatus == CPXMIP_UNBOUNDED ||
+   } 
+   // If solver stops at the predefined optimality gap,
+   // we cannot claim the result is optimal so that
+   // later m_isColGenExact is false and the lower bound
+   // calculation is different from the case when m_isColGenExact
+   // is true
+   else if (result->m_solStatus == CPXMIP_OPTIMAL_TOL)
+   {
+ 	    result->m_isOptimal = false;
+  	    result->m_isUnbounded = false;
+   } 
+   
+   else if (result->m_solStatus == CPXMIP_UNBOUNDED ||
               result->m_solStatus == CPX_STAT_UNBOUNDED) {
       //      std::cout << "We are generating extreme rays " << std::endl;
       result->m_isUnbounded = true;

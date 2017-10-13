@@ -320,38 +320,42 @@ public:
    std::string SolutionOutputFileName;
 
    bool WarmStart;
+
    bool BranchPriorityMasterOnly;
    // The following parameters are for the SYMPHONY warmstarting capability
    // Setting this parameter will start the warm start routine using only the
    // first warm_start_node_limit nodes generated during the previous solve
    //  procedure. The rest of the tree will be trimmed. 
    int WarmStartNodeLimit;
-   // Setting this parameter will start the warm start routine using only the
+
+  	// Setting this parameter will start the warm start routine using only the
    // first warm_start_node_ratio% of the nodes generated during the previous
    //  solve procedure.
+
    double WarmStartNodeRatio;
-   
+
    // Setting this parameter will start the warm start routine using all the nodes
    // above the level warm_start_node_level of the tree generated during the
    // previous solve procedure. The rest of the tree will be trimmed.
    int WarmStartNodeLevel;
+
    // Setting this parameter will start the warm start routine using all the
    // nodes above the level warm_start_node_level% of the warm start tree depth.
    // The rest of the tree will be trimmed
-   double WarmStartNodeLevelRatio;
-   
+   double WarmStartNodeLevelRatio;   
+ 
    std::string DecompLPSolver;
    std::string DecompIPSolver;
 
    bool UseMultiRay;
    bool DoInteriorPoint;
 
-   
    // The iteration limit for inexact subproblem solving
    int IterLimitInexactSubSolving;
-   
+
    // The starting optimality gap for inexact subproblem solving
    double InitialOptimalityGapInexactSubSolving;
+
    // The optimality gap incremental step for inexact subproblem solving
    // Here we assume that we provide a optimality gap , e.g. 0.5
    // if the optimality gap increase step size is 0.1, then the next time
@@ -633,7 +637,6 @@ public:
       UtilPrintParameter(os, sec, "WarmStartNodeRatio", WarmStartNodeRatio);
       UtilPrintParameter(os, sec, "WarmStartNodeLevel", WarmStartNodeLevel);
       UtilPrintParameter(os, sec, "WarmStartNodeLevelRatio", WarmStartNodeLevelRatio);
-      UtilPrintParameter(os, sec, "WarmStartNodeLevelRatio", WarmStartNodeLevelRatio);
       UtilPrintParameter(os, sec, "IterLimitInexactSubSolving", IterLimitInexactSubSolving);
       UtilPrintParameter(os, sec, "InitialOptimalityGapInexactSubSolving", InitialOptimalityGapInexactSubSolving);
       UtilPrintParameter(os, sec, "OptimalGapStepSizeInexactSubSolving", OptimalGapStepSizeInexactSubSolving);
@@ -651,7 +654,7 @@ public:
       LogIpLevel           = 0;
       LogDumpModel         = 0;
       LogObjHistory        = 0;
-      InitVarsLimit        = 5;
+      InitVarsLimit        = 15;
       DebugLevel           = 0;
       TolZero              = DecompEpsilon;
       TotalCutItersLimit   = COIN_INT_MAX;
@@ -730,7 +733,7 @@ public:
       NumBlocksCand            = 4;
       ConcurrentCutOffTime     = 100;
       CurrentWorkingDir        = "";
-      SubProbParallel          = false;
+      SubProbParallel          = true;
       SubProbParallelType      = SubProbScheduleDynamic;
       SubProbParallelChunksize = 1;
       ConcurrentThreadsNum     = 4;
@@ -744,11 +747,12 @@ public:
       SolutionOutputFileName   = "";
       WarmStart                = false;
       BranchPriorityMasterOnly = false;
-      WarmStartNodeLimit = 100;
-      WarmStartNodeRatio = 0.5;
-      WarmStartNodeLevel = 3;
-      WarmStartNodeLevelRatio = 0.5;
-      IterLimitInexactSubSolving = 100;
+
+      WarmStartNodeLimit       = 100;
+      WarmStartNodeRatio       = 0.5;
+      WarmStartNodeLevel       = 3;
+      WarmStartNodeLevelRatio  = 0.5;
+      IterLimitInexactSubSolving = 5;
       InitialOptimalityGapInexactSubSolving = 0.1;
       OptimalGapStepSizeInexactSubSolving = 0.1;
       DecompIPSolver           = "Cbc";
