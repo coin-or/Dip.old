@@ -589,12 +589,8 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    //--- get copy of solution(s)
    //---
    result->m_objLB = cbc.getBestPossibleObjValue();
-<<<<<<< HEAD
+
    int nSols = result->m_nSolutions;
-=======
-   int nSols = std::min<int>(result->m_nSolutions,param.SubProbNumSolLimit);
-   result->m_solution.clear(); 
->>>>>>> 9e14aadc5c56c96c112b139b23a4f10f2717c29e
 
    for(int i = 0; i < nSols; i++){
       //result->m_objUB = cbc.getObjValue();
