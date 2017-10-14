@@ -284,19 +284,11 @@ void DecompSubModel::solveAsMIPSym(DecompSolverResult*  result,
       sym_set_dbl_param(env, "warm_start_node_ratio", param.WarmStartNodeRatio);
       sym_set_int_param(env, "warm_start_node_limit", param.WarmStartNodeLimit);
       sym_set_dbl_param(env, "warm_start_node_level_ratio",
-<<<<<<< HEAD
                         param.WarmStartNodeLevelRatio);
       sym_set_int_param(env, "warm_start_node_level", param.WarmStartNodeLevel);
       osiSym->setSymParam(OsiSymKeepWarmStart, true);
       //whether to trim the warm start tree before re-solving.
-      osiSym->setSymParam(OsiSymTrimWarmTree, false );
-=======
-                          param.WarmStartNodeLevelRatio);
-      sym_set_int_param(env, "warm_start_node_level", param.WarmStartNodeLevel);
-      osiSym->setSymParam(OsiSymKeepWarmStart, true);
-      //whether to trim the warm start tree before re-solving.
       osiSym->setSymParam(OsiSymTrimWarmTree, false);
->>>>>>> 9e14aadc5c56c96c112b139b23a4f10f2717c29e
 
       //This call automatically detects whether to warm start or not
       osiSym->resolve();
