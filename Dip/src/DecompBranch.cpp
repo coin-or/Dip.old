@@ -63,7 +63,7 @@ std::vector< std::pair<int, double> >& upBranchUB)
    else
    {
       for (intIt = modelCore->integerVars.begin();
-         intIt != modelCore->integerVars.end(); intIt++)
+         intIt != modelCore->integerVars.end(); ++intIt)
       {
          j = *intIt;
          x = m_xhat[j];

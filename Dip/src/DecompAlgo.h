@@ -962,7 +962,6 @@ public:
       DecompConstraintSet* modelCore = m_modelCore.getModel();
 
       std::vector<int>::iterator intIt;
-      double temp(0.0);
 
       for (intIt = modelCore->masterOnlyCols.begin(); intIt != modelCore->masterOnlyCols.end();
          ++intIt)
