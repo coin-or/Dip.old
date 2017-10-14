@@ -606,7 +606,7 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
       //memcpy(result->m_solution,
       //  cbc.getColSolution(), numCols * sizeof(double));      
    }
-   s
+   
 #else
       throw UtilException("Cbc selected as solver, but it's not available",
 			  "solveAsMIPCbc", "DecompSubModel");
