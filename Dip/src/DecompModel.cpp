@@ -435,7 +435,6 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    string cbcSLogSet   = "2";
 
    if (doExact) {
-<<<<<<< HEAD
       cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitExact, 
 				      -1, COIN_DBL_MAX);
       cbcGapSet  = UtilDblToStr(param.SubProbGapLimitExact, -1, 
@@ -443,18 +442,12 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    } else {
       cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitInexact, 
 				     -1, COIN_DBL_MAX);
-=======
+
       cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitExact, -1, 
 				COIN_DBL_MAX);
       cbcGapSet  = UtilDblToStr(param.SubProbGapLimitExact, -1, 
 				COIN_DBL_MAX);
-   } else {
-      cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitInexact, -1, 
-				COIN_DBL_MAX);
->>>>>>> 9e14aadc5c56c96c112b139b23a4f10f2717c29e
-      cbcGapSet  = UtilDblToStr(param.SubProbGapLimitInexact, -1, 
-				COIN_DBL_MAX);
-   }
+   } 
 
    bool   doTime       = false;
    double cbcMaxSecUB  = 1e100;
