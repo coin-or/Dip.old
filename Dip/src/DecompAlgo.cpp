@@ -4158,7 +4158,7 @@ void DecompAlgo::phaseUpdate(DecompPhase&   phase,
          m_nodeStats.resetCutRound();
          m_nodeStats.resetPriceRound();
          m_nodeStats.resetBestLB();
-         subProbSolvePhase = SUBSOLVE_PHASE_INEXACT;
+         subProbSolvePhase = SUBSOLVE_PHASE_EXACT;
          if (m_algo == DECOMP) {
             nextPhase  = PHASE_DONE;
             nextStatus = STAT_FEASIBLE;
