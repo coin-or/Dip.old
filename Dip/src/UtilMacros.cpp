@@ -182,7 +182,7 @@ int UtilScaleDblToIntArr(const int      arrLen,
    return scaleFactor;
 }
 
-#define NOMINMAX
+//#define NOMINMAX
 #if defined(_WIN32)
 #include <windows.h>
 #include <psapi.h>
