@@ -85,8 +85,8 @@ public:
       m_blockId  (0),
       m_utilParam(&utilParam){};
 
-   DecompModel(DecompConstraintSet* model,
-	       std::string          modelName,
+   DecompModel( DecompConstraintSet* model,
+	       const std::string &           modelName,
 	       int                  blockId,
 	       UtilParameters&      utilParam) :
       m_model    (model),
@@ -114,7 +114,7 @@ public:
       return m_counter;
    }
 
-   void setOsi(OsiSolverInterface* osi) {
+   void setOsi( OsiSolverInterface* osi) {
       m_osi = osi;
 
       if (!m_colIndices) {
@@ -197,7 +197,7 @@ public:
    }
 
    void solveAsMIPSym(DecompSolverResult*  result,
-		      DecompParam&         param,
+		      const DecompParam&         param,
 		      bool                 doExact,
 		      bool                 doCutoff,
 		      bool                 isRoot,
@@ -205,7 +205,7 @@ public:
 		      double               timeLimit);
    
    void solveAsMIPCbc(DecompSolverResult*  result,
-		      DecompParam&         param,
+		      const DecompParam&         param,
 		      bool                 doExact,
 		      bool                 doCutoff,
 		      bool                 isRoot,
@@ -213,7 +213,7 @@ public:
 		      double               timeLimit);
    
    void solveAsMIPCpx(DecompSolverResult*  result,
-		      DecompParam&         param,
+		      const DecompParam&         param,
 		      bool                 doExact,
 		      bool                 doCutoff,
 		      bool                 isRoot,
@@ -221,7 +221,7 @@ public:
 		      double               timeLimit);
    
    void solveAsMIPGrb(DecompSolverResult*  result,
-		      DecompParam&         param,
+		      const DecompParam&         param,
 		      bool                 doExact,
 		      bool                 doCutoff,
 		      bool                 isRoot,
