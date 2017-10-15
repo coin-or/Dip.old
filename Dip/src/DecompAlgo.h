@@ -264,7 +264,6 @@ protected:
    // not for initial columns generation (always inexact)
    DecompSubSolvePhase subProbSolvePhase;
 
-   std::vector<int>   m_branchedMasterOnly;
 public:
    /**
     * @}
@@ -364,7 +363,7 @@ public:
          phase = PHASE_PRICE1;
       }
    }
-
+   std::vector<int>   m_branchedMasterOnly;
    /**
     * Run the done phase for processing node.
     */
@@ -961,7 +960,9 @@ public:
    {
       //   const double* primSol = m_masterSI->getColSolution();   
       DecompConstraintSet* modelCore = m_modelCore.getModel();
-      std::vector<int>::iterator intIt;      
+
+      std::vector<int>::iterator intIt;
+
       for (intIt = modelCore->masterOnlyCols.begin(); intIt != modelCore->masterOnlyCols.end();
          ++intIt)
       {
@@ -1088,7 +1089,7 @@ public:
       if (m_param.LogLevel > 1) {
 	 m_param.dumpSettings(paramSection, m_osLog);
       }
-
+   
       m_app->m_decompAlgo = this;
 
       //---
