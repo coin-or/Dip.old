@@ -197,7 +197,7 @@ public:
    }
 
    void solveAsMIPSym(DecompSolverResult*  result,
-		      const DecompParam&         param,
+		      DecompParam&         param,
 		      bool                 doExact,
 		      bool                 doCutoff,
 		      bool                 isRoot,
@@ -205,7 +205,7 @@ public:
 		      double               timeLimit);
    
    void solveAsMIPCbc(DecompSolverResult*  result,
-		      const DecompParam&         param,
+		      DecompParam&         param,
 		      bool                 doExact,
 		      bool                 doCutoff,
 		      bool                 isRoot,
@@ -213,7 +213,7 @@ public:
 		      double               timeLimit);
    
    void solveAsMIPCpx(DecompSolverResult*  result,
-		      const DecompParam&         param,
+		      DecompParam&         param,
 		      bool                 doExact,
 		      bool                 doCutoff,
 		      bool                 isRoot,
@@ -221,7 +221,7 @@ public:
 		      double               timeLimit);
    
    void solveAsMIPGrb(DecompSolverResult*  result,
-		      const DecompParam&         param,
+		      DecompParam&         param,
 		      bool                 doExact,
 		      bool                 doCutoff,
 		      bool                 isRoot,

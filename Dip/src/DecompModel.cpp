@@ -251,7 +251,7 @@ void DecompSubModel::solveAsMIP(DecompSolverResult*  result,
 
 //===========================================================================//
 void DecompSubModel::solveAsMIPSym(DecompSolverResult*  result,
-				   const DecompParam&         param,
+				   DecompParam&         param,
 				   bool                 doExact,
 				   bool                 doCutoff,
 				   bool                 isRoot,
@@ -384,7 +384,7 @@ void DecompSubModel::solveAsMIPSym(DecompSolverResult*  result,
 
 //===========================================================================//
 void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
-				   const DecompParam&         param,
+				   DecompParam&         param,
 				   bool                 doExact,
 				   bool                 doCutoff,
 				   bool                 isRoot,
@@ -608,7 +608,7 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
 
 //===========================================================================//
 void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
-				   const DecompParam&         param,
+				   DecompParam&         param,
 				   bool                 doExact,
 				   bool                 doCutoff,
 				   bool                 isRoot,
@@ -952,7 +952,7 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
 
 //===========================================================================//
 void DecompSubModel::solveAsMIPGrb(DecompSolverResult*  result,
-				   const DecompParam&         param,
+				   DecompParam&         param,
 				   bool                 doExact,
 				   bool                 doCutoff,
 				   bool                 isRoot,
