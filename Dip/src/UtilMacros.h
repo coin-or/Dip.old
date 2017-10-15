@@ -933,5 +933,39 @@ inline int UtilOpenFile(std::ifstream&      is,
 }
 
 
+//#ifndef OptMemUsage_h__
+//#define OptMemUsage_h__
 
+/*
+* Author:  David Robert Nadeau
+* Site:    http://NadeauSoftware.com/
+* License: Creative Commons Attribution 3.0 Unported License
+*          http://creativecommons.org/licenses/by/3.0/deed.en_US
+*/
+
+#include <cstddef>
+
+namespace OptMemUsage
+{
+   /**
+   * Returns the peak (maximum so far) resident set size (physical
+   * memory use) measured in bytes, or zero if the value cannot be
+   * determined on this OS.
+   */
+   std::size_t getPeakRSS();
+
+   /**
+   * Returns the current resident set size (physical memory use) measured
+   * in bytes, or zero if the value cannot be determined on this OS.
+   */
+   std::size_t getCurrentRSS();
+
+   void printMemUsage();
+
+   const int KB_BYTES = 1024;
+   const int MB_BYTES = 1024 * KB_BYTES;
+   const int GB_BYTES = 1024 * MB_BYTES;
+}
+
+//#endif // OptMemUsage_h__
 #endif
