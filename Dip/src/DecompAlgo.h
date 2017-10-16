@@ -563,7 +563,7 @@ public:
     *
     */
    void printCurrentProblem(const OsiSolverInterface* si,
-                            const std::string               fileName,
+                            const std::string        &       fileName,
                             const bool                 printMps   = true,
                             const bool                 printLp    = true);
 

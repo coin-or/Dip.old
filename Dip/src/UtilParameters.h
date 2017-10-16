@@ -67,7 +67,7 @@ public:
                      const char* section = NULL);
 
    std::string GetSetting(const char* name,
-                          const std::string defaultValue,
+                          const std::string &defaultValue,
                           const char* section = NULL) ;
    
    std::vector<std::string> &split(const std::string &s,
