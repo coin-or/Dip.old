@@ -530,7 +530,7 @@ void DecompAlgo::printBasisInfo(OsiSolverInterface* si,
 
 //===========================================================================//
 void DecompAlgo::printCurrentProblemDual(OsiSolverInterface* si,
-      const string         baseName,
+      const string     &    baseName,
       const int            nodeIndex,
       const int            cutPass,
       const int            pricePass)
@@ -572,7 +572,7 @@ void DecompAlgo::printCurrentProblemDual(OsiSolverInterface* si,
 
 //===========================================================================//
 void DecompAlgo::printCurrentProblem(const OsiSolverInterface* si,
-                                     const string               baseName,
+                                     const string    &          baseName,
                                      const int                  nodeIndex,
                                      const int                  cutPass,
                                      const int                  pricePass,
@@ -598,7 +598,7 @@ void DecompAlgo::printCurrentProblem(const OsiSolverInterface* si,
 
 //===========================================================================//
 void DecompAlgo::printCurrentProblem(const OsiSolverInterface* si,
-                                     const string               fileName,
+                                     const string        &       fileName,
                                      const bool                 printMps,
                                      const bool                 printLp)
 {
@@ -744,7 +744,7 @@ void DecompAlgo::printVars(ostream* os)
 }
 
 //===========================================================================//
-void DecompAlgo::createFullMps(const string fileName)
+void DecompAlgo::createFullMps(const string & fileName)
 {
    CoinAssert(m_algo == CUT);
    DecompConstraintSet*           modelCore   = m_modelCore.getModel();
