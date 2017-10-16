@@ -50,7 +50,7 @@ void ATM_DecompApp::initializeApp() {
 
 //===========================================================================//
 void ATM_DecompApp::addColumnNamesA(DecompConstraintSet * model,
-				    const string          prefix,
+				    const string     &     prefix,
 				    const int             offset){
    
    int       a, colIndex;

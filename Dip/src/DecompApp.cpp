@@ -1719,7 +1719,7 @@ void DecompApp::singlyBorderStructureDetection()
 
 //===========================================================================//
 void DecompApp::setModelRelax(DecompConstraintSet* model,
-			      const std::string    modelName,
+			      const std::string  &  modelName,
 			      const int            blockId) {
    if (model && !model->hasPrepRun()) {
       model->prepareModel(m_infinity);
@@ -1744,7 +1744,7 @@ void DecompApp::setModelRelax(DecompConstraintSet* model,
 
 //===========================================================================//
 void DecompApp::setModelRelaxNest(DecompConstraintSet* model,
-				  const std::string    modelName,
+				  const std::string &   modelName,
 				  const int            blockId) {
    assert(model);
    

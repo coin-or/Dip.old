@@ -46,7 +46,7 @@ public:
    void setModel    (DecompConstraintSet* model) {
       m_model = model;
    }
-   void setModelName(const std::string modelName) {
+   void setModelName(const std::string & modelName) {
       m_modelName = modelName;
    }
    void setBlockId  (const int blockId) {

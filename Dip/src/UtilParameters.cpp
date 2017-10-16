@@ -289,7 +289,7 @@ std::string* UtilParameters::Find(const char* section,
 
 // ------------------------------------------------------------------------- //
 string UtilParameters::GetSetting(const char* name,
-                                  const std::string  defaultValue,
+                                  const std::string & defaultValue,
                                   const char* section)
 {
    //---

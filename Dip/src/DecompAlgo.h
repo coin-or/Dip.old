@@ -546,13 +546,13 @@ public:
     *
     */
    void printCurrentProblemDual(OsiSolverInterface* si,
-                                const std::string         baseName,
+                                const std::string &        baseName,
                                 const int            nodeIndex,
                                 const int            cutPass,
                                 const int            pricePass);
 
    void printCurrentProblem(const OsiSolverInterface* si,
-                            const std::string               baseName,
+                            const std::string     &          baseName,
                             const int                  nodeIndex,
                             const int                  cutPass,
                             const int                  pricePass,
@@ -563,7 +563,7 @@ public:
     *
     */
    void printCurrentProblem(const OsiSolverInterface* si,
-                            const std::string               fileName,
+                            const std::string        &       fileName,
                             const bool                 printMps   = true,
                             const bool                 printLp    = true);
 
@@ -578,7 +578,7 @@ public:
    /**
     *
     */
-   void createFullMps(const std::string fileName);
+   void createFullMps(const std::string & fileName);
 
    /**
     *
