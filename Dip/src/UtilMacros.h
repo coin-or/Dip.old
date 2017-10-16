@@ -84,7 +84,7 @@ enum UtilStatus {
 #define UtilAssert(expression,errorMsg,os) assert(expresssion)
 #else
 inline void UtilAssert(bool      expression,
-                       std::string    errorMsg,
+                       std::string &   errorMsg,
                        std::ostream* os)
 {
    //---
