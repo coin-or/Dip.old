@@ -111,7 +111,7 @@ void ATM_DecompApp::addColumnNamesAD(DecompConstraintSet * model,
    vector<int>::const_iterator   vi;
    const vector<int>           & pairsAD = m_instance.getPairsAD();
    colIndex = offset;
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       adP = m_instance.getIndexADInv(*vi);
       a   = adP.first;
       d   = adP.second;            

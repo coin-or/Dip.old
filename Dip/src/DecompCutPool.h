@@ -82,7 +82,7 @@ public:
       //---
       std::vector<DecompWaitingRow>::iterator vi;
 
-      for (vi = begin(); vi != end(); vi++) {
+      for (vi = begin(); vi != end(); ++vi) {
          (*vi).deleteCut();
          (*vi).deleteRow();
          (*vi).deleteRowReform();

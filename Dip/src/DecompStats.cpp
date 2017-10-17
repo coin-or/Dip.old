@@ -102,7 +102,7 @@ void DecompNodeStats::printObjHistoryBound(ostream* os) const
          << setw(10) << "BestIP"
          << endl;
 
-   for (it = objHistoryBound.begin(); it != objHistoryBound.end(); it++) {
+   for (it = objHistoryBound.begin(); it != objHistoryBound.end(); ++it) {
       (*os) << setw(6)  << (*it).phase
             << setw(6)  << (*it).cutPass
             << setw(6)  << (*it).pricePass

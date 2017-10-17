@@ -122,7 +122,7 @@ public:
    bool isDuplicate(const DecompVarList& vars) {
       DecompVarList::const_iterator vi;
 
-      for (vi = vars.begin(); vi != vars.end(); vi++) {
+      for (vi = vars.begin(); vi != vars.end(); ++vi) {
          if ((*vi)->getStrHash() == this->getStrHash()) {
             return true;
          }

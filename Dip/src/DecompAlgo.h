@@ -945,7 +945,7 @@ public:
       int   nRowsType = 0;
       std::vector<DecompRowType>::iterator vi;
 
-      for (vi = m_masterRowType.begin(); vi != m_masterRowType.end(); vi++) {
+      for (vi = m_masterRowType.begin(); vi != m_masterRowType.end(); ++vi) {
          if (*vi == rowType) {
             nRowsType++;
          }

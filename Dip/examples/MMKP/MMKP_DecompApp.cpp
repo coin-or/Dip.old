@@ -341,7 +341,7 @@ void MMKP_DecompApp::createModelPartMDKP(DecompConstraintSet * model,
    //---  sum{i in 1..n, j in 1..l[i]}  r[k,i,j] x[i,j] <= b[k], k in K
    //---      
    vector<int>::const_iterator vi;
-   for(vi = whichKnaps.begin(); vi != whichKnaps.end(); vi++){
+   for(vi = whichKnaps.begin(); vi != whichKnaps.end(); ++vi){
       CoinPackedVector   rowK;
       const double     * weightK = weight[*vi];
       colIndex = 0;

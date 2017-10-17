@@ -116,7 +116,7 @@ void MILP_DecompApp::createModels(){
    int nRowsCoreTmp  = 0;
    int nRowsRelaxTmp = 0;
    set<int>::iterator it;
-   for(it = relaxRows.begin(); it != relaxRows.end(); it++)
+   for(it = relaxRows.begin(); it != relaxRows.end(); ++it)
       rowsMarker[*it] = 1;
    for(i = 0; i < nRows; i++){
       if(rowsMarker[i])

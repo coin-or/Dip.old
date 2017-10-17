@@ -146,7 +146,7 @@ public:
          std::map<int, int>::const_iterator mcit;
 
          for (mcit = origToSparse.begin();
-               mcit != origToSparse.end(); mcit++) {
+               mcit != origToSparse.end(); ++mcit) {
             m_osi->setObjCoeff(mcit->second,           //sparse-index
                                objCoeff[mcit->first]); //original-index
          }
@@ -184,7 +184,7 @@ public:
          if (activeColumns.size()) {
             std::vector<int>::iterator vi;
 
-            for (vi = activeColumns.begin(); vi != activeColumns.end(); vi++) {
+            for (vi = activeColumns.begin(); vi != activeColumns.end(); ++vi) {
                //printf("setColBounds i:%d to LB:%g UB:%g\n",
                //     *vi, colLB[*vi], colUB[*vi]);
                m_osi->setColBounds(*vi, colLB[*vi], colUB[*vi]);

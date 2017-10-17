@@ -734,7 +734,7 @@ void DecompAlgo::printVars(ostream* os)
    DecompVarList::iterator it;
    int var_index = 0;
 
-   for (it = m_vars.begin(); it != m_vars.end(); it++) {
+   for (it = m_vars.begin(); it != m_vars.end(); ++it) {
       (*os) << "VAR " << var_index++ << " : ";
       (*it)->print(m_infinity, os, m_app);
       (*os) << endl;
@@ -760,7 +760,7 @@ void DecompAlgo::printCuts(ostream* os)
    DecompCutList::iterator it;
    int cut_index = 0;
 
-   for (it = m_cuts.begin(); it != m_cuts.end(); it++) {
+   for (it = m_cuts.begin(); it != m_cuts.end(); ++it) {
       (*os) << "CUT " << cut_index++ << " : ";
       (*it)->print(os);
    }

@@ -65,7 +65,7 @@ bool DecompCutPool::calcViolations(const double*             x,
 {
    bool found_violated_cut = false;
 
-   for (DecompCutPool::iterator vi = first; vi != last; vi++) {
+   for (DecompCutPool::iterator vi = first; vi != last; ++vi) {
       // ---
       // --- calculate and set the violations for the cuts
       // --- which are pointed to in this pool, if any have vio > 0,
@@ -91,7 +91,7 @@ void DecompCutPool::reExpand(const DecompVarList& vars,
    //---
    DecompCutPool::iterator vi;
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       //only need to do this reformulation in PC...
       //make this re-expansion a function? - also called in addCutsToPool
       CoinPackedVector* rowReform = createRowReform(n_coreCols,
@@ -147,7 +147,7 @@ DecompCutPool::createRowReform(const int                n_coreCols,
    DecompVarList::const_iterator vli;
    vector<string> noNames;
 
-   for (vli = vars.begin(); vli != vars.end(); vli++) {
+   for (vli = vars.begin(); vli != vars.end(); ++vli) {
       //printf("REFORM ROW for CUT on var master index = %d\n",
       //    (*vli)->getColMasterIndex());
       //UtilPrintPackedVector((*vli)->m_s, &cout,

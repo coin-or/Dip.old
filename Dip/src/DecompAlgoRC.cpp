@@ -359,7 +359,7 @@ int DecompAlgoRC::generateVars(DecompVarList&     newVars,
    DecompVarList::iterator it;
    double varRedCost;
 
-   for (it = potentialVars.begin(); it != potentialVars.end(); it++) {
+   for (it = potentialVars.begin(); it != potentialVars.end(); ++it) {
       varRedCost = (*it)->getReducedCost();
       newVars.push_back(*it);
 

@@ -76,7 +76,7 @@ public:
       //---
       std::vector<DecompWaitingCol>::iterator vi;
 
-      for (vi = begin(); vi != end(); vi++) {
+      for (vi = begin(); vi != end(); ++vi) {
          (*vi).deleteVar();
          (*vi).deleteCol();
       }

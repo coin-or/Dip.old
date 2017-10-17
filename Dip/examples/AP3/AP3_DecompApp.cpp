@@ -558,7 +558,7 @@ DecompStatus AP3_DecompApp::APPsolveRelaxed(const int             whichModel,
       doPush = false;
    else if(checkDup){
       DecompVarList::iterator it;
-      for(it = vars.begin(); it != vars.end(); it++){
+      for(it = vars.begin(); it != vars.end(); ++it){
          if((*it)->isEquivalent(*var)){
             UTIL_DEBUG(m_param.LogDebugLevel, 3,
                        (*m_osLog) << "\nDuplicate variable, not adding.";

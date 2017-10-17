@@ -223,7 +223,7 @@ int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
    //---
    vector<int>::iterator it;
 
-   for (it = whichKnaps.begin(); it != whichKnaps.end(); it++) {
+   for (it = whichKnaps.begin(); it != whichKnaps.end(); ++it) {
       b = *it;
 
       for (i = 0; i < nMachines; i++)

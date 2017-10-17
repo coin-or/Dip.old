@@ -74,7 +74,7 @@ bool DecompSubModel::isPointFeasible(const double* x,
    const map<int, int>& origToSparse   = model->getMapOrigToSparse();
    const map<int, int>& sparseToOrig   = model->getMapSparseToOrig();
 
-   for (it = activeColumns.begin(); it != activeColumns.end(); it++) {
+   for (it = activeColumns.begin(); it != activeColumns.end(); ++it) {
       if (isSparse) {
          mcit = origToSparse.find(*it);
          c    = mcit->second;
@@ -974,7 +974,7 @@ void DecompSubModel::solveAsMIPGrb(DecompSolverResult*  result,
    map<std::string, std::string>::const_iterator it;
    std::istringstream iss;
 
-   for (it = paramMap.begin(); it != paramMap.end(); it++){
+   for (it = paramMap.begin(); it != paramMap.end(); ++it){
       std::vector<std::string> elems;
       m_utilParam->split(it->first, elems);
       if (elems[0] == "gurobi"){

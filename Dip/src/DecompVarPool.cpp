@@ -75,7 +75,7 @@ bool DecompVarPool::isParallel(const DecompVarList&     vars,
       return false;
    }
 
-   for (vi = vars.begin(); vi != vars.end(); vi++) {
+   for (vi = vars.begin(); vi != vars.end(); ++vi) {
       //---
       //--- if different blocks, it doesn't matter if rest of var
       //---   is close to parallel
@@ -169,7 +169,7 @@ bool DecompVarPool::isDuplicate(const DecompWaitingCol& wcol)
    vector<DecompWaitingCol>::const_iterator vi;
    DecompVar* var1 = wcol.getVarPtr();
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       DecompVar* var2 = (*vi).getVarPtr();
 
       if ((var1->getBlockId() == var2->getBlockId()) &&
@@ -190,7 +190,7 @@ bool DecompVarPool::setReducedCosts(const double*             u,
    //printf("\nHERE DecompVarPool::setReducedCosts");
    bool found_negrc_var = false;
 
-   for (DecompVarPool::iterator vi = first; vi != last; vi++) {
+   for (DecompVarPool::iterator vi = first; vi != last; ++vi) {
       // ---
       // --- calculate and set the reduced costs for the variables
       // --- which are pointed to in this pool, if any have rc < 0,

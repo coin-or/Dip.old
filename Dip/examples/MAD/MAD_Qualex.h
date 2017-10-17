@@ -185,7 +185,7 @@ class MAD_Qualex{
 	 if(m_info->lower_clique_bound > m_cliqueWeight) {
 	    m_cliqueWeight = m_info->lower_clique_bound;
 	    m_clique.erase(m_clique.begin(), m_clique.end());
-	    for(it = m_info->clique.begin(); it != m_info->clique.end(); it++)
+	    for(it = m_info->clique.begin(); it != m_info->clique.end(); ++it)
 	       m_clique.push_back(m_residual[*it]);
 	 }
       }

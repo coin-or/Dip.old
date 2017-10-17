@@ -138,7 +138,7 @@ UtilPrintVector(const std::vector<T>& v,
 {
    typename std::vector<T>::const_iterator it;
 
-   for (it = v.begin(); it != v.end(); it++) {
+   for (it = v.begin(); it != v.end(); ++it) {
       (*os) << *it << " ";
    }
 
@@ -613,7 +613,7 @@ void UtilDeleteVectorPtr(std::vector<T*>& vectorPtr,
 {
    typename std::vector<T*>::iterator it;
 
-   for (it = first; it != last; it++) {
+   for (it = first; it != last; ++it) {
       delete *it;
    }
 
