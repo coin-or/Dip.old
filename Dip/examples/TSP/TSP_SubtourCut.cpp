@@ -64,7 +64,7 @@ void TSP_SubtourCut::create_bitset(){
    //create bitset from vector
    for(int i = 0; i < m_nverts; i++)
       m_inS.push_back(false);//??
-   for(vector<int>::iterator it = m_S.begin(); it != m_S.end(); it++)
+   for(vector<int>::iterator it = m_S.begin(); it != m_S.end(); ++it)
       m_inS[*it] = true;
    m_storage = m_storage == VECTOR ? BOTH : BITSET;
 }
@@ -148,7 +148,7 @@ void TSP_SubtourCut::print(double infinity, ostream * os) const{
       {
 	 (*os) << "S: ";
 	 for(vector<int>::const_iterator it = m_S.begin(); 
-	     it != m_S.end(); it++)
+	     it != m_S.end(); ++it)
 	    (*os) << *it << " ";
       }
       break;

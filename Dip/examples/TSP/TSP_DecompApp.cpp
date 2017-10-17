@@ -306,7 +306,7 @@ void TSP_DecompApp::solveOneTree(const double               * cost,
    if(m_appParam.LogLevel > 4){
       (*m_osLog) << "Partial Sorted List [size = " << sort_size << "]" << endl;
       for(vector< pair<int,double> >::iterator tmp = edge_cost.begin();
-	  tmp != edge_cost.end(); tmp++){
+	  tmp != edge_cost.end(); ++tmp){
 	 (*m_osLog) << "\nsorted edge_cost: " << (*tmp).first; 
 	 UtilPrintEdge((*tmp).first);
 	 (*m_osLog) << " cost: " << (*tmp).second;
@@ -388,8 +388,8 @@ void TSP_DecompApp::solveOneTree(const double               * cost,
       (*m_osLog) << " -> " << cost[(*vpi).first] << " rc : " << rc << endl;
    }
 
-   vpi++;
-   for(; vpi != edge_cost.end(); vpi++){
+   ++vpi;
+   for(; vpi != edge_cost.end(); ++vpi){
       if(exchange >= max_exchanges)
 	 break;
       if(cost[(*vpi).first] >= bigM/2.0)

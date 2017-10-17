@@ -41,7 +41,7 @@ bool DecompVar::doesSatisfyBounds(int                     denseLen,
    //---
    fillDenseArr(denseLen, denseArr);//TODO: expensive...
 
-   for (it = activeColumns.begin(); it != activeColumns.end(); it++) {
+   for (it = activeColumns.begin(); it != activeColumns.end(); ++it) {
       j  = *it;
       xj = denseArr[j];
 

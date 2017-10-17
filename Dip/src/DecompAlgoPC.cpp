@@ -223,7 +223,7 @@ int DecompAlgoPC::adjustColumnsEffCnt()
                       "adjustColumnsEffCnt()", m_param.LogDebugLevel, 2);
    DecompVarList::iterator li;
 
-   for (li = m_vars.begin(); li != m_vars.end(); li++) {
+   for (li = m_vars.begin(); li != m_vars.end(); ++li) {
       colMasterIndex = (*li)->getColMasterIndex();
       redCostI       = redCost[colMasterIndex];
       assert(isMasterColStructural(colMasterIndex));
@@ -410,7 +410,7 @@ int DecompAlgoPC::compressColumns()
       //---
       if (m_masterColType[colMasterIndex] == DecompCol_Structural_NoDelete
           || m_masterColType[colMasterIndex] == DecompCol_MasterOnly) {
-         li++;
+         ++li;
          nColsNoDel++;
          continue;
       }
@@ -512,7 +512,7 @@ int DecompAlgoPC::compressColumns()
          if (*vi == DecompCol_ToBeDeleted) {
             vi = m_masterColType.erase(vi);
          } else {
-            vi++;
+            ++vi;
          }
       }
 
@@ -664,7 +664,7 @@ void DecompAlgoPC::solveMasterAsMIP()
          vector<DecompSolution*>::iterator vit;
 
          for (vit  = m_xhatIPFeas.begin();
-               vit != m_xhatIPFeas.end(); vit++) {
+               vit != m_xhatIPFeas.end(); ++vit) {
             const DecompSolution* xhatIPFeas = *vit;
             const double*          values
             = xhatIPFeas->getValues();
@@ -691,7 +691,7 @@ void DecompAlgoPC::solveMasterAsMIP()
             DecompSolution* viBest = NULL;
             double bestBoundUB = m_nodeStats.objBest.second;
 
-            for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); vi++) {
+            for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); ++vi) {
                const DecompSolution* xhatIPFeas = *vi;
 
                if (xhatIPFeas->getQuality() <= bestBoundUB) {
@@ -1319,7 +1319,7 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
          int cutIndexPool = 0;
          isDupPool = false;
 
-         for (ci = m_cutpool.begin(); ci != m_cutpool.end(); ci++) {
+         for (ci = m_cutpool.begin(); ci != m_cutpool.end(); ++ci) {
             if ((*li)->getStrHash() == (*ci).getCutPtr()->getStrHash()) {
                UTIL_MSG(m_param.LogLevel, 3,
                         (*m_osLog) << "CUT "              << cutIndex
@@ -1435,7 +1435,7 @@ int DecompAlgoPC::addCutsFromPool()
    //---
    DecompCutPool::iterator li;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (m_param.LogDebugLevel >= 3) {
          (*m_osLog) << "CUT VIOLATION = " << (*li).getViolation() << endl;
       }

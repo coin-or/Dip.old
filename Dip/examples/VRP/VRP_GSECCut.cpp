@@ -77,7 +77,7 @@ void VRP_GSECCut::print(ostream * os) const{
       {
          vector<int>::const_iterator it;
 	 (*os) << "S: ";
-	 for(it = m_S.begin(); it != m_S.end(); it++)
+	 for(it = m_S.begin(); it != m_S.end(); ++it)
 	    (*os) << *it << " ";
       }
       break;
@@ -185,7 +185,7 @@ void VRP_GSECCut::setStorage(){
 void VRP_GSECCut::create_bitset(){
    //create bitset from vector
    m_inS.resize(m_nverts);
-   for(vector<int>::iterator it = m_S.begin(); it != m_S.end(); it++)
+   for(vector<int>::iterator it = m_S.begin(); it != m_S.end(); ++it)
       m_inS.set(*it);
    m_storage = m_storage == VECTOR ? BOTH : BITSET;
 }

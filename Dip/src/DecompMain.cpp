@@ -231,7 +231,7 @@ void blockNumberFinder(DecompParam decompParam,
       histogramTable.open(path1.c_str());
 
       for (histIter = histogram.begin(); histIter != histogram.end();
-            histIter++) {
+            ++histIter) {
          histogramTable << histIter->first << " " << histIter->second << "\n";
       }
 
@@ -319,7 +319,7 @@ void blockNumberFinder(DecompParam decompParam,
 
       while (counter) {
          blockNums.push_back(*setIter);
-         setIter++ ;
+         ++setIter;
          --counter;
       }
    }

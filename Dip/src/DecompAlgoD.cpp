@@ -55,7 +55,7 @@ void DecompAlgoD::phaseUpdate(DecompPhase&   phase,
       double aveDiff   = 0.0;
       double perDiff   = 0.0;
 
-      for ( ; it != m_phaseIObj.rend(); it++) {
+      for ( ; it != m_phaseIObj.rend(); ++it) {
          diff = fabs(prevBound - (*it));
          UTIL_DEBUG(m_param.LogDebugLevel, 3,
                     (*m_osLog)
@@ -503,7 +503,7 @@ void DecompAlgoD::createMasterProblem(DecompVarList& initVars)
 
    //TODO:
    //  this should be calling a function to add var to lp so don't dup code
-   for (li = initVars.begin(); li != initVars.end(); li++) {
+   for (li = initVars.begin(); li != initVars.end(); ++li) {
       //---
       //--- appending these variables (lambda) to end of matrix
       //---   after the artificials

@@ -208,7 +208,7 @@ int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
    //---
    vector<int>::iterator it;
 
-   for (it = whichKnaps.begin(); it != whichKnaps.end(); it++) {
+   for (it = whichKnaps.begin(); it != whichKnaps.end(); ++it) {
       i = *it;
       CoinPackedVector row;
       string           rowName = "k(i_" + UtilIntToStr(i) + ")";
