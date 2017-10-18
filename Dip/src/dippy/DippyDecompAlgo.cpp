@@ -23,7 +23,7 @@ bool DippyAlgoMixin::chooseBranchSet(DecompAlgo* algo,
 					       upBranchLB, upBranchUB);
    }
 
-   DippyDecompApp* app = (DippyDecompApp*)algo->getDecompApp();
+   DippyDecompApp* app = static_cast<DippyDecompApp*>(algo->getDecompApp());
    // copy the current solution into a Python list
    const double* xhat = algo->getXhat();
    PyObject* pSolutionList = pyTupleList_FromDoubleArray(xhat, app->m_colList);
