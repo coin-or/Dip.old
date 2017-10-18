@@ -1111,7 +1111,7 @@ void DecompApp::createModels()
    map<int, vector<int> >::iterator mit;
    nRowsRelax = 0;
 
-   for (mit = m_blocks.begin(); mit != m_blocks.end(); mit++) {
+   for (mit = m_blocks.begin(); mit != m_blocks.end(); ++mit) {
       nRowsRelax += static_cast<int>((*mit).second.size());
    }
 
@@ -1289,7 +1289,7 @@ void DecompApp::createModels()
    //---
    setModelCore(modelCore, "core");
 
-   for (mdi = m_modelR.begin(); mdi != m_modelR.end(); mdi++) {
+   for (mdi = m_modelR.begin(); mdi != m_modelR.end(); ++mdi) {
       DecompConstraintSet* modelRelax = (*mdi).second;
       //---
       //--- set system in framework

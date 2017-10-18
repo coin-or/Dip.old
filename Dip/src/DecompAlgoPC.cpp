@@ -428,7 +428,7 @@ int DecompAlgoPC::compressColumns()
       }
 
       if (isBasic[colMasterIndex] || ((*li)->getEffectiveness() >= 0)) {
-         li++;
+         ++li;
          continue;
       }
 
@@ -497,7 +497,7 @@ int DecompAlgoPC::compressColumns()
       //---
       //--- reset the master index in m_vars
       //---
-      for (li = m_vars.begin(); li != m_vars.end(); li++) {
+      for (li = m_vars.begin(); li != m_vars.end(); ++li) {
          colMasterIndex = (*li)->getColMasterIndex();
          (*li)->setColMasterIndex(colMasterIndex - indexShift[colMasterIndex]);
       }
@@ -1472,7 +1472,7 @@ int DecompAlgoPC::addCutsFromPool()
    rowIndex0 = m_masterSI->getNumRows();
    colIndex0 = m_masterSI->getNumCols();
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (index >= n_newrows) {
          break;
       }

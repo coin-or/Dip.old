@@ -830,7 +830,7 @@ void DecompAlgo::checkReducedCost(const double *u, const double *u_adjusted)
    int           nBaseCoreRows = modelCore->nBaseRows;
    const double* origObjective = getOrigObjective();
 
-   for (it = m_vars.begin(); it != m_vars.end(); it++) {
+   for (it = m_vars.begin(); it != m_vars.end(); ++it) {
       double redCost = 0.0;
       //m_s      is a sparse vector in x-space (the column)
       //redCostX is a dense  vector in x-space (the cost in subproblem)

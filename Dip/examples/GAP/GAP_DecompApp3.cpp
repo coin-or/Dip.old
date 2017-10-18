@@ -234,7 +234,7 @@ int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
    //---
    //--- tell the solver which columns are active (in this block)
    //---
-   for (it = whichKnaps.begin(); it != whichKnaps.end(); it++) {
+   for (it = whichKnaps.begin(); it != whichKnaps.end(); ++it) {
       b = *it;
 
       for (i = 0; i < nMachines; i++) {

@@ -175,7 +175,7 @@ void DecompCutPool::print(ostream* os) const
 {
    vector<DecompWaitingRow>::const_iterator vi;
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       (*vi).getCutPtr()->print(os);
    }
 }

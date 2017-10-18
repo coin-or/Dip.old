@@ -166,7 +166,7 @@ void ATM_DecompApp::createModelColumns(DecompConstraintSet * model,
 
    int index;
    index = getColOffset_fm();
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       model->colUB[index] = w_ad[*vi];
       index++;
    }

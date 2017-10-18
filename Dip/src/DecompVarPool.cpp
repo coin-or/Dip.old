@@ -153,7 +153,7 @@ bool DecompVarPool::isDuplicate(const DecompVarList&     vars,
    DecompVarList::const_iterator vi;
    DecompVar* var = wcol.getVarPtr();
 
-   for (vi = vars.begin(); vi != vars.end(); vi++) {
+   for (vi = vars.begin(); vi != vars.end(); ++vi) {
       if (((*vi)->getBlockId() == var->getBlockId()) &&
             ((*vi)->getStrHash() == var->getStrHash())) {
          return true;
@@ -216,7 +216,7 @@ void DecompVarPool::reExpand(const DecompConstraintSet& modelCore,
    double* denseCol = new double[modelCore.getNumRows() + 1];
    vector<DecompWaitingCol>::iterator vi;
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       // ---
       // --- get dense column = A''s, append convexity constraint on end
       // ---
