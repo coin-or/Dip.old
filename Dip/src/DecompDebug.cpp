@@ -1013,7 +1013,7 @@ DecompSolverResult* DecompAlgoC::solveDirect(const DecompSolution* startSol)
    UtilPrintFuncBegin(m_osLog, m_classTag,
                       "solveDirect()", m_param.LogDebugLevel, 2);
    DecompVarList dummy;
-   int           i, nNodes;
+   int nNodes = 0; 
    double        objLB      = -m_infinity;
    double        objUB      =  m_infinity;
    int           logIpLevel = m_param.LogIpLevel;
@@ -1042,7 +1042,7 @@ DecompSolverResult* DecompAlgoC::solveDirect(const DecompSolution* startSol)
    //---
    //--- set integer vars
    //---
-   for (i = 0; i < numInts; i++) {
+   for (int i = 0; i < numInts; i++) {
       m_masterSI->setInteger(modelCore->integerVars[i]);
    }
 
