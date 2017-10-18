@@ -638,7 +638,7 @@ void DecompAlgo::loadSIFromModel(OsiSolverInterface* si,
    memcpy(rowUB,    core->getRowUB(),   nRowsC * sizeof(double));
    int rowIndex = nRowsC;
 
-   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
       relax = (*mit).second.getModel();
 
       if (!relax || !relax->M) {
@@ -1549,7 +1549,7 @@ void DecompAlgo::breakOutPartial(const double*   xHat,
          vector<double> els;
          double origCost = 0.0;
 
-         for (vit = activeCols.begin(); vit != activeCols.end(); vit++) {
+         for (vit = activeCols.begin(); vit != activeCols.end(); ++vit) {
             if (!UtilIsZero(xHat[*vit])) {
                ind.push_back(*vit);
                els.push_back(xHat[*vit]);
@@ -4970,7 +4970,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
       //put the vars from all threads into one vector
       for (int subprobIndex = 0; subprobIndex < m_numConvexCon; subprobIndex++) {
 	 for (it  = potentialVarsT[subprobIndex].begin();
-	      it != potentialVarsT[subprobIndex].end(); it++) {
+	      it != potentialVarsT[subprobIndex].end(); ++it) {
 	    potentialVars.push_back(*it);
 	 }
       }
@@ -5170,9 +5170,9 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
          vector<DecompSubModel>           ::iterator vit;
 
          for (mivt  = m_modelRelaxNest.begin();
-               mivt != m_modelRelaxNest.end(); mivt++) {
+               mivt != m_modelRelaxNest.end(); ++mivt) {
             for (vit  = (*mivt).second.begin();
-                  vit != (*mivt).second.end(); vit++) {
+                  vit != (*mivt).second.end(); ++vit) {
                b         = (*vit).getBlockId();
                alpha     = u[nBaseCoreRows + b];
                UTIL_DEBUG(m_app->m_param.LogDebugLevel, 4,
@@ -5200,7 +5200,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
       }
    }//END: else(doAllBlocks)
 
-   for (it = potentialVars.begin(); it != potentialVars.end(); it++) {
+   for (it = potentialVars.begin(); it != potentialVars.end(); ++it) {
       varRedCost = (*it)->getReducedCost();
       whichBlock = (*it)->getBlockId();
       alpha      = u[nBaseCoreRows + whichBlock];
@@ -5500,7 +5500,7 @@ void DecompAlgo::addVarsToPool(DecompVarList& newVars)
    bool foundGoodCol = false;
    DecompVarList::iterator li;
 
-   for (li = newVars.begin(); li != newVars.end(); li++) {
+   for (li = newVars.begin(); li != newVars.end(); ++li) {
       //---
       //--- get dense column = A''s, append convexity constraint on end
       //---    THINK: PC specific
@@ -5875,7 +5875,7 @@ void DecompAlgo::addVarsFromPool()
    //---
    //THINK is this all neccessary? just to keep memory small? or
    //doing this for some reason of efficiency?
-   for (vi = m_varpool.begin(); vi != viLast; vi++) {
+   for (vi = m_varpool.begin(); vi != viLast; ++vi) {
       (*vi).deleteCol();
       (*vi).clearVar(); //needed? dangling pointer if not
    }
@@ -5993,7 +5993,7 @@ void DecompAlgo::addCutsToPool(const double*    x,
          //---
          isDupPool = false;
 
-         for (ci = m_cutpool.begin(); ci != m_cutpool.end(); ci++) {
+         for (ci = m_cutpool.begin(); ci != m_cutpool.end(); ++ci) {
             if ((*li)->getStrHash() == (*ci).getCutPtr()->getStrHash()) {
                UTIL_MSG(m_app->m_param.LogDebugLevel, 4,
                         (*m_osLog) << "Cut is Duplicate with Pool\n";
@@ -6018,7 +6018,7 @@ void DecompAlgo::addCutsToPool(const double*    x,
       if (addCut) {
          DecompWaitingRow waitingRow(*li, row);
          m_cutpool.push_back(waitingRow);
-         li++;
+         ++li;
       } else {
          //---
          //--- cut is not violated, do not put in cut pool, delete memory
@@ -6737,7 +6737,7 @@ void DecompAlgo::recomposeSolution(const double* solution,
    int                    nColNames = static_cast<int>(colNames.size());
    DecompVarList::const_iterator li;
 
-   for (li = m_vars.begin(); li != m_vars.end(); li++) {
+   for (li = m_vars.begin(); li != m_vars.end(); ++li) {
       colIndex = (*li)->getColMasterIndex();
       lamSol   = solution[colIndex];
       assert(colIndex < m_masterSI->getNumCols());

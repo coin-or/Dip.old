@@ -167,7 +167,7 @@ UtilPrintList(const std::list<T>& v,
    typename std::list<T>::const_iterator it;
    (*os) << "\n";
 
-   for (it = v.begin(); it != v.end(); it++) {
+   for (it = v.begin(); it != v.end(); ++it) {
       (*os) << *it << " ";
    }
 }
@@ -654,7 +654,7 @@ void UtilDeleteMapPtr(std::map<S, T*>& mapPtr,
 {
    typename std::map<S, T*>::iterator it;
 
-   for (it = first; it != last; it++) {
+   for (it = first; it != last; ++it) {
       delete (*it).second;
    }
 

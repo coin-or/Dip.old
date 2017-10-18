@@ -241,7 +241,7 @@ void DecompVarPool::print(double infinity, ostream* os) const
 {
    vector<DecompWaitingCol>::const_iterator vi;
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       (*vi).getVarPtr()->print(infinity, os);
    }
 }

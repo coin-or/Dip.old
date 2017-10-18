@@ -94,7 +94,7 @@ PyObject* pyTupleList_FromNode(DecompAlgo* algo, DecompStatus decompStatus)
                                    (algo->getCurrentNode()->getDesc())->getBranchedDir()));
    // Copy the current solution into a Python list
    const double* xhat = algo->getXhat();
-   DippyDecompApp* app = (DippyDecompApp*)algo->getDecompApp();
+   const DippyDecompApp* app = dynamic_cast<const DippyDecompApp*>(algo->getDecompApp());
    PyObject* pSolutionList = pyTupleList_FromDoubleArray(xhat,
                              app->m_colList);
    addTupleToPyList(pOutput, PyString_FromString("xhat"), pSolutionList);
