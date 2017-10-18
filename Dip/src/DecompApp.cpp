@@ -1132,7 +1132,7 @@ void DecompApp::createModels()
    int* rowsCore   = new int[nRowsCore];
    UtilFillN(rowsMarker, nRows, -1);//-1 will mark core rows
 
-   for (mit = m_blocks.begin(); mit != m_blocks.end(); mit++) {
+   for (mit = m_blocks.begin(); mit != m_blocks.end(); ++mit) {
       vector<int>& rowsRelax = (*mit).second;
       vector<int>::iterator vit;
 

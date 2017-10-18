@@ -762,7 +762,7 @@ void MILPBlock_DecompApp::createModels(){
    //---
    //--- Construct the relaxation matrices.
    //---
-   for(mit = m_blocks.begin(); mit != m_blocks.end(); mit++){
+   for(mit = m_blocks.begin(); mit != m_blocks.end(); ++mit){
       vector<int> & rowsRelax  = (*mit).second;
       int           nRowsRelax = static_cast<int>(rowsRelax.size());
 
@@ -843,7 +843,7 @@ void MILPBlock_DecompApp::createModels(){
    //---
    setModelCore(modelCore, "core");
    
-   for(mdi = m_modelR.begin(); mdi != m_modelR.end(); mdi++){
+   for(mdi = m_modelR.begin(); mdi != m_modelR.end(); ++mdi){
       DecompConstraintSet * modelRelax = (*mdi).second;
       //---
       //--- set system in framework

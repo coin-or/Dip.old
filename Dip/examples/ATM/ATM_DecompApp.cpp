@@ -212,7 +212,7 @@ void ATM_DecompApp::createModelColumns(DecompConstraintSet * model,
       int index_fp = getColOffset_fp();
       int index_fm = getColOffset_fm();      
       int index_v  = getColOffset_v();
-      for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+      for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
 	 a = m_instance.getIndexADInv(*vi).first; 
 	 if(a != atmIndex){
             model->colUB[index_fp] = 0.0;

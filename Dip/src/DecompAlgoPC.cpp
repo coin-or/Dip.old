@@ -524,7 +524,7 @@ int DecompAlgoPC::compressColumns()
       nMasterColsStruct  = 0;
       assert(nMasterColsNew == static_cast<int>(m_masterColType.size()));
 
-      for (li = m_vars.begin(); li != m_vars.end(); li++) {
+      for (li = m_vars.begin(); li != m_vars.end(); ++li) {
          colMasterIndex = (*li)->getColMasterIndex();
          assert(isMasterColStructural(colMasterIndex));
       }
@@ -1388,12 +1388,12 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
          } else {
             DecompWaitingRow waitingRow(*li, row, rowReform);
             //do this in a separate function so addCutsTo is not dependent
-            //on passing in osolution for DecompVar
+            //on passing in solution for DecompVar
             //waitingRow.setViolation(x);//always on original solution!
             m_cutpool.push_back(waitingRow);
          }
 
-         li++;
+         ++li;
       } else {
          //---
          //--- cut is not being added to pool, delete memory
@@ -1595,7 +1595,7 @@ int DecompAlgoPC::addCutsFromPool()
    //---
    index = 0;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (index >= n_newrows) {
          break;
       }
