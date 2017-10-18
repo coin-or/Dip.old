@@ -248,7 +248,7 @@ int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
    const map<int, int>&   origToSparse = model->getMapOrigToSparse();
    map<int, int>::const_iterator mit;
 
-   for (it = whichKnaps.begin(); it != whichKnaps.end(); it++) {
+   for (it = whichKnaps.begin(); it != whichKnaps.end(); ++it) {
       i = *it;
       CoinPackedVector row;
       string           rowName = "k(i_" + UtilIntToStr(i) + ")";

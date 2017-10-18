@@ -153,7 +153,7 @@ UtilPrintVector(const std::vector<T>&       v,
 {
    typename std::vector<T>::const_iterator it;
 
-   for (it = v.begin(); it != v.end(); it++) {
+   for (it = v.begin(); it != v.end(); ++it) {
       (*os) << std::setw(5) << *it << " -> "
             << std::setw(25) << label[*it] << std::endl;
    }
@@ -633,7 +633,7 @@ template <class T> void UtilDeleteListPtr(std::list<T*>& listPtr,
 {
    typename std::list<T*>::iterator it;
 
-   for (it = first; it != last; it++) {
+   for (it = first; it != last; ++it) {
       delete *it;
    }
 

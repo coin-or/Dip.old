@@ -138,7 +138,7 @@ void DecompAlgo::checkBlocksColumns()
    set<int> activeColsUnion;
    set<int>::iterator sit;
 
-   for (mid1 = m_modelRelax.begin(); mid1 != m_modelRelax.end(); mid1++) {
+   for (mid1 = m_modelRelax.begin(); mid1 != m_modelRelax.end(); ++mid1) {
       DecompSubModel&      modelRelax = (*mid1).second;
       DecompConstraintSet* model      = modelRelax.getModel();
       assert(model);
@@ -262,7 +262,7 @@ void DecompAlgo::initSetup()
               << m_numConvexCon << endl;
 
               for (mit  = m_modelRelax.begin();
-   mit != m_modelRelax.end(); mit++) {
+   mit != m_modelRelax.end(); ++mit) {
    DecompConstraintSet* model = (*mit).second.getModel();
 
       if (model && model->M) {
@@ -528,7 +528,7 @@ void DecompAlgo::getModelsFromApp()
       vector<DecompSubModel> v;
 
       for (vit  = (*mivt).second.begin();
-            vit != (*mivt).second.end(); vit++) {
+            vit != (*mivt).second.end(); ++vit) {
          v.push_back(*vit);
       }
 
@@ -578,7 +578,7 @@ void DecompAlgo::loadSIFromModel(OsiSolverInterface* si,
 
    map<int, DecompSubModel>::iterator mit;
 
-   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
       relax = (*mit).second.getModel();
 
       //TODO: for cut gen do we really want this model explicit??
@@ -2134,7 +2134,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
                   vector<DecompSolution*>::iterator vit;
 
                   for (vit  = m_xhatIPFeas.begin();
-                        vit != m_xhatIPFeas.end(); vit++) {
+                        vit != m_xhatIPFeas.end(); ++vit) {
                      const DecompSolution* xhatIPFeas = *vit;
                      const double*          values
                      = xhatIPFeas->getValues();
@@ -2205,7 +2205,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
             DecompSolution* viBest = NULL;
             double bestBoundUB = m_nodeStats.objBest.second;
 
-            for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); vi++) {
+            for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); ++vi) {
                const DecompSolution* xhatIPFeas = *vi;
 
                if (xhatIPFeas->getQuality() <= bestBoundUB) {
@@ -3507,7 +3507,7 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
         omp_set_num_threads(numThreads);
 //#pragma omp parallel for schedule(dynamic, m_param.SubProbParallelChunksize)
 #endif
-        for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++)
+        for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit)
         {
            DecompSubModel& subModel = (*mit).second;
            timeLimit = max(m_param.SubProbTimeLimitExact -
@@ -3543,9 +3543,9 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
          vector<DecompSubModel>           ::iterator vit;
 
          for (mivt  = m_modelRelaxNest.begin();
-               mivt != m_modelRelaxNest.end(); mivt++) {
+               mivt != m_modelRelaxNest.end(); ++mivt) {
             for (vit  = (*mivt).second.begin();
-                  vit != (*mivt).second.end(); vit++) {
+                  vit != (*mivt).second.end(); ++vit) {
 	       timeLimit = max(m_param.SubProbTimeLimitExact - 
 			       m_stats.timerOverall.getRealTime(), 0.0);
                solveRelaxed(costeps,               //reduced cost (fake here)
@@ -3975,7 +3975,7 @@ void DecompAlgo::masterPhaseItoII()
 
    DecompVarList::iterator li;
 
-   for (li = m_vars.begin(); li != m_vars.end(); li++) {
+   for (li = m_vars.begin(); li != m_vars.end(); ++li) {
       assert(isMasterColStructural((*li)->getColMasterIndex()));
       m_masterSI->setObjCoeff((*li)->getColMasterIndex(),
                               (*li)->getOriginalCost());
@@ -4932,7 +4932,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
       //put the vars from all threads into one vector
       for (int subprobIndex = 0; subprobIndex < m_numConvexCon; subprobIndex++) {
 	 for (it  = potentialVarsT[subprobIndex].begin();
-	      it != potentialVarsT[subprobIndex].end(); it++) {
+	      it != potentialVarsT[subprobIndex].end(); ++it) {
 	    potentialVars.push_back(*it);
 	 }
       }
@@ -4943,8 +4943,8 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
       map<int, vector<DecompSubModel> >::iterator mivt;
       vector<DecompSubModel>           ::iterator vit;
 
-      for (mivt  = m_modelRelaxNest.begin(); mivt != m_modelRelaxNest.end(); mivt++) {
-	 for (vit  = (*mivt).second.begin(); vit != (*mivt).second.end(); vit++) {
+      for (mivt  = m_modelRelaxNest.begin(); mivt != m_modelRelaxNest.end(); ++mivt) {
+	 for (vit  = (*mivt).second.begin(); vit != (*mivt).second.end(); ++vit) {
 	    b         = (*vit).getBlockId();
 	    alpha     = u[nBaseCoreRows + b];
 	    UTIL_DEBUG(m_app->m_param.LogDebugLevel, 4,
@@ -5104,7 +5104,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
          m_rrLastBlock = b;
          foundNegRC    = false;
 
-         for (it = potentialVars.begin(); it != potentialVars.end(); it++) {
+         for (it = potentialVars.begin(); it != potentialVars.end(); ++it) {
             varRedCost = (*it)->getReducedCost();
 
             if (varRedCost < - m_param.RedCostEpsilon) { //TODO: strict, -dualTOL?
@@ -5296,7 +5296,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
    potentialVars.clear(); //THINK? what does clear do exactly ?
    UTIL_DEBUG(m_app->m_param.LogDebugLevel, 4,
 
-   for (it = newVars.begin(); it != newVars.end(); it++) {
+   for (it = newVars.begin(); it != newVars.end(); ++it) {
       (*it)->print(m_infinity, m_osLog, m_app);
    }
              );
@@ -5405,7 +5405,7 @@ int DecompAlgo::generateCuts(double*         xhat,
       double bestBoundUB = m_nodeStats.objBest.second;
 
       for (it  = D.m_xhatIPFeas.begin();
-            it != D.m_xhatIPFeas.end(); it++) {
+            it != D.m_xhatIPFeas.end(); ++it) {
          thisBound = (*it)->getQuality();
          UTIL_DEBUG(m_param.LogDebugLevel, 3,
                     (*m_osLog) << "From DECOMP, IP Feasible with Quality =";

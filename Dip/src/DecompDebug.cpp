@@ -830,7 +830,7 @@ void DecompAlgo::checkReducedCost(const double *u, const double *u_adjusted)
    int           nBaseCoreRows = modelCore->nBaseRows;
    const double* origObjective = getOrigObjective();
 
-   for (it = m_vars.begin(); it != m_vars.end(); it++) {
+   for (it = m_vars.begin(); it != m_vars.end(); ++it) {
       double redCost = 0.0;
       //m_s      is a sparse vector in x-space (the column)
       //redCostX is a dense  vector in x-space (the cost in subproblem)
@@ -1013,7 +1013,7 @@ DecompSolverResult* DecompAlgoC::solveDirect(const DecompSolution* startSol)
    UtilPrintFuncBegin(m_osLog, m_classTag,
                       "solveDirect()", m_param.LogDebugLevel, 2);
    DecompVarList dummy;
-   int           i, nNodes;
+   int nNodes = 0; 
    double        objLB      = -m_infinity;
    double        objUB      =  m_infinity;
    int           logIpLevel = m_param.LogIpLevel;
@@ -1042,7 +1042,7 @@ DecompSolverResult* DecompAlgoC::solveDirect(const DecompSolution* startSol)
    //---
    //--- set integer vars
    //---
-   for (i = 0; i < numInts; i++) {
+   for (int i = 0; i < numInts; i++) {
       m_masterSI->setInteger(modelCore->integerVars[i]);
    }
 

@@ -135,7 +135,7 @@ int MAD_DecompApp::heuristicGreedy(vector<GreedyPoint>     & greedyPoints,
    }
    if(redCost){
       for(b = 0; b < m_beta; b++){
-	 for(vit = blocks[b].begin(); vit != blocks[b].end(); vit++){
+	 for(vit = blocks[b].begin(); vit != blocks[b].end(); ++vit){
 	    solValueRedCost += redCost[xIndex(*vit,b)];
 	 }
       }

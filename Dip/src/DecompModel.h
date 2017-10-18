@@ -170,7 +170,7 @@ public:
          std::map<int, int>::const_iterator mcit;
 
          for (mcit  = origToSparse.begin();
-               mcit != origToSparse.end(); mcit++) {
+               mcit != origToSparse.end(); ++mcit) {
             m_osi->setColLower(mcit->second,        //sparse-index
                                colLB[mcit->first]); //original-index
             m_osi->setColUpper(mcit->second,        //sparse-index

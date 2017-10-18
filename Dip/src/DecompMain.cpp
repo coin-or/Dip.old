@@ -633,12 +633,12 @@ DecompSolverResult* solveDirect(const DecompApp& decompApp)
    }
 
    m_problemSI->readMps(fileName.c_str());
-   int numCols    = decompApp.m_mpsIO.getNumCols();
-   int nNodes;
+   int numCols    = decompApp.m_mpsIO.getNumCols(); 
    double objLB   = -m_problemSI->getInfinity();
    double objUB   = m_problemSI->getInfinity();
    double timeLimit = decompApp.m_param.TimeLimit;
    UtilTimer timer;
+   int nNodes(0); 
    timer.start();
    DecompSolverResult* result = new DecompSolverResult(m_problemSI->getInfinity());
    if (decompApp.m_param.DecompIPSolver == "Cbc"){

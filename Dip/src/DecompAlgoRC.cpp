@@ -198,7 +198,7 @@ void DecompAlgoRC::phaseDone()
       DecompSolution* viBest = NULL;
       double bestBoundUB = m_nodeStats.objBest.second;
 
-      for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); vi++) {
+      for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); ++vi) {
          const DecompSolution* xhatIPFeas = *vi;
 
          if (isIPFeasible(xhatIPFeas->getValues())) {
