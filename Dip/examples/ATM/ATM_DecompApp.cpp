@@ -68,7 +68,7 @@ void ATM_DecompApp::addColumnNamesA(DecompConstraintSet * model,
 
 //===========================================================================//
 void ATM_DecompApp::addColumnNamesAT(DecompConstraintSet * model,
-				     const string          prefix,
+				     const string    &     prefix,
 				     const int             offset){
    
    int       a, t, colIndex;
@@ -235,7 +235,7 @@ void ATM_DecompApp::createModelColumns(DecompConstraintSet * model,
       int index_fp = getColOffset_fm();
       int index_fm = getColOffset_fm();            
       int index_v  = getColOffset_v();
-      for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+      for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
 	 d = m_instance.getIndexADInv(*vi).second; 
 	 if(d != dateIndex){
             model->colUB[index_fp] = 0.0;

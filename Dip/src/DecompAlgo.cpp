@@ -706,7 +706,7 @@ void DecompAlgo::loadSIFromModel(OsiSolverInterface* si,
    si->setObjName(objName);
    rowIndex = nRowsC;
 
-   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
       relax = (*mit).second.getModel();
 
       if (!relax || !relax->M) {
@@ -3942,7 +3942,7 @@ void DecompAlgo::masterPhaseItoII()
 
    DecompVarList::iterator li;
 
-   for (li = m_vars.begin(); li != m_vars.end(); li++) {
+   for (li = m_vars.begin(); li != m_vars.end(); ++li) {
       assert(isMasterColStructural((*li)->getColMasterIndex()));
       m_masterSI->setObjCoeff((*li)->getColMasterIndex(),
                               (*li)->getOriginalCost());
@@ -5770,7 +5770,7 @@ void DecompAlgo::addVarsFromPool()
    //---
    int index = 0;
 
-   for (vi = m_varpool.begin(); vi != m_varpool.end(); vi++) {
+   for (vi = m_varpool.begin(); vi != m_varpool.end(); ++vi) {
       if (m_algo != RELAX_AND_CUT) { //THINK??
          if ((*vi).getReducedCost() >  -0.0000001) { //TODO - param
             break;
@@ -6072,7 +6072,7 @@ int DecompAlgo::addCutsFromPool()
    int index = 0;
    DecompCutPool::iterator li;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if ((*li).getViolation() < DecompEpsilon) { //PARM
          break;
       }
@@ -6403,7 +6403,7 @@ void DecompAlgo::solveRelaxed(const double*         redCostX,
 
       DecompVarList::iterator it;
 
-      for (it = userVars.begin(); it != userVars.end(); it++) {
+      for (it = userVars.begin(); it != userVars.end(); ++it) {
          if ((*it)->getBlockId() == whichBlock) {
             if ((*it)->getVarType() == DecompVar_Point) {
                (*it)->setReducedCost((*it)->getReducedCost() - alpha);
@@ -6555,7 +6555,7 @@ void DecompAlgo::solveRelaxed(const double*         redCostX,
                const map<int, int>& sparseToOrig = model->getMapSparseToOrig();
 
                for (mcit  = sparseToOrig.begin();
-                     mcit != sparseToOrig.end(); mcit++) {
+                     mcit != sparseToOrig.end(); ++mcit) {
                   i = mcit->first;  //sparse-index
                   c = mcit->second; //original-index
 
@@ -6632,7 +6632,7 @@ void DecompAlgo::solveRelaxed(const double*         redCostX,
       assert(xTemp);
       DecompVarList::iterator it;
 
-      for (it = vars.begin(); it != vars.end(); it++) {
+      for (it = vars.begin(); it != vars.end(); ++it) {
          int               whichBlock     = (*it)->getBlockId();
 
          if (whichBlock != -1) {
@@ -6864,7 +6864,7 @@ bool DecompAlgo::isTailoffLB(const int    changeLen,
    double aveDiff   = 0.0;
    double perDiff   = 0.0;
 
-   for (it++; it != m_nodeStats.objHistoryBound.rend(); it++) {
+   for (it++; it != m_nodeStats.objHistoryBound.rend(); ++it) {
       diff       = fabs(prevBound - (*it).bestBound);
       UTIL_DEBUG(m_param.LogDebugLevel, 3,
                  (*m_osLog)

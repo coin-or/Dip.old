@@ -59,9 +59,6 @@ void DecompApp::startupLog()
             <<   "\nDistributed under the Eclipse Public License 1.0"
             <<   "\nVersion: " << DIP_VERSION
             <<   "\nBuild Date: " << __DATE__
-#ifdef DIP_SVN_REV
-            <<   "\nRevision Number: " << DIP_SVN_REV
-#endif
             << "\n========================================================"
             << "\n========================================================"
             << "\n";
@@ -432,14 +429,15 @@ void DecompApp::readBlockFile()
       int numBlocks = 0;
       string tmp, rowName;
 
-      while (!numBlocks) {
+      while (!numBlocks)
+      {
          is >> tmp;
 
-         if (tmp == "NBLOCKS") {
+         if (tmp == "NBLOCKS")
+         {
             is >> numBlocks;
          }
       }
-
       while (tmp != "BLOCK") {
          is >> tmp;
       }
@@ -1195,7 +1193,7 @@ void DecompApp::createModels()
    //---
    //--- Construct the relaxation matrices.
    //---
-   for (mit = m_blocks.begin(); mit != m_blocks.end(); mit++) {
+   for (mit = m_blocks.begin(); mit != m_blocks.end(); ++mit) {
       vector<int>& rowsRelax  = (*mit).second;
       int           nRowsRelax = static_cast<int>(rowsRelax.size());
 
