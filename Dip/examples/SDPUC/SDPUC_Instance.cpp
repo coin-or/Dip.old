@@ -50,8 +50,9 @@ int SDPUC_Instance::readInstance(string & fileName,
             return 1;
          }
          m_problemName = name;
-         m_arcs        = new arc[m_numArcs + (addDummyArcs ? 0 : 0)];
-         if(!m_arcs)
+         //m_arcs        = new arc[m_numArcs + (addDummyArcs ? 0 : 0)];
+         m_arcs = new arc[m_numArcs];    
+	 if(!m_arcs)
             throw UtilExceptionMemory("readInstance", "MCF_DecompApp");
          m_nodes = new node[m_numNodes];
          if(!m_nodes)

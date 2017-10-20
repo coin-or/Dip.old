@@ -158,10 +158,10 @@ class MAD_Cliquer{
    
    inline void cliquePrint(graph_t * g,
                            set_t     s) {
-      unsigned int i;      
+            
       printf("size=%d, weight=%d:  ",
              set_size(s), graph_subgraph_weight(g, s));
-      for (i = 0; i < SET_MAX_SIZE(s); i++) {
+      for (int i = 0; i < SET_MAX_SIZE(s); i++) {
          if (SET_CONTAINS(s,i)) {
             printf(" %d",i);
          }

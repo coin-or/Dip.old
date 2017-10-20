@@ -183,10 +183,12 @@ void UtilParameters::LoadParamFile(string& paramFileName)
             cerr << "UtilParameters: syntax error on line "
                  << lineNum << " '" << buf << "'" << endl;
          }
-
-         *ptr = '\0';
-         curSection = buf + 1;
-         continue;
+         else
+         {
+            *ptr = '\0';
+            curSection = buf + 1;
+            continue;
+         }
       }
 
       //---

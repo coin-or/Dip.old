@@ -675,7 +675,7 @@ void UtilDeleteMapVecPtr(std::map<S, std::vector<T*> >& mapPtr,
 {
    typename std::map<S, std::vector<T*> >::iterator it;
 
-   for (it = first; it != last; it++) {
+   for (it = first; it != last; ++it) {
       UtilDeleteVectorPtr((*it).second);
    }
 
