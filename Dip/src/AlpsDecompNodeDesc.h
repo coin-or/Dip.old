@@ -224,8 +224,7 @@ public:
 
    /** Unpack a node description from an encoded. Fill member data. */
    virtual AlpsReturnStatus decode(AlpsEncoded& encoded) {
-      AlpsReturnStatus status = AlpsReturnStatusOk;
-      status = decodeAlpsDecomp(encoded);
+      AlpsReturnStatus status = decodeAlpsDecomp(encoded);
       return status;
    }
 

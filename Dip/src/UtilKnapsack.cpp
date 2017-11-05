@@ -53,9 +53,8 @@
 SOR_IntDblArrPtr SOR_IntDblArrNew (int    size,
                                    int*   pstatus)
 {
-   SOR_IntDblArrPtr A = NULL;
    *pstatus = OK;
-   A = (SOR_IntDblArrPtr) malloc(sizeof(SOR_IntDblArr));
+   SOR_IntDblArrPtr A = (SOR_IntDblArrPtr) malloc(sizeof(SOR_IntDblArr));
 
    if (A == NULL) {
       *pstatus = ERR_NO_MEMORY;
@@ -167,8 +166,7 @@ int KnapsackSortRatio(const int      n,
    //---
    int i;
    int status = 0;
-   SOR_IntDblArrPtr ratio = NULL;
-   ratio = SOR_IntDblArrNew(n, &status);
+   SOR_IntDblArrPtr ratio = SOR_IntDblArrNew(n, &status);
 
    if (status != OK) {
       return status;

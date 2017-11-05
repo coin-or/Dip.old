@@ -170,7 +170,6 @@ class VRP_Concorde {
       //--- Number of edges: m = (n^2 - n)/2 - (nR^2 - nR)/2
       //---
       m_cgExpand.init(nVerts, nEdges);
-      edgeIndex   = 0;
       //edgeIndexC  = 0;
       edgeList    = m_cgExpand.m_edgeList;
       //edgeMapCtoN = m_cgExpand.m_edgeMapCtoN;
@@ -269,10 +268,9 @@ class VRP_Concorde {
       //---   check for integer overflow
       //---
       int    bigCost    = 0;
-      double bigCostDbl = 0.0;
       int    maxEdgeLen = *max_element(origGraphCostInt,
                                        origGraphCostInt+nOrigEdges);
-      bigCostDbl = ((double)maxEdgeLen+1.0) * (double)m_cgExpand.m_nVerts;
+      double bigCostDbl = ((double)maxEdgeLen+1.0) * (double)m_cgExpand.m_nVerts;
       if((256*bigCostDbl) > (double)CCutil_MAXINT) {
          printf("WARNING: Large edge lengths!!!!\n");
          bigCost = CCutil_MAXINT / 256;         

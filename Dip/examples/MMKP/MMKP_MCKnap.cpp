@@ -125,7 +125,6 @@ void MMKP_MCKnap::setMCKnapData(const double   capacity,
                                 const double * weight){
 
    int       i, j, colIndex;      
-   itemset * setPtr    = NULL;
    itemrec * recPtr    = NULL;
       
    //TODO: allow pass in arrFrac to this util function, for speed
@@ -146,7 +145,7 @@ void MMKP_MCKnap::setMCKnapData(const double   capacity,
    m_setset->fset = (itemset*) malloc(m_setset->size * sizeof(itemset));
    assert(m_setset->fset);
    
-   setPtr = m_setset->fset;
+   itemset* setPtr = m_setset->fset;
    colIndex = 0;
    for(i = 0; i < m_setset->size; i++){
       setPtr->size = m_nGroupCols;

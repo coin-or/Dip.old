@@ -113,11 +113,10 @@ int SDPUC_Instance::readInstance(string & fileName,
          }*/
 		 
 		 nt = 0;
-		 char * pch;
 		 //printf ("Splitting string \"%s\" into tokens:\n",line);
-		 pch = strtok (line,"\t");  //stripping the initial 't'
+		 //char* pch = strtok (line,"\t");  //stripping the initial 't'
 		 //printf ("%s ",pch);
-		 pch = strtok (NULL, "\t"); //timeseries id
+		 char* pch = strtok (NULL, "\t"); //timeseries id
 		 m_timeseries[ts_read].id = atoi(pch);
 		 //printf ("%s\n",pch);
 		 while (pch != NULL && nt < m_numTimeperiods)

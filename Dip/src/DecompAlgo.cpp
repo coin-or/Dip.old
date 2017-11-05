@@ -3220,7 +3220,6 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
 	    UTIL_DEBUG(m_param.LogDebugLevel, 6,
 		       (*m_osLog) << "B-1ARow r: " << r << ": ";
 		       );
-	    allneg = true;
 	    
 	    for (c = 0; c < n; c++) {
 	       UTIL_DEBUG(m_param.LogDebugLevel, 6,
@@ -3632,11 +3631,10 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
    if (m_param.InitVarsWithIP) {
       printf("======= BEGIN Gen Init Vars - call Direct IP solver\n");
       DecompAlgoC          direct(m_app, *m_utilParam);
-      DecompSolverResult* result = NULL;
+      DecompSolverResult* result = direct.solveDirect();
       double oldSetting = m_param.TimeLimit;
       m_param.TimeLimit = m_param.InitVarsWithIPTimeLimit;
-      result = direct.solveDirect();
-      m_param.TimeLimit = oldSetting;
+	  m_param.TimeLimit = oldSetting;
 
       if (result->m_nSolutions) {
          //---

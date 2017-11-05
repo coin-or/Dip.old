@@ -1363,11 +1363,10 @@ void MAD_DecompApp::printOriginalSolution(const int      n_cols,
    int          i, j, b;
    int          border_size;
    double       xj;
-   bool         isIntegral = true;
 
    DecompApp::printOriginalSolution(n_cols, solution, os);
 
-   isIntegral = UtilIsIntegral(solution, n_cols);
+   bool isIntegral = UtilIsIntegral(solution, n_cols);
    if(isIntegral){
       (*os) << "\nBlock Decomposition:";
       vector<bool> border(m_nOrigRows, true);      
