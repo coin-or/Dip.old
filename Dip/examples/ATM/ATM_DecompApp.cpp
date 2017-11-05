@@ -399,7 +399,7 @@ int ATM_DecompApp::createConCount(DecompConstraintSet * model,
    const double      * K_a       = m_instance.get_K_a();
    vector<int>::const_iterator vi;
    //TODO: this can be faster by storing the incident d's for each a
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       adP = m_instance.getIndexADInv(*vi);
       if(atmIndex != adP.first){
 	 pairIndex++;

@@ -41,23 +41,6 @@
 using namespace std;
 
 //===========================================================================//
-
-struct SolveRelaxedThreadArgs {
-   DecompAlgo*                algo;
-   vector<DecompSubModel*>*   subModel;
-   int                        nBaseCoreRows;
-   double*                    u;
-   double*                    redCostX;
-   const double*              origCost;
-   int                        n_origCols;
-   bool                       checkDup;
-   bool                       doExact;
-   bool                       doCutoff;
-   DecompVarList*             vars;
-};
-
-
-//===========================================================================//
 void DecompAlgo::checkBlocksColumns()
 {
    UtilPrintFuncBegin(m_osLog, m_classTag,
@@ -1526,7 +1509,7 @@ void DecompAlgo::breakOutPartial(const double*   xHat,
    map<int, DecompSubModel>::iterator mit;
    vector<int>::const_iterator         vit;
 
-   for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+   for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
       DecompSubModel&      subModel      = (*mit).second;
       DecompConstraintSet* model         = subModel.getModel();
       int                   b            = subModel.getBlockId();
@@ -5809,7 +5792,7 @@ void DecompAlgo::addVarsFromPool()
 
    index = 0;
 
-   for (vi = m_varpool.begin(); vi != m_varpool.end(); vi++) {
+   for (vi = m_varpool.begin(); vi != m_varpool.end(); ++vi) {
       if (index >= n_newcols) {
          break;
       }
@@ -6094,7 +6077,7 @@ int DecompAlgo::addCutsFromPool()
    //int              colIndex;
    index = 0;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (index >= n_newrows) {
          break;
       }
@@ -6862,7 +6845,7 @@ bool DecompAlgo::isTailoffLB(const int    changeLen,
    double aveDiff   = 0.0;
    double perDiff   = 0.0;
 
-   for (it++; it != m_nodeStats.objHistoryBound.rend(); ++it) {
+   for (++it; it != m_nodeStats.objHistoryBound.rend(); ++it) {
       diff       = fabs(prevBound - (*it).bestBound);
       UTIL_DEBUG(m_param.LogDebugLevel, 3,
                  (*m_osLog)
