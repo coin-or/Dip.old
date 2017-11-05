@@ -831,11 +831,11 @@ void DecompAlgo::checkReducedCost(const double *u, const double *u_adjusted)
    const double* origObjective = getOrigObjective();
 
    for (it = m_vars.begin(); it != m_vars.end(); ++it) {
-      double redCost = 0.0;
+
       //m_s      is a sparse vector in x-space (the column)
       //redCostX is a dense  vector in x-space (the cost in subproblem)
       b       = (*it)->getBlockId();
-      redCost = (*it)->m_s.dotProduct(redCostX);//??
+      double redCost = (*it)->m_s.dotProduct(redCostX);//??
 
       if ( (*it)->getVarType() == DecompVar_Point) {
 	 alpha   = u[nBaseCoreRows + b];
@@ -1217,15 +1217,21 @@ DecompSolverResult* DecompAlgoC::solveDirect(const DecompSolution* startSol)
       //--- set the time limit
       //---
       status = CPXsetdblparam(cpxEnv, CPX_PARAM_TILIM, timeLimit);
-      //---
+	  if (status)
+	  {
+		  throw UtilException("CPXsetdblparam failure",
+			  "solveDirect", "DecompAlgoC");
+	  }
+	  //---
       //--- set the thread limit, otherwise CPLEX will use all the resources
       //---
       status = CPXsetintparam(cpxEnv, CPX_PARAM_THREADS, m_param.NumThreadsIPSolver);
       
-      if (status)
-	 throw UtilException("CPXsetdblparam failure",
-			     "solveDirect", "DecompAlgoC");
-      
+	  if (status)
+	  {
+		  throw UtilException("CPXsetintparam failure",
+			  "solveDirect", "DecompAlgoC");
+	  }
       //---
       //--- solve the MILP
       //---

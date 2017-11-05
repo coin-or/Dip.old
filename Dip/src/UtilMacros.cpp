@@ -49,10 +49,9 @@ int UtilScaleDblToIntArr(const int      arrLen,
    //--- the rhs of row). If oneInt == NULL, then this part is skipped.
    //---
    int      i, scaleFactor = 1, n_aFrac = 0, factorTooBig = 0;
-   double* arrFrac = NULL;
    double   fractionalPart;
    double   oneOverEps = 1.0 / epstol;
-   arrFrac = new double[arrLen + 1];
+   double*  arrFrac = new double[arrLen + 1];
    assert(arrFrac);
 
    for (i = 0; i < arrLen; i++) {
@@ -126,11 +125,10 @@ int UtilScaleDblToIntArr(const int      arrLen,
    //--- the rhs of row). If oneInt == NULL, then this part is skipped.
    //---
    int      i, scaleFactor = 1, n_aFrac = 0, factorTooBig = 0;
-   double* arrFrac = NULL;
    double   fractionalPart;
    double   oneOverEps = 1.0 / epstol;
    //TODO: pass in arrFrac?
-   arrFrac = new double[arrLen];
+   double* arrFrac = new double[arrLen];
    assert(arrFrac);
 
    for (i = 0; i < arrLen; i++) {

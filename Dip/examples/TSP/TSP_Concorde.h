@@ -91,7 +91,6 @@ public:
 
    int generateCutsSubtour(vector<ConcordeSubtourCut> & subtourCuts){
       CCtsp_lpcut_in * tsp_cuts     = NULL;
-      CCtsp_lpcut_in * tsp_cut      = NULL;
       CCtsp_lpcut_in * tsp_cut_next = NULL;
       
       int i, c, tmp;
@@ -107,7 +106,7 @@ public:
       
       //cout << "CONCORDE found n_subtours : " << n_subtour << endl;
 
-      tsp_cut = tsp_cuts;      
+      CCtsp_lpcut_in* tsp_cut = tsp_cuts;      
       for(c = 0; c < n_subtour; c++){
 	 ConcordeSubtourCut subtourCut(m_nVerts);	 
 	 assert(tsp_cut);

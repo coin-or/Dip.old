@@ -340,7 +340,7 @@ void DecompSubModel::solveAsMIPSym(DecompSolverResult*  result,
       double* opt_solution = new double[numCols];
       int nSols = 0;
 
-      status = sym_get_sp_size(env, &nSols);
+      int status1 = sym_get_sp_size(env, &nSols);
 
       result->m_nSolutions = 1;
       status = sym_get_col_solution(env, opt_solution);
