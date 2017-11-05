@@ -3,7 +3,7 @@
 from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, Extension
-import subprocess, os, sys
+import os, sys
 from os.path import join, dirname
 
 PROJECT = 'coinor.dippy'
