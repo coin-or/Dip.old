@@ -616,10 +616,7 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
 				   double               timeLimit)
 {
 #ifdef COIN_HAS_CPX
-   const int numCols    = m_osi->getNumCols();
    const int logIpLevel = param.LogIpLevel;
-   double* solution = new double[numCols];
-   assert(solution);
    //---
    //--- get OsiCpx object from Osi object
    //--- get CPEXENVptr for use with internal methods
@@ -746,6 +743,9 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
    //---
    //--- solve the MILP
    //---
+
+   const int numCols = m_osi->getNumCols();
+   double* solution = new double[numCols];
    osiCpx->branchAndBound();
    //---
    //--- get solver status
@@ -812,6 +812,7 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
       osiCpx->switchToMIP();
 
       if (status) {
+		  delete solution; 
          throw UtilException("CPXgetray failure",
                              "solveAsMIPCpx", "DecompSubModel");
       }

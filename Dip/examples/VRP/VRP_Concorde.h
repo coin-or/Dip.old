@@ -159,7 +159,6 @@ class VRP_Concorde {
       int       nCustomers           = graphLib.n_vertices - 1;
       int       nVerts               = nCustomers + nRoutes;
       int       nEdges               = UtilNumEdgesU(nVerts);
-      int     * edgeList             = NULL;
       //int     * edgeMapCtoN          = NULL;
       //int     * edgeMapNtoC          = NULL;
       
@@ -171,7 +170,7 @@ class VRP_Concorde {
       //---
       m_cgExpand.init(nVerts, nEdges);
       //edgeIndexC  = 0;
-      edgeList    = m_cgExpand.m_edgeList;
+      int * edgeList    = m_cgExpand.m_edgeList;
       //edgeMapCtoN = m_cgExpand.m_edgeMapCtoN;
       //edgeMapNtoC = m_cgExpand.m_edgeMapNtoC;
       for(i = 1; i < nVerts; i++){
