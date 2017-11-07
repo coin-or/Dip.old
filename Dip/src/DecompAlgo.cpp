@@ -5111,7 +5111,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
          //TODO: make this a function (to solve all blocks)
          map<int, DecompSubModel>::iterator mit;
 
-         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
             DecompSubModel& subModel = (*mit).second;
             b         = subModel.getBlockId();
             UTIL_DEBUG(m_app->m_param.LogDebugLevel, 4,

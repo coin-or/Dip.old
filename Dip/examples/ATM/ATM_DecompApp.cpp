@@ -805,7 +805,7 @@ DecompConstraintSet * ATM_DecompApp::createModelRelax2(const int d){
    CoinPackedVector rowBudget;
    nRows     = 0;
    pairIndex = 0;
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       adP = m_instance.getIndexADInv(*vi);
       if(d != adP.second){
 	 pairIndex++;

@@ -64,7 +64,6 @@ def get_frameworks(dir):
                 add_framework = False
             if flag == '-framework':
                 add_framework = True
-                
     return frameworks
 
 operatingSystem = sys.platform
@@ -104,8 +103,7 @@ if operatingSystem is 'windows':
 if operatingSystem is 'mac':
     os.environ['LDFLAGS'] = get_frameworks(coin_install_dir)
 
-modules=[Extension('_dippy', 
-                   sources, 
+modules=[Extension('_dippy',sources, 
                    libraries=libraries,
                    include_dirs=[join(coin_install_dir, 'include', 'coin'),
                                  '/usr/local/gurobi/linux64/include',
