@@ -2018,7 +2018,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
       case PHASE_DONE: {
          map<int, DecompSubModel>::iterator mit;
 
-         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
             (*mit).second.setCounter(0);
          }
       }
@@ -3230,7 +3230,6 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
 	    UTIL_DEBUG(m_param.LogDebugLevel, 6,
 		       (*m_osLog) << "B-1ARow r: " << r << ": ";
 		       );
-	    allpos = true;
 	    
 	    for (c = 0; c < n; c++) {
 	       UTIL_DEBUG(m_param.LogDebugLevel, 6,

@@ -1162,6 +1162,7 @@ void DecompApp::createModels()
    double* objective = new double[nCols];
 
    if (!objective) {
+      delete objective;  
       throw UtilExceptionMemory("createModels", "DecompApp");
    }
 

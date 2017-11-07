@@ -247,13 +247,12 @@ void MMKP_MCKnap::solveMCKnap(const double   * redCost,
    //---
    //--- setup the data structures for mcknap
    //---
-   itemset * setPtr    = m_setset->fset;
    itemrec * recPtr    = NULL;
    itemrec * recSolPtr = NULL;
    
    //THINK: reset - assume memory is still there
    m_setset->size  = m_nGroupRows;
-   setPtr = m_setset->fset;
+   itemset* setPtr = m_setset->fset;
    for(i = 0; i < m_setset->size; i++){
       setPtr->size = m_nGroupCols;
       recPtr       = setPtr->fset;    

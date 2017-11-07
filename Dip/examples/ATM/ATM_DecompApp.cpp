@@ -666,7 +666,7 @@ ATM_DecompApp::createModelRelax1(const int a,
    //---
    nRows     = 0;
    pairIndex = 0;
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       adP = m_instance.getIndexADInv(*vi);
       if(a != adP.first){
 	 pairIndex++;
