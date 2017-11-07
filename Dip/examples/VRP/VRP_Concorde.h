@@ -153,7 +153,7 @@ class VRP_Concorde {
       //--- NOTE: changed to remove depot-to-depot edges, now using
       //---   a mapping for the book-keeping
       //---
-      int i, j, edgeIndex;
+      int i, j, edgeIndex= 0;
       const UtilGraphLib & graphLib  = m_vrp->m_graphLib;
       const int nRoutes              = m_vrp->m_numRoutes;
       int       nCustomers           = graphLib.n_vertices - 1;

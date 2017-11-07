@@ -578,7 +578,7 @@ DecompSolverResult* solveDirect(const DecompApp& decompApp)
    //--- as an interface to call standalone branch-and-cut solver
    //---
 
-   OsiSolverInterface *m_problemSI;
+   OsiSolverInterface *m_problemSI = NULL;
 
    if (decompApp.m_param.DecompIPSolver == "SYMPHONY"){
 #ifdef DIP_HAS_SYMPHONY

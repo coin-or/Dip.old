@@ -1904,7 +1904,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
          m_nodeStats.cutsThisCall   = 0;
          map<int, DecompSubModel>::iterator mit;
 
-         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end();++mit) {
             (*mit).second.setCounter((*mit).second.getCounter() + 1);
          }
 
@@ -6150,7 +6150,7 @@ int DecompAlgo::addCutsFromPool()
    //clean up
    index = 0;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (index >= n_newrows) {
          break;
       }
