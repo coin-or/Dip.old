@@ -216,14 +216,13 @@ void MMKP_MCKnap::solveMCKnap(const double   * redCost,
    m_cscale = UtilScaleDblToIntArr(m_nCols, m_costDbl, m_cost, MCKP_EPSILON);
 
 #ifdef MMKP_MCKNAP_DEBUG
-   double diff;
    printf("\noffset   = %g", offset);
    printf("\nm_cscale = %d", m_cscale);
    printf("\nm_wscale = %d", m_wscale);
    printf("\ncapacity = %d", m_capacity);
    for(i = 0; i < m_nCols; i++){
       pair<int,int> ij = getIndexInv(i);
-      diff = fabs((m_costDbl[i]*m_cscale) - m_cost[i]);
+      double diff = fabs((m_costDbl[i]*m_cscale) - m_cost[i]);
       printf("\n[%d: %d, %d]: dbl-> %12.5f int-> %8d diff-> %12.5f",
 	     i, ij.first, ij.second, m_costDbl[i], m_cost[i], diff);
       assert( diff < 0.99 );
@@ -324,12 +323,12 @@ void MMKP_MCKnap::solveMCKnap(const double   * redCost,
 #endif
 	  
 	  
-	 int c, i, j, g;
+	 int i, j, g;
 	 for(g = 0; g < m_setset->size; g++){
 	    recSolPtr = &solRec[g];
 	    i         = recSolPtr->i;//was missing - STOP
 	    j         = recSolPtr->j;//was missing
-	    c         = getIndexIJ(i, j);
+	    int c         = getIndexIJ(i, j);
 	    solInd.push_back(c);
 	    varRedCost  += redCost[c];
 	    varOrigCost += origCost[c];

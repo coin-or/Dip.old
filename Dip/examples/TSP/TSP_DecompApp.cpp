@@ -256,14 +256,14 @@ TSP_DecompApp::solveRelaxed(const int          whichBlock,
    UtilGraphLib       & graphLib     = m_tsp.m_graphLib;
    Graph              & cgV          = m_tsp.m_boost.m_cgV;   
    int                  n_vertices   = graphLib.n_vertices;
-   int                  u, index;
+   int                  index;
 
    //TODO: BranchEnforceInSubProb option?
 
    if(m_appParam.ModelNameRelax == "SUBTOUR"){
       vector< pair<int, double> > edge_cost;
       edge_cost.reserve(n_vertices);	 
-      for(u = 0; u < n_vertices; u++){
+      for(int u = 0; u < n_vertices; u++){
          if(u != m_tsp.m_vert){
             index = UtilIndexU(m_tsp.m_vert, u);
             edge_cost.push_back(make_pair(index, redCostX[index]));
@@ -356,9 +356,8 @@ void TSP_DecompApp::solveOneTree(const double               * cost,
    if(m_appParam.LogLevel > 4)
       (*m_osLog) << "Spanning Tree:" << endl;
 
-   int edge_index;
    for (vei  = spanning_tree.begin(); vei != spanning_tree.end(); ++vei) {
-      edge_index         = e_index_g[*vei];      
+      int edge_index         = e_index_g[*vei];      
       rc                += cost[edge_index];
       obj               += graphLib.edge_wt[edge_index];      
       inMST[edge_index]  = true;

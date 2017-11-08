@@ -498,7 +498,6 @@ void DecompAlgoD::createMasterProblem(DecompVarList& initVars)
    }
    */
    int colIndex     = 0;
-   int blockIndex   = 0;
    DecompVarList::iterator li;
 
    //TODO:
@@ -518,7 +517,7 @@ void DecompAlgoD::createMasterProblem(DecompVarList& initVars)
       //---
       //--- we expect the user to define the block id in the var object
       //---
-      blockIndex = (*li)->getBlockId();
+      int blockIndex = (*li)->getBlockId();
       //---
       //--- give the column a name
       //---

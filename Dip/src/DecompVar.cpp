@@ -30,7 +30,6 @@ bool DecompVar::doesSatisfyBounds(int                     denseLen,
                                   const double*           ubs)
 {
    int            j;
-   double         xj;//, lb, ub;
    vector<int> ::const_iterator it;
    map<int, int>::const_iterator mcit;
    DecompConstraintSet* modelRelax    = model.getModel();
@@ -43,7 +42,7 @@ bool DecompVar::doesSatisfyBounds(int                     denseLen,
 
    for (it = activeColumns.begin(); it != activeColumns.end(); ++it) {
       j  = *it;
-      xj = denseArr[j];
+      double xj = denseArr[j];
 
       if (xj < (lbs[j] - DecompEpsilon) ||
             xj > (ubs[j] + DecompEpsilon)) {

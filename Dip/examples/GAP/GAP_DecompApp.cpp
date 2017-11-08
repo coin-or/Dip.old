@@ -46,11 +46,11 @@ void GAP_DecompApp::initializeApp()
    const int*   capacity  = m_instance.getCapacity();
    const int*   weight    = m_instance.getWeight();
    const int*   profit    = m_instance.getProfit();
-   GAP_KnapPisinger* knapK  = 0;
+   
    m_knap.reserve(nMachines);
 
    for (k = 0; k < nMachines; k++) {
-      knapK = new GAP_KnapPisinger(nTasks,
+      GAP_KnapPisinger* knapK = new GAP_KnapPisinger(nTasks,
                                    capacity[k],
                                    weight + (k * nTasks),
                                    profit + (k * nTasks));

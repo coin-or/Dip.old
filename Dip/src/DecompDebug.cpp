@@ -820,7 +820,7 @@ void DecompAlgo::checkReducedCost(const double *u, const double *u_adjusted)
    //---
 
    DecompVarList::iterator it;
-   int b, var_index = 0;
+   int var_index = 0;
    double*       redCostX      = NULL;
    const double* objC = m_masterSI->getObjCoefficients();
    const double* rcLP = m_masterSI->getReducedCost();
@@ -834,7 +834,7 @@ void DecompAlgo::checkReducedCost(const double *u, const double *u_adjusted)
 
       //m_s      is a sparse vector in x-space (the column)
       //redCostX is a dense  vector in x-space (the cost in subproblem)
-      b       = (*it)->getBlockId();
+      int b       = (*it)->getBlockId();
       double redCost = (*it)->m_s.dotProduct(redCostX);//??
 
       if ( (*it)->getVarType() == DecompVar_Point) {

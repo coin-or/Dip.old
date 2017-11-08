@@ -501,9 +501,9 @@ MILPBlock_DecompApp::createModelPart(DecompConstraintSet * model,
    //--- set the row upper and lower bounds
    //--- set the col upper and lower bounds
    //---
-   int i, r;
+   int i;
    for(i = 0; i < nRowsPart; i++){
-      r = rowsPart[i];
+      int r = rowsPart[i];
       if(m_appParam.UseNames){
 	 const char * rowName = m_mpsIO.rowName(r);
 	 if(rowName)
@@ -628,7 +628,7 @@ MILPBlock_DecompApp::createModelPartSparse(DecompConstraintSet * model,
    //---
    //--- for each row in rowsPart, create the row using sparse mapping
    //---
-   int                      i, k, r, begInd;
+   int                      i, k, begInd;
    const map<int,int>     & origToSparse   = model->getMapOrigToSparse();   
    const CoinPackedMatrix * M              = m_mpsIO.getMatrixByRow(); 
    const int              * matInd         = M->getIndices();
@@ -646,7 +646,7 @@ MILPBlock_DecompApp::createModelPartSparse(DecompConstraintSet * model,
    begInd = 0;
    rowBeg.push_back(0);
    for(i = 0; i < nRowsPart; i++){
-      r = rowsPart[i];
+      int r = rowsPart[i];
       if(m_appParam.UseNames){
 	 const char * rowName = m_mpsIO.rowName(r);
 	 if(rowName)

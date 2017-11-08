@@ -16,7 +16,6 @@ bool DippyAlgoMixin::chooseBranchSet(DecompAlgo* algo,
                                      std::vector< std::pair<int, double> >& upBranchLB,
                                      std::vector< std::pair<int, double> >& upBranchUB)
 {
-   bool ret_val;
 
    if (!m_utilParam->GetSetting("pyBranchMethod", true)) {
       return algo->DecompAlgo::chooseBranchSet(downBranchLB, downBranchUB, 
@@ -41,7 +40,7 @@ bool DippyAlgoMixin::chooseBranchSet(DecompAlgo* algo,
    // need more error checking/assertion setting here
    if (pResult == Py_None) {
       // if chooseBranchSet returns None, do default branching for this algo
-      ret_val = algo->DecompAlgo::chooseBranchSet(downBranchLB, downBranchUB, upBranchLB, upBranchUB);
+      bool ret_val = algo->DecompAlgo::chooseBranchSet(downBranchLB, downBranchUB, upBranchLB, upBranchUB);
       
       // Original comment: No branching set was returned. This shouldn't happen
       // tkr 11/11/15: Actually, it can happen if the solution is integral, but not feasible.
