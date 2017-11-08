@@ -165,7 +165,7 @@ int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
 int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
                                      vector<int>&          whichKnaps)
 {
-   int          i, j, b, colIndex;
+   int          i, j, colIndex;
    int          status     = GAPStatusOk;
    int          nTasks     = m_instance.getNTasks();    //n
    int          nMachines  = m_instance.getNMachines(); //m
@@ -224,7 +224,7 @@ int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
    vector<int>::iterator it;
 
    for (it = whichKnaps.begin(); it != whichKnaps.end(); ++it) {
-      b = *it;
+      int b = *it;
 
       for (i = 0; i < nMachines; i++)
          for (j = 0; j < nTasks; j++)

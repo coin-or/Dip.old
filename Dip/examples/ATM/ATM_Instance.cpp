@@ -393,12 +393,12 @@ void ATM_Instance::generateRandom(const int nAtms,
    //--- sum{a} f(a,d)           <= B[d], for d
    //--- |{d in D | f(a,d) <= 0} <= K[a], for a
    //---
-   double x01, x1, x2, x3;
+   double x1, x2, x3;
    double * f = new double[nAD];
    assert(f);
    index = 0;
    for(a = 0; a < nAtms; a++){
-      x01 = UtilURand(0.0,1.0);
+      double x01 = UtilURand(0.0,1.0);
       x1  = x01 >= 0.5 ? 1 : 0;
       x01 = UtilURand(0.0,1.0);
       x2  = x01 >= 0.5 ? 1 : 0;

@@ -266,7 +266,7 @@ int KnapsackOptimizeHS(const int      n,
    int i, j, r, k, iter;
    double zhat; // curr solution value = sum{j = 0..n-1} p[j] xhat[j]
    double chat; // curr residual capacity = c - sum{j = 0..n-1} w[j] xhat[j]
-   double wSum, pSum, u;
+   double wSum, pSum;
    int* xhat = NULL;
    *pstatus = OK;
    DEBUG_KNAP(
@@ -396,7 +396,7 @@ int KnapsackOptimizeHS(const int      n,
       assert(r >= 0 && r <= n);
       wSum -= w[r];
       pSum -= p[r];
-      u = pSum + floor((chat - wSum) * p[r] / w[r]);
+      double u = pSum + floor((chat - wSum) * p[r] / w[r]);
       DEBUG_KNAP(printf("\n" "z, %g, zhat: %g, u: %g r: %d ws: %g, ps: %g",
                         *z, zhat, u, r, wSum, pSum);
                 );

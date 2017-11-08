@@ -85,11 +85,11 @@ void DippyDecompApp::createModels()
       // references pRow
    }
 
-   PyObject* pCol, *pColName, *pColLb, *pColUb, *pIsInt;
+   PyObject* pCol, *pColLb, *pColUb, *pIsInt;
 
    for (int j = 0; j < m_numCols; j++) {
       pCol = PyList_GetItem(pColList, j);
-      pColName = PyObject_CallMethod(pCol, "getName", NULL);
+      PyObject* pColName = PyObject_CallMethod(pCol, "getName", NULL);
 
       if (pColName == NULL) {
          throw UtilException("Error calling method col.getName()", 
@@ -362,12 +362,12 @@ DecompSolverStatus DippyDecompApp::solveRelaxed(const int whichBlock,
    // solveRelaxed returns 3-tuples (cost, reduced cost, dictionary of (variable, value) pairs)
    // We can use these to construct a C++ DecompVar objects
    double cost, rc;
-   PyObject* pTuple, *pDict, *pKeys, *pCol;
+   PyObject *pDict, *pKeys, *pCol;
    string name;
    double value;
 
    for (int j = 0; j < nVars; j++) {
-      pTuple = PySequence_GetItem(pVarList, j);
+      PyObject* pTuple = PySequence_GetItem(pVarList, j);
       cost   = PyFloat_AsDouble(PyTuple_GetItem(pTuple, 0));
       rc     = PyFloat_AsDouble(PyTuple_GetItem(pTuple, 1));
 
@@ -459,12 +459,12 @@ int DippyDecompApp::generateCuts(const double* x, DecompCutList& cutList)
    // loop through each cut
    // We can use these to construct a C++ DecompVar objects
    double lb, ub;
-   PyObject* pRow, *pLb, *pUb;
+   PyObject *pLb, *pUb;
    string name;
    double value;
 
    for (int i = 0; i < len; i++) {
-      pRow = PySequence_GetItem(pCutList, i);
+      PyObject* pRow = PySequence_GetItem(pCutList, i);
       pLb = PyObject_CallMethod(pRow, "getLb", NULL);
 
       if (pLb == NULL) {
@@ -569,15 +569,13 @@ int DippyDecompApp::generateInitVars(DecompVarList& initVars)
    int nVars = PyObject_Length(pVarList);
    // generateInitVars returns 2-tuples (index, (cost, dictionary of (variable, value) pairs))
    // We can use these to construct a C++ DecompVar objects
-   double cost;
-   PyObject* pColDict;
 
    for (int i = 0; i < nVars; i++) {
       PyObject* pTuple = PyList_GetItem(pVarList, i);
       int whichBlock = m_relaxIndices[PyTuple_GetItem(pTuple, 0)];
       PyObject* pVarTuple = PyTuple_GetItem(pTuple, 1);
-      cost   = PyFloat_AsDouble(PyTuple_GetItem(pVarTuple, 0));
-      pColDict = PyTuple_GetItem(pVarTuple, 1);
+      double cost   = PyFloat_AsDouble(PyTuple_GetItem(pVarTuple, 0));
+      PyObject* pColDict = PyTuple_GetItem(pVarTuple, 1);
       int*     varInds = NULL;
       double* varVals = NULL;
       DecompVarType varType; 

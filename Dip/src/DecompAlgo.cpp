@@ -893,8 +893,6 @@ void DecompAlgo::createMasterProblem(DecompVarList& initVars)
                           objCoeff,
                           colNames,
                           startRow, endRow, DecompRow_Convex);
-   int colIndex     = 0;
-   int blockIndex   = 0;
    DecompVarList::iterator li;
 
    //TODO:
@@ -906,7 +904,7 @@ void DecompAlgo::createMasterProblem(DecompVarList& initVars)
       //--- appending these variables (lambda) to end of matrix
       //---   after the artificials
       //---
-      colIndex         = masterM->getNumCols();
+      int colIndex         = masterM->getNumCols();
       m_colIndexUnique = colIndex;
       //---
       //--- store the col index for this var in the master LP
@@ -916,7 +914,7 @@ void DecompAlgo::createMasterProblem(DecompVarList& initVars)
       //---
       //--- we expect the user to define the block id in the var object
       //---
-      blockIndex = (*li)->getBlockId();
+      int blockIndex = (*li)->getBlockId();
       //---
       //--- give the column a name
       //---
@@ -1852,7 +1850,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
          break;
       }
 
-      bool          isGapTight = false;
+      //bool          isGapTight = false;
       DecompVarList newVars;
       DecompCutList newCuts;
 
@@ -1914,7 +1912,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
          if (m_isColGenExact           &&
                m_rrIterSinceAll == 0     &&
                m_status == STAT_FEASIBLE) {
-            isGapTight = updateObjBound(mostNegRC);
+            bool isGapTight = updateObjBound(mostNegRC);
          }
 
          if (m_nodeStats.varsThisCall > 0) {
@@ -2223,7 +2221,6 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
             //---   if not, make sure the columns just added cannot be
             //---   deleted
             //---
-            int i;
             UTIL_DEBUG(m_param.LogDebugLevel, 3,
                        (*m_osLog)
                        << "m_masterObjLast = " << setw(10)
@@ -2246,7 +2243,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
                if (m_nodeStats.varsThisCall > 0) {
                   int sz = static_cast<int>(m_masterColType.size());
 
-                  for (i  = sz - 1;
+                  for (int i  = sz - 1;
                         i >= sz - m_nodeStats.varsThisCall; i--) {
                      UTIL_DEBUG(m_param.LogDebugLevel, 3,
                                 (*m_osLog) << "Col " << i << " has type "
@@ -3108,7 +3105,7 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
       const int n = m_masterSI->getNumCols();
       const double* rowRhs    = m_masterSI->getRightHandSide();
       const char*    rowSense  = m_masterSI->getRowSense();
-      int i, r, b, c;
+      int r, b, c;
       vector<double*> rays;
       UtilPrintFuncBegin(m_osLog, m_classTag,
 			 "getDualRays()", m_param.LogDebugLevel, 2);
@@ -3132,7 +3129,7 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
       m_masterSI->getBasics(basics);
       
       for (r = 0; r < m; r++) {
-	 i = basics[r];
+	 int i = basics[r];
 	 
 	 if (i < n) {
 	    tabRhs[r] = primSolution[i]; //should == B-1b
@@ -3323,7 +3320,7 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
       const int                m         = rowMatrix->getNumRows();
       double yb = 0.0;
       
-      for (i = 0; i < m; i++) {
+      for (int i = 0; i < m; i++) {
 	 yb += rayT[i] * rowRhs[i]; //safe to use rowRhs? or flips in tab going on
       }
       
@@ -3384,7 +3381,6 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
 int DecompAlgo::generateInitVars(DecompVarList& initVars)
 {
    int          c, attempts;
-   double       aveC;
    DecompConstraintSet* modelCore = m_modelCore.getModel();
    // the LimitInitVars could be related to the number of constraints in the model
    // sometimes the default value is too small
@@ -3441,7 +3437,7 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
       //---
       double* costeps = new double[nCoreCols];
       assert(objCoeff);
-      aveC = UtilAve(objCoeff, nCoreCols);
+      double aveC = UtilAve(objCoeff, nCoreCols);
       attempts = 0;
       DecompSolverResult subprobResult(m_infinity);//nCoreCols);
 
@@ -3584,12 +3580,11 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
       DecompSolution* bestSol = NULL;
       vector<DecompSolution*>::iterator it;
       //there will be just one, i think, just need to copy it over here
-      double thisBound;
       double bestBoundUB = m_nodeStats.objBest.second;
 
       for (it  = cpm.m_xhatIPFeas.begin();
             it != cpm.m_xhatIPFeas.end(); ++it) {
-         thisBound = (*it)->getQuality();
+         double thisBound = (*it)->getQuality();
          printf("From init vars, IP Feasible with Quality = %g\n", thisBound);
 
          if ((*it)->getQuality() <= bestBoundUB) {
@@ -5898,9 +5893,8 @@ void DecompAlgo::addCutsToPool(const double*    x,
    DecompConstraintSet*           modelCore   = m_modelCore.getModel();
    int  r, cutIndex = 0;
    bool isViolated = false;
-   bool isDupCore;//also check relax?
+   //also check relax?
    bool isDupPool;
-   bool addCut;
    DecompCutPool::iterator ci;
    DecompCutList::iterator li = newCuts.begin();
 
@@ -5930,8 +5924,8 @@ void DecompAlgo::addCutsToPool(const double*    x,
 
 #endif
       //here we will use a hash table - or just STL map
-      addCut    = true;
-      isDupCore = false;
+      bool addCut    = true;
+      bool isDupCore = false;
 
       for (r = 0; r < modelCore->getNumRows(); r++) {
          //override isSame( )

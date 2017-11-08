@@ -47,10 +47,6 @@ int main(int argc, char ** argv){
       string Instance = utilParam.GetSetting("Instance", ".", "MAD");
 
       AlpsTimer timer;
-      double    timeSetupReal = 0.0;
-      double    timeSetupCpu  = 0.0;
-      double    timeSolveReal = 0.0;
-      double    timeSolveCpu  = 0.0;
 
       timer.start();
 
@@ -113,14 +109,14 @@ int main(int argc, char ** argv){
          if(rc) 
             alpsModel.addDecompAlgo(rc);
          timer.stop();
-         timeSetupCpu  = timer.getCpuTime();
-         timeSetupReal = timer.getWallClock();
+         double timeSetupCpu  = timer.getCpuTime();
+         double timeSetupReal = timer.getWallClock();
       
          timer.start();
          alpsModel.solve();
          timer.stop();
-         timeSolveCpu  = timer.getCpuTime();
-         timeSolveReal = timer.getWallClock();
+         double timeSolveCpu  = timer.getCpuTime();
+         double timeSolveReal = timer.getWallClock();
       
          //---
          //--- sanity check

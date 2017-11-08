@@ -874,11 +874,10 @@ DecompStatus MAD_DecompApp::APPsolveRelaxed(const int             whichModel,
    //---
    //--- add a constant so that all vertex weights are positive, inc alpha
    //---
-   double offset = 0.0;
    double minrc  = *min_element(redCostXNegOffset,
 				redCostXNegOffset + n_origCols);
    if(minrc <= 0){
-      offset = -minrc + 1;
+      double offset = -minrc + 1;
       UtilAddOffsetArr(n_origCols, offset, redCostXNegOffset);
    }
 
@@ -1360,9 +1359,8 @@ void MAD_DecompApp::printOriginalColumn(const int   index,
 void MAD_DecompApp::printOriginalSolution(const int      n_cols, 
                                           const double * solution, 
                                           ostream      * os) const{
-   int          i, j, b;
+   int          j, b;
    int          border_size;
-   double       xj;
 
    DecompApp::printOriginalSolution(n_cols, solution, os);
 
@@ -1372,8 +1370,8 @@ void MAD_DecompApp::printOriginalSolution(const int      n_cols,
       vector<bool> border(m_nOrigRows, true);      
       for(b = 0; b < m_beta; b++){
 	 (*os) << "\nBLOCK " << b << ":\t";
-	 for(i = 0; i < m_nOrigRows; i++){        
-	    xj   = solution[xIndex(i,b)];
+	 for(int i = 0; i < m_nOrigRows; i++){        
+	    double xj   = solution[xIndex(i,b)];
 	    CoinAssertDebug(UtilIsIntegral(xj));
 	    CoinAssertDebug(xj <  (1.0 + DecompEpsilon));
 	    CoinAssertDebug(xj >  (    - DecompEpsilon));
@@ -1385,7 +1383,7 @@ void MAD_DecompApp::printOriginalSolution(const int      n_cols,
       }    	
       border_size = count(border.begin(), border.end(), true);
       (*os) << "\nBORDER :\t";
-      for(i = 0; i < m_nOrigRows; i++){
+      for(int i = 0; i < m_nOrigRows; i++){
 	 if(!border[i])
 	    continue;
 	 (*os) << i << " ";
@@ -1396,8 +1394,8 @@ void MAD_DecompApp::printOriginalSolution(const int      n_cols,
       const CoinPackedMatrix * M = m_instance.getMatrixByRow();
       for(b = 0; b < m_beta; b++){
 	 (*os) << "\nBLOCK " << b << "\n";
-	 for(i = 0; i < m_nOrigRows; i++){        
-	    xj   = solution[xIndex(i,b)];
+	 for(int i = 0; i < m_nOrigRows; i++){        
+	    double xj   = solution[xIndex(i,b)];
             if(xj > 0.5){
                CoinShallowPackedVector row = M->getVector(i);
                const int   rowLen  = row.getNumElements();
@@ -1411,7 +1409,7 @@ void MAD_DecompApp::printOriginalSolution(const int      n_cols,
          }
       }
       (*os) << "\nBORDER\n";
-      for(i = 0; i < m_nOrigRows; i++){
+      for(int i = 0; i < m_nOrigRows; i++){
 	 if(!border[i])
 	    continue;
 	 CoinShallowPackedVector row = M->getVector(i);
@@ -1426,8 +1424,8 @@ void MAD_DecompApp::printOriginalSolution(const int      n_cols,
 
       for(b = 0; b < m_beta; b++){
 	 (*os) << "\nBLOCK " << b << "\n";
-	 for(i = 0; i < m_nOrigRows; i++){        
-	    xj   = solution[xIndex(i,b)];
+	 for(int i = 0; i < m_nOrigRows; i++){        
+	    double  xj   = solution[xIndex(i,b)];
             if(xj > 0.5){
                CoinShallowPackedVector row = M->getVector(i);
                const int   rowLen  = row.getNumElements();
@@ -1437,7 +1435,7 @@ void MAD_DecompApp::printOriginalSolution(const int      n_cols,
          }
       }
       (*os) << "\nBORDER\n";
-      for(i = 0; i < m_nOrigRows; i++){
+      for(int i = 0; i < m_nOrigRows; i++){
 	 if(!border[i])
 	    continue;
 	 CoinShallowPackedVector row = M->getVector(i);

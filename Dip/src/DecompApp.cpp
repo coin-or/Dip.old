@@ -664,7 +664,7 @@ void DecompApp::readInitSolutionFile(DecompVarList& initVars)
    //---
    //--- create variables for each block of each solution
    //---
-   int    solutionIndex, colIndex, blockIndex;
+   int    solutionIndex, blockIndex;
    string colName;
    double colValue;
    char   line[1000];
@@ -685,7 +685,7 @@ void DecompApp::readInitSolutionFile(DecompVarList& initVars)
          break;
       }
 
-      colIndex        = colNameToIndex[colName];
+      int colIndex        = colNameToIndex[colName];
       blockIndex      = colIndexToBlockIndex[colIndex];
       /*
       const double* colLB = m_modelC->getColLB();
@@ -770,12 +770,12 @@ void DecompApp::findActiveColumns(const vector<int>& rowsPart,
    //---
    //--- which columns are present in this part's rows
    //---
-   int k, r;
+   int k;
 
    vector<int>::const_iterator it;
 
    for (it = rowsPart.begin(); it != rowsPart.end(); ++it) {
-      r    = *it;
+      int r    = *it;
       indR = ind + beg[r];
 
       for (k = 0; k < len[r]; k++) {
@@ -829,10 +829,10 @@ void DecompApp::createModelPart(DecompConstraintSet* model,
    //--- set the row upper and lower bounds
    //--- set the col upper and lower bounds
    //---
-   int i, r;
+   int i;
 
    for (i = 0; i < nRowsPart; i++) {
-      r = rowsPart[i];
+      int r = rowsPart[i];
 
       if (m_param.UseNames) {
          const char* rowName = NULL;

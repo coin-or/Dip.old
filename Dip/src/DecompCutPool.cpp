@@ -136,7 +136,6 @@ DecompCutPool::createRowReform(const int                n_coreCols,
    //--- So,   lam[1]'s coeff   = a[1] s1[1] + a[2] s1[2]
    //---       lam[2]'s coeff   = a[1] s2[1] + a[2] s2[2]
    //---
-   double             coeff;
    int                colIndex;
    CoinPackedVector* rowReform = new CoinPackedVector();
    //---
@@ -153,7 +152,7 @@ DecompCutPool::createRowReform(const int                n_coreCols,
       //UtilPrintPackedVector((*vli)->m_s, &cout,
       //		   noNames,
       //		   rowDense);
-      coeff = (*vli)->m_s.dotProduct(rowDense);
+      double coeff = (*vli)->m_s.dotProduct(rowDense);
 
       //printf("COEFF using dotProduct = %12.10f\n", coeff);
       if (fabs(coeff) > DecompZero) {
