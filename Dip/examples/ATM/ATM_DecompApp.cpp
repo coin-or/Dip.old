@@ -231,12 +231,11 @@ void ATM_DecompApp::createModelColumns(DecompConstraintSet * model,
    }
 
    if(dateIndex >= 0){
-      int d;
       int index_fp = getColOffset_fm();
       int index_fm = getColOffset_fm();            
       int index_v  = getColOffset_v();
       for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
-	 d = m_instance.getIndexADInv(*vi).second; 
+	 int d = m_instance.getIndexADInv(*vi).second; 
 	 if(d != dateIndex){
             model->colUB[index_fp] = 0.0;
             model->colUB[index_fm] = 0.0;            
@@ -897,7 +896,7 @@ DecompConstraintSet * ATM_DecompApp::createModelRelaxCount(){
 		      "createModelRelaxCount()", m_appParam.LogLevel, 2);
    
    int                a, d, t, nRows, pairIndex, nRowsMax;
-   double             rhs, coefA, coefC;
+   double             coefA, coefC;
    pair<int,int>      adP;
    vector<int>::const_iterator vi;
    
@@ -1011,7 +1010,7 @@ DecompConstraintSet * ATM_DecompApp::createModelRelaxCount(){
       row.insert(colIndex_x2(a), -b_ad[*vi]);
       row.insert(colIndex_x3(a), -d_ad[*vi]);
       
-      rhs = e_ad[*vi];
+      double rhs = e_ad[*vi];
       model->appendRow(row, rhs, rhs, rowName);
       nRows++;
 
@@ -1354,7 +1353,7 @@ bool ATM_DecompApp::APPisUserFeasible(const double * x,
    
 
    double lhs, rhs, coeff;
-   int    a, d, t;
+   int    a, t;
    int    pairIndex = 0;
    bool   isFeas    = true;
 
@@ -1464,7 +1463,7 @@ bool ATM_DecompApp::APPisUserFeasible(const double * x,
    for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
       adP  = m_instance.getIndexADInv(*vi);
       a    = adP.first;
-      d    = adP.second;
+      int d    = adP.second;
       count[a] += x[getColOffset_v() + pairIndex];
       pairIndex++;
    }

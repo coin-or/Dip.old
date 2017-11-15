@@ -1223,7 +1223,6 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
    bool isDupCore;//also check relax?
    bool isDupPool;
    bool isViolated; //TODO: do something similiar to check for pos-rc vars
-   bool addCut;
    DecompConstraintSet*           modelCore   = m_modelCore.getModel();
    DecompCutPool::iterator ci;
    DecompCutList::iterator li = newCuts.begin();
@@ -1251,7 +1250,7 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
       //--- check the the cut is already in the model core
       //---   NOTE: if so this is an error (always?)
       //---
-      addCut    = true;
+      bool addCut    = true;
       isDupCore = false;
 
       for (r = 0; r < modelCore->getNumRows(); r++) {
@@ -1370,10 +1369,9 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
          = m_cutpool.createRowReform(modelCore->getNumCols(),
                                      row,
                                      m_vars);
-	 int tempIndex(0); 
 	 map<int, int >:: iterator mit;
 	 for (int i = 0; i < row->getNumElements(); i++){
-	   tempIndex = row->getIndices()[i];
+	   int tempIndex = row->getIndices()[i];
 	   mit =  m_masterOnlyColsMap.find(tempIndex);
 	   if (mit != m_masterOnlyColsMap.end()){
 	     rowReform->insert(mit->second, row->getElements()[i]);
