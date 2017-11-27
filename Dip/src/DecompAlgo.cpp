@@ -2793,6 +2793,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 {
 #ifdef DIP_HAS_CPX
    bool useMultiRay = true;
+   vector<double*> rays;
    if (useMultiRay){ 
       OsiCpxSolverInterface* siCpx
 	 = dynamic_cast<OsiCpxSolverInterface*>(m_masterSI);
@@ -2801,7 +2802,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
       const double* rowRhs    = m_masterSI->getRightHandSide();
       const char*    rowSense  = m_masterSI->getRowSense();
       int r, b, c;
-      vector<double*> rays;
+   
       //Ax + Is = b
       // ax     <= b
       // ax + s  = b, s >= 0
@@ -2812,7 +2813,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 		 for (r = 0; r < m; r++) {
 		    (*m_osLog) << "Row r: " << r << " sense: " << rowSense[r]
 			       << " rhs: " << rowRhs[r] << endl;
-		 }
+		    }
 		 );
       m_masterSI->enableSimplexInterface(false);
       double* tabRhs   = new double[m];
@@ -2950,10 +2951,11 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 			  );
 	       double* dualRay  = new double[m];
 	       m_masterSI->getBInvRow(r, dualRay);
-	       transform(dualRay, dualRay + m, dualRay, negate<double>());
+	       std::transform(dualRay, dualRay + m, dualRay, negate<double>());
 	       rays.push_back(dualRay);
 	    }
-	 } else {
+	 
+    }else {
 	    bool allpos = true;
 	    m_masterSI->getBInvARow(r, bInvARow);
 	    UTIL_DEBUG(m_param.LogDebugLevel, 6,
@@ -2981,7 +2983,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 	       rays.push_back(dualRay);
 	    }
 	 }
-      }
+    
       
       UTIL_DELARR(tabRhs);
       UTIL_DELARR(basics);
@@ -3006,7 +3008,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 	 }
 	 
 	 rays.push_back(dualRay);
-      }
+    }
       
       //NOTE: you will have dup rays here - need to filter out...
       printf("rays.size = %d", static_cast<int>(rays.size()));
