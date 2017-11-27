@@ -3058,7 +3058,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
       cout << "After dual farkas proof_p = " << proof_p << "\n";
       //We have to flip because in this context we want to max B-1Ax, x in P'
       double* pneg = new double[m];
-      transform(ray, ray + m, pneg, negate<double>());
+      std::transform(ray, ray + m, pneg, negate<double>());
       rays.push_back(pneg);
 #if 1
       UTIL_DEBUG(m_app->m_param.LogDebugLevel, 5,
