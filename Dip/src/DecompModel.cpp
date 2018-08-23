@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, and Ted Ralphs//
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, and Ted Ralphs//
 // All Rights Reserved.                                                      //
 //                                                                           //
 // Interface to Gurobi is Copyright 2015 Jazz Aviation LP                    //
@@ -19,8 +19,8 @@
 #include "DecompSolverResult.h"
 //===========================================================================//
 using namespace std;
-
 //===========================================================================//
+
 bool DecompSubModel::isPointFeasible(const double* x,
                                       const bool     isXSparse,
                                       const int      logLevel,
@@ -74,7 +74,7 @@ bool DecompSubModel::isPointFeasible(const double* x,
    const map<int, int>& origToSparse   = model->getMapOrigToSparse();
    const map<int, int>& sparseToOrig   = model->getMapSparseToOrig();
 
-   for (it = activeColumns.begin(); it != activeColumns.end(); it++) {
+   for (it = activeColumns.begin(); it != activeColumns.end(); ++it) {
       if (isSparse) {
          mcit = origToSparse.find(*it);
          c    = mcit->second;
@@ -281,9 +281,14 @@ void DecompSubModel::solveAsMIPSym(DecompSolverResult*  result,
    if (param.WarmStart) {
       sym_set_int_param(env, "do_reduced_cost_fixing", 0);
 
+      sym_set_dbl_param(env, "warm_start_node_ratio", param.WarmStartNodeRatio);
+      sym_set_int_param(env, "warm_start_node_limit", param.WarmStartNodeLimit);
+      sym_set_dbl_param(env, "warm_start_node_level_ratio",
+                        param.WarmStartNodeLevelRatio);
+      sym_set_int_param(env, "warm_start_node_level", param.WarmStartNodeLevel);
       osiSym->setSymParam(OsiSymKeepWarmStart, true);
       //whether to trim the warm start tree before re-solving.
-      osiSym->setSymParam(OsiSymTrimWarmTree, true);
+      osiSym->setSymParam(OsiSymTrimWarmTree, false);
 
       //This call automatically detects whether to warm start or not
       osiSym->resolve();
@@ -335,7 +340,7 @@ void DecompSubModel::solveAsMIPSym(DecompSolverResult*  result,
       double* opt_solution = new double[numCols];
       int nSols = 0;
 
-      status = sym_get_sp_size(env, &nSols);
+      int status1 = sym_get_sp_size(env, &nSols);
 
       result->m_nSolutions = 1;
       status = sym_get_col_solution(env, opt_solution);
@@ -430,18 +435,19 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    string cbcSLogSet   = "2";
 
    if (doExact) {
-      cbcTimeSet = UtilDblToStr(min(param.SubProbTimeLimitExact, 
-				    param.TimeLimit), -1, 
-				COIN_DBL_MAX);
+      cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitExact, 
+				      -1, COIN_DBL_MAX);
       cbcGapSet  = UtilDblToStr(param.SubProbGapLimitExact, -1, 
 				COIN_DBL_MAX);
    } else {
-      cbcTimeSet = UtilDblToStr(min(param.SubProbTimeLimitInexact, 
-				    param.TimeLimit), -1, 
+      cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitInexact, 
+				     -1, COIN_DBL_MAX);
+
+      cbcTimeSet = UtilDblToStr(param.SubProbTimeLimitExact, -1, 
 				COIN_DBL_MAX);
-      cbcGapSet  = UtilDblToStr(param.SubProbGapLimitInexact, -1, 
+      cbcGapSet  = UtilDblToStr(param.SubProbGapLimitExact, -1, 
 				COIN_DBL_MAX);
-   }
+   } 
 
    bool   doTime       = false;
    double cbcMaxSecUB  = 1e100;
@@ -539,7 +545,7 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    result->m_nSolutions = 0;
    result->m_isOptimal  = false;
    result->m_isCutoff   = false;
-
+   result->m_isUnbounded = false; 
    if (cbc.isContinuousUnbounded()) {
       OsiClpSolverInterface* m_relax = dynamic_cast<OsiClpSolverInterface*>(m_osi);
       m_relax->initialSolve();
@@ -566,7 +572,7 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
          //---
          //--- else it must have stopped on gap
          //---
-         result->m_nSolutions = 1;
+         result->m_nSolutions = cbc.numberSavedSolutions();
          result->m_isCutoff   = doCutoff;
          result->m_isOptimal  = false;
       }
@@ -576,23 +582,24 @@ void DecompSubModel::solveAsMIPCbc(DecompSolverResult*  result,
    //--- get copy of solution(s)
    //---
    result->m_objLB = cbc.getBestPossibleObjValue();
-   int nSols = std::min<int>(result->m_nSolutions,
-			     param.SubProbNumSolLimit);
+
+   int nSols = result->m_nSolutions;
+
    for(int i = 0; i < nSols; i++){
       //result->m_objUB = cbc.getObjValue();
       const double* solDbl = cbc.savedSolution(i);
       vector<double> solVec(solDbl, solDbl + numCols);
       result->m_solution.push_back(solVec);
+      result->m_nSolutions = cbc.numberSavedSolutions(); 
       /*
       for(unsigned i=0; i < solVec.size(); i++){
       	std::cout << "index " << i <<"  "<< solVec[i] << std::endl;
       }
       */
       //memcpy(result->m_solution,
-      //  cbc.getColSolution(), numCols * sizeof(double));
-      assert(result->m_nSolutions ==
-             static_cast<int>(result->m_solution.size()));
+      //  cbc.getColSolution(), numCols * sizeof(double));      
    }
+   
 #else
       throw UtilException("Cbc selected as solver, but it's not available",
 			  "solveAsMIPCbc", "DecompSubModel");
@@ -609,10 +616,7 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
 				   double               timeLimit)
 {
 #ifdef COIN_HAS_CPX
-   const int numCols    = m_osi->getNumCols();
    const int logIpLevel = param.LogIpLevel;
-   double* solution = new double[numCols];
-   assert(solution);
    //---
    //--- get OsiCpx object from Osi object
    //--- get CPEXENVptr for use with internal methods
@@ -739,6 +743,9 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
    //---
    //--- solve the MILP
    //---
+
+   const int numCols = m_osi->getNumCols();
+   double* solution = new double[numCols];
    osiCpx->branchAndBound();
    //---
    //--- get solver status
@@ -805,6 +812,7 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
       osiCpx->switchToMIP();
 
       if (status) {
+		  delete solution; 
          throw UtilException("CPXgetray failure",
                              "solveAsMIPCpx", "DecompSubModel");
       }
@@ -887,10 +895,21 @@ void DecompSubModel::solveAsMIPCpx(DecompSolverResult*  result,
    //printf("solStatus = %d\n", result->m_solStatus);
 
    if (result->m_solStatus == CPXMIP_OPTIMAL ||
-         result->m_solStatus == CPX_STAT_OPTIMAL ||
-         result->m_solStatus == CPXMIP_OPTIMAL_TOL) {
+         result->m_solStatus == CPX_STAT_OPTIMAL) {
       result->m_isOptimal  = true;
-   } else if (result->m_solStatus == CPXMIP_UNBOUNDED ||
+   } 
+   // If solver stops at the predefined optimality gap,
+   // we cannot claim the result is optimal so that
+   // later m_isColGenExact is false and the lower bound
+   // calculation is different from the case when m_isColGenExact
+   // is true
+   else if (result->m_solStatus == CPXMIP_OPTIMAL_TOL)
+   {
+ 	    result->m_isOptimal = false;
+  	    result->m_isUnbounded = false;
+   } 
+   
+   else if (result->m_solStatus == CPXMIP_UNBOUNDED ||
               result->m_solStatus == CPX_STAT_UNBOUNDED) {
       //      std::cout << "We are generating extreme rays " << std::endl;
       result->m_isUnbounded = true;
@@ -956,7 +975,7 @@ void DecompSubModel::solveAsMIPGrb(DecompSolverResult*  result,
    map<std::string, std::string>::const_iterator it;
    std::istringstream iss;
 
-   for (it = paramMap.begin(); it != paramMap.end(); it++){
+   for (it = paramMap.begin(); it != paramMap.end(); ++it){
       std::vector<std::string> elems;
       m_utilParam->split(it->first, elems);
       if (elems[0] == "gurobi"){

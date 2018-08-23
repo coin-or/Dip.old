@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -49,10 +49,9 @@ int UtilScaleDblToIntArr(const int      arrLen,
    //--- the rhs of row). If oneInt == NULL, then this part is skipped.
    //---
    int      i, scaleFactor = 1, n_aFrac = 0, factorTooBig = 0;
-   double* arrFrac = NULL;
    double   fractionalPart;
    double   oneOverEps = 1.0 / epstol;
-   arrFrac = new double[arrLen + 1];
+   double*  arrFrac = new double[arrLen + 1];
    assert(arrFrac);
 
    for (i = 0; i < arrLen; i++) {
@@ -126,11 +125,10 @@ int UtilScaleDblToIntArr(const int      arrLen,
    //--- the rhs of row). If oneInt == NULL, then this part is skipped.
    //---
    int      i, scaleFactor = 1, n_aFrac = 0, factorTooBig = 0;
-   double* arrFrac = NULL;
    double   fractionalPart;
    double   oneOverEps = 1.0 / epstol;
    //TODO: pass in arrFrac?
-   arrFrac = new double[arrLen];
+   double* arrFrac = new double[arrLen];
    assert(arrFrac);
 
    for (i = 0; i < arrLen; i++) {
@@ -181,6 +179,110 @@ int UtilScaleDblToIntArr(const int      arrLen,
    UTIL_DELARR(arrFrac);
    return scaleFactor;
 }
+
+//#define NOMINMAX
+#if defined(_WIN32)
+#include <windows.h>
+#include <psapi.h>
+#include <cstdio>
+#elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
+#include <unistd.h>
+#include <sys/resource.h>
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <mach/mach.h>
+#elif (defined(_AIX) || defined(__TOS__AIX__)) || (defined(__sun__) || defined(__sun) || defined(sun) && (defined(__SVR4) || defined(__svr4__)))
+#include <fcntl.h>
+#include <procfs.h>
+#elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
+#include <cstdio>
+#endif
+#else
+#error "Cannot define getPeakRSS( ) or getCurrentRSS( ) for an unknown OS."
+#endif
+
+#include <iostream>
+#include <iomanip>
+
+size_t OptMemUsage::getPeakRSS()
+{
+#if defined(_WIN32)
+   /* Windows -------------------------------------------------- */
+   PROCESS_MEMORY_COUNTERS info;
+   GetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info));
+   return (size_t)info.PeakWorkingSetSize;
+
+#elif (defined(_AIX) || defined(__TOS__AIX__)) || (defined(__sun__) || defined(__sun) || defined(sun) && (defined(__SVR4) || defined(__svr4__)))
+   /* AIX and Solaris ------------------------------------------ */
+   struct psinfo psinfo;
+   int fd = -1;
+   if ((fd = open("/proc/self/psinfo", O_RDONLY)) == -1)
+      return (size_t)0L;      /* Can't open? */
+   if (read(fd, &psinfo, sizeof(psinfo)) != sizeof(psinfo))
+   {
+      close(fd);
+      return (size_t)0L;      /* Can't read? */
+   }
+   close(fd);
+   return (size_t)(psinfo.pr_rssize * 1024L);
+
+#elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
+   /* BSD, Linux, and OSX -------------------------------------- */
+   struct rusage rusage;
+   getrusage(RUSAGE_SELF, &rusage);
+#if defined(__APPLE__) && defined(__MACH__)
+   return (size_t)rusage.ru_maxrss;
+#else
+   return (size_t)(rusage.ru_maxrss * 1024L);
+#endif
+
+#else
+   /* Unknown OS ----------------------------------------------- */
+   return (size_t)0L;         /* Unsupported. */
+#endif
+}
+
+size_t OptMemUsage::getCurrentRSS()
+{
+#if defined(_WIN32)
+   /* Windows -------------------------------------------------- */
+   PROCESS_MEMORY_COUNTERS info;
+   GetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info));
+   return (size_t)info.WorkingSetSize;
+
+#elif defined(__APPLE__) && defined(__MACH__)
+   /* OSX ------------------------------------------------------ */
+   struct mach_task_basic_info info;
+   mach_msg_type_number_t infoCount = MACH_TASK_BASIC_INFO_COUNT;
+   if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO,
+      (task_info_t)&info, &infoCount) != KERN_SUCCESS)
+      return (size_t)0L;      /* Can't access? */
+   return (size_t)info.resident_size;
+
+#elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
+   /* Linux ---------------------------------------------------- */
+   long rss = 0L;
+   FILE* fp = NULL;
+   if ((fp = fopen("/proc/self/statm", "r")) == NULL)
+      return (size_t)0L;      /* Can't open? */
+   if (fscanf(fp, "%*s%ld", &rss) != 1)
+   {
+      fclose(fp);
+      return (size_t)0L;      /* Can't read? */
+   }
+   fclose(fp);
+   return (size_t)rss * (size_t)sysconf(_SC_PAGESIZE);
+
+#else
+   /* AIX, BSD, Solaris, and Unknown OS ------------------------ */
+   return (size_t)0L;         /* Unsupported. */
+#endif
+}
+
+
+
+  
+
 
 #if 0
 /*==========================================================================*/

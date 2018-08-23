@@ -344,7 +344,6 @@ DecompSolverStatus VRP_DecompApp::solveRelaxed(const int          whichBlock,
    
    int            i, status   = 0;
    double         coeff;
-   int            index;
    vector<int>    vrpRouteInd;
    vector<double> vrpRouteEls;
    
@@ -367,7 +366,7 @@ DecompSolverStatus VRP_DecompApp::solveRelaxed(const int          whichBlock,
       double varOrigCost = 0.0;
       for(i = 0; i < static_cast<int>(vrpRouteInd.size()); i++){
          coeff        = vrpRouteEls[i];
-         index        = vrpRouteInd[i];
+         int index        = vrpRouteInd[i];
          varRedCost  += coeff * redCostX[index];
          varOrigCost += coeff * m_objective[index];
       }

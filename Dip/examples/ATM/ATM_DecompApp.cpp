@@ -50,7 +50,7 @@ void ATM_DecompApp::initializeApp() {
 
 //===========================================================================//
 void ATM_DecompApp::addColumnNamesA(DecompConstraintSet * model,
-				    const string          prefix,
+				    const string     &     prefix,
 				    const int             offset){
    
    int       a, colIndex;
@@ -68,7 +68,7 @@ void ATM_DecompApp::addColumnNamesA(DecompConstraintSet * model,
 
 //===========================================================================//
 void ATM_DecompApp::addColumnNamesAT(DecompConstraintSet * model,
-				     const string          prefix,
+				     const string    &     prefix,
 				     const int             offset){
    
    int       a, t, colIndex;
@@ -111,7 +111,7 @@ void ATM_DecompApp::addColumnNamesAD(DecompConstraintSet * model,
    vector<int>::const_iterator   vi;
    const vector<int>           & pairsAD = m_instance.getPairsAD();
    colIndex = offset;
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       adP = m_instance.getIndexADInv(*vi);
       a   = adP.first;
       d   = adP.second;            
@@ -166,7 +166,7 @@ void ATM_DecompApp::createModelColumns(DecompConstraintSet * model,
 
    int index;
    index = getColOffset_fm();
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       model->colUB[index] = w_ad[*vi];
       index++;
    }
@@ -212,7 +212,7 @@ void ATM_DecompApp::createModelColumns(DecompConstraintSet * model,
       int index_fp = getColOffset_fp();
       int index_fm = getColOffset_fm();      
       int index_v  = getColOffset_v();
-      for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+      for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
 	 a = m_instance.getIndexADInv(*vi).first; 
 	 if(a != atmIndex){
             model->colUB[index_fp] = 0.0;
@@ -231,12 +231,11 @@ void ATM_DecompApp::createModelColumns(DecompConstraintSet * model,
    }
 
    if(dateIndex >= 0){
-      int d;
       int index_fp = getColOffset_fm();
       int index_fm = getColOffset_fm();            
       int index_v  = getColOffset_v();
-      for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
-	 d = m_instance.getIndexADInv(*vi).second; 
+      for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
+	 int d = m_instance.getIndexADInv(*vi).second; 
 	 if(d != dateIndex){
             model->colUB[index_fp] = 0.0;
             model->colUB[index_fm] = 0.0;            
@@ -399,7 +398,7 @@ int ATM_DecompApp::createConCount(DecompConstraintSet * model,
    const double      * K_a       = m_instance.get_K_a();
    vector<int>::const_iterator vi;
    //TODO: this can be faster by storing the incident d's for each a
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       adP = m_instance.getIndexADInv(*vi);
       if(atmIndex != adP.first){
 	 pairIndex++;
@@ -447,7 +446,7 @@ DecompConstraintSet * ATM_DecompApp::createModelCore1(bool includeCount){
    //---
    CoinPackedVector * rowsD = new CoinPackedVector[nDates];   
    pairIndex = 0;
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       adP = m_instance.getIndexADInv(*vi);
       a   = adP.first;
       d   = adP.second;
@@ -666,7 +665,7 @@ ATM_DecompApp::createModelRelax1(const int a,
    //---
    nRows     = 0;
    pairIndex = 0;
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       adP = m_instance.getIndexADInv(*vi);
       if(a != adP.first){
 	 pairIndex++;
@@ -805,7 +804,7 @@ DecompConstraintSet * ATM_DecompApp::createModelRelax2(const int d){
    CoinPackedVector rowBudget;
    nRows     = 0;
    pairIndex = 0;
-   for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
+   for(vi = pairsAD.begin(); vi != pairsAD.end(); ++vi){
       adP = m_instance.getIndexADInv(*vi);
       if(d != adP.second){
 	 pairIndex++;
@@ -897,7 +896,7 @@ DecompConstraintSet * ATM_DecompApp::createModelRelaxCount(){
 		      "createModelRelaxCount()", m_appParam.LogLevel, 2);
    
    int                a, d, t, nRows, pairIndex, nRowsMax;
-   double             rhs, coefA, coefC;
+   double             coefA, coefC;
    pair<int,int>      adP;
    vector<int>::const_iterator vi;
    
@@ -1011,7 +1010,7 @@ DecompConstraintSet * ATM_DecompApp::createModelRelaxCount(){
       row.insert(colIndex_x2(a), -b_ad[*vi]);
       row.insert(colIndex_x3(a), -d_ad[*vi]);
       
-      rhs = e_ad[*vi];
+      double rhs = e_ad[*vi];
       model->appendRow(row, rhs, rhs, rowName);
       nRows++;
 
@@ -1354,7 +1353,7 @@ bool ATM_DecompApp::APPisUserFeasible(const double * x,
    
 
    double lhs, rhs, coeff;
-   int    a, d, t;
+   int    a, t;
    int    pairIndex = 0;
    bool   isFeas    = true;
 
@@ -1464,7 +1463,7 @@ bool ATM_DecompApp::APPisUserFeasible(const double * x,
    for(vi = pairsAD.begin(); vi != pairsAD.end(); vi++){
       adP  = m_instance.getIndexADInv(*vi);
       a    = adP.first;
-      d    = adP.second;
+      int d    = adP.second;
       count[a] += x[getColOffset_v() + pairIndex];
       pairIndex++;
    }

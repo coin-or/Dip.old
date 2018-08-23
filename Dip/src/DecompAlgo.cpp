@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, and Ted Ralphs//
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, and Ted Ralphs//
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -41,23 +41,6 @@
 using namespace std;
 
 //===========================================================================//
-
-struct SolveRelaxedThreadArgs {
-   DecompAlgo*                algo;
-   vector<DecompSubModel*>*   subModel;
-   int                        nBaseCoreRows;
-   double*                    u;
-   double*                    redCostX;
-   const double*              origCost;
-   int                        n_origCols;
-   bool                       checkDup;
-   bool                       doExact;
-   bool                       doCutoff;
-   DecompVarList*             vars;
-};
-
-
-//===========================================================================//
 void DecompAlgo::checkBlocksColumns()
 {
    UtilPrintFuncBegin(m_osLog, m_classTag,
@@ -75,7 +58,7 @@ void DecompAlgo::checkBlocksColumns()
    map<int, DecompSubModel>::iterator mid1;
    map<int, DecompSubModel>::iterator mid2;
 
-   for (mid1 = m_modelRelax.begin(); mid1 != m_modelRelax.end(); mid1++) {
+   for (mid1 = m_modelRelax.begin(); mid1 != m_modelRelax.end(); ++mid1) {
       DecompSubModel&      modelRelax1 = (*mid1).second;
       DecompConstraintSet* model       = modelRelax1.getModel();
 
@@ -88,7 +71,7 @@ void DecompAlgo::checkBlocksColumns()
       set<int>&             activeCols1
       = modelRelax1.getModel()->activeColumnsS;
 
-      for (mid2 = m_modelRelax.begin(); mid2 != m_modelRelax.end(); mid2++) {
+      for (mid2 = m_modelRelax.begin(); mid2 != m_modelRelax.end(); ++mid2) {
          if (mid1 == mid2) {
             continue;
          }
@@ -112,7 +95,7 @@ void DecompAlgo::checkBlocksColumns()
             set<int>::iterator it;
 
             for (it  = activeCols1inter2.begin();
-                  it != activeCols1inter2.end(); it++) {
+                  it != activeCols1inter2.end(); ++it) {
                (*m_osLog) << "Column " << setw(5) << *it << " -> ";
 
                if (modelRelax2.getModel()->colNames.size() > 0)
@@ -138,7 +121,7 @@ void DecompAlgo::checkBlocksColumns()
    set<int> activeColsUnion;
    set<int>::iterator sit;
 
-   for (mid1 = m_modelRelax.begin(); mid1 != m_modelRelax.end(); mid1++) {
+   for (mid1 = m_modelRelax.begin(); mid1 != m_modelRelax.end(); ++mid1) {
       DecompSubModel&      modelRelax = (*mid1).second;
       DecompConstraintSet* model      = modelRelax.getModel();
       assert(model);
@@ -244,14 +227,14 @@ void DecompAlgo::initSetup()
    map<int, vector<DecompSubModel> >::iterator mivt;
    vector<DecompSubModel>           ::iterator vit;
 
-   for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+   for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
       createOsiSubProblem((*mit).second);
    }
 
    for (mivt  = m_modelRelaxNest.begin();
-         mivt != m_modelRelaxNest.end(); mivt++) {
+         mivt != m_modelRelaxNest.end(); ++mivt) {
       for (vit  = (*mivt).second.begin();
-            vit != (*mivt).second.end(); vit++) {
+            vit != (*mivt).second.end(); ++vit) {
          createOsiSubProblem((*vit));
       }
    }
@@ -262,7 +245,7 @@ void DecompAlgo::initSetup()
               << m_numConvexCon << endl;
 
               for (mit  = m_modelRelax.begin();
-   mit != m_modelRelax.end(); mit++) {
+   mit != m_modelRelax.end(); ++mit) {
    DecompConstraintSet* model = (*mit).second.getModel();
 
       if (model && model->M) {
@@ -515,7 +498,7 @@ void DecompAlgo::getModelsFromApp()
    vector<DecompModel>           ::iterator vit;
 
    for (mit  = m_app->m_modelRelax.begin();
-         mit != m_app->m_modelRelax.end(); mit++) {
+         mit != m_app->m_modelRelax.end(); ++mit) {
       //---
       //--- this constructs a DecompSubModel from a DecompModel
       //---
@@ -524,11 +507,11 @@ void DecompAlgo::getModelsFromApp()
    }
 
    for (mivt  = m_app->m_modelRelaxNest.begin();
-         mivt != m_app->m_modelRelaxNest.end(); mivt++) {
+         mivt != m_app->m_modelRelaxNest.end(); ++mivt) {
       vector<DecompSubModel> v;
 
       for (vit  = (*mivt).second.begin();
-            vit != (*mivt).second.end(); vit++) {
+            vit != (*mivt).second.end(); ++vit) {
          v.push_back(*vit);
       }
 
@@ -578,7 +561,7 @@ void DecompAlgo::loadSIFromModel(OsiSolverInterface* si,
 
    map<int, DecompSubModel>::iterator mit;
 
-   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
       relax = (*mit).second.getModel();
 
       //TODO: for cut gen do we really want this model explicit??
@@ -638,7 +621,7 @@ void DecompAlgo::loadSIFromModel(OsiSolverInterface* si,
    memcpy(rowUB,    core->getRowUB(),   nRowsC * sizeof(double));
    int rowIndex = nRowsC;
 
-   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
       relax = (*mit).second.getModel();
 
       if (!relax || !relax->M) {
@@ -706,7 +689,7 @@ void DecompAlgo::loadSIFromModel(OsiSolverInterface* si,
    si->setObjName(objName);
    rowIndex = nRowsC;
 
-   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+   for (mit  = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
       relax = (*mit).second.getModel();
 
       if (!relax || !relax->M) {
@@ -910,20 +893,18 @@ void DecompAlgo::createMasterProblem(DecompVarList& initVars)
                           objCoeff,
                           colNames,
                           startRow, endRow, DecompRow_Convex);
-   int colIndex     = 0;
-   int blockIndex   = 0;
    DecompVarList::iterator li;
 
    //TODO:
    //  this should be calling a function to add var to lp so don't dup code
    //TODO:
    //  check for duplicates in initVars
-   for (li = initVars.begin(); li != initVars.end(); li++) {
+   for (li = initVars.begin(); li != initVars.end(); ++li) {
       //---
       //--- appending these variables (lambda) to end of matrix
       //---   after the artificials
       //---
-      colIndex         = masterM->getNumCols();
+      int colIndex         = masterM->getNumCols();
       m_colIndexUnique = colIndex;
       //---
       //--- store the col index for this var in the master LP
@@ -933,7 +914,7 @@ void DecompAlgo::createMasterProblem(DecompVarList& initVars)
       //---
       //--- we expect the user to define the block id in the var object
       //---
-      blockIndex = (*li)->getBlockId();
+      int blockIndex = (*li)->getBlockId();
       //---
       //--- give the column a name
       //---
@@ -1526,14 +1507,14 @@ void DecompAlgo::breakOutPartial(const double*   xHat,
    map<int, DecompSubModel>::iterator mit;
    vector<int>::const_iterator         vit;
 
-   for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+   for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
       DecompSubModel&      subModel      = (*mit).second;
       DecompConstraintSet* model         = subModel.getModel();
       int                   b            = subModel.getBlockId();
       const vector<int>&    activeCols   = model->getActiveColumns();
       bool blockFeasible = true;
 
-      for (vit = activeCols.begin(); vit != activeCols.end(); vit++) {
+      for (vit = activeCols.begin(); vit != activeCols.end(); ++vit) {
          if (integerMark[*vit] != 'I') {
             continue;
          }
@@ -1549,7 +1530,7 @@ void DecompAlgo::breakOutPartial(const double*   xHat,
          vector<double> els;
          double origCost = 0.0;
 
-         for (vit = activeCols.begin(); vit != activeCols.end(); vit++) {
+         for (vit = activeCols.begin(); vit != activeCols.end(); ++vit) {
             if (!UtilIsZero(xHat[*vit])) {
                ind.push_back(*vit);
                els.push_back(xHat[*vit]);
@@ -1722,7 +1703,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
             vector<DecompSolution*>::iterator vit;
 
             for (vit  = m_xhatIPFeas.begin();
-                  vit != m_xhatIPFeas.end(); vit++) {
+                  vit != m_xhatIPFeas.end(); ++vit) {
                const DecompSolution* xhatIPFeas = *vit;
                const double*          values
                = xhatIPFeas->getValues();
@@ -1754,7 +1735,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
          DecompSolution* viBest = NULL;
          double bestBoundUB = m_nodeStats.objBest.second;
 
-         for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); vi++) {
+         for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); ++vi) {
             const DecompSolution* xhatIPFeas = *vi;
 
             if (xhatIPFeas->getQuality() <= bestBoundUB) {
@@ -1869,7 +1850,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
          break;
       }
 
-      bool          isGapTight = false;
+      //bool          isGapTight = false;
       DecompVarList newVars;
       DecompCutList newCuts;
 
@@ -1879,6 +1860,15 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
          m_nodeStats.priceCallsRound++;
          m_nodeStats.priceCallsTotal++;
 
+         if (m_nodeStats.priceCallsRound >= m_param.IterLimitInexactSubSolving)
+               {
+                         subProbSolvePhase = SUBSOLVE_PHASE_EXACT;
+                    }             else
+                       {
+                                    double subProbDynamicGap = std::max((m_param.InitialOptimalityGapInexactSubSolving - (m_nodeStats.priceCallsRound - 1) *
+        	                                 m_param.OptimalGapStepSizeInexactSubSolving), 0.0);
+                                    m_param.SubProbGapLimitInexact = std::min(subProbDynamicGap, m_param.SubProbGapLimitInexact); 
+         }
          //---
          //--- after adding some rows, the columns in the var pool
          //--- might no longer be valid, so we need to re-expand everything
@@ -1912,7 +1902,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
          m_nodeStats.cutsThisCall   = 0;
          map<int, DecompSubModel>::iterator mit;
 
-         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end();++mit) {
             (*mit).second.setCounter((*mit).second.getCounter() + 1);
          }
 
@@ -1922,7 +1912,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
          if (m_isColGenExact           &&
                m_rrIterSinceAll == 0     &&
                m_status == STAT_FEASIBLE) {
-            isGapTight = updateObjBound(mostNegRC);
+            bool isGapTight = updateObjBound(mostNegRC);
          }
 
          if (m_nodeStats.varsThisCall > 0) {
@@ -2026,7 +2016,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
       case PHASE_DONE: {
          map<int, DecompSubModel>::iterator mit;
 
-         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
             (*mit).second.setCounter(0);
          }
       }
@@ -2125,7 +2115,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
                   vector<DecompSolution*>::iterator vit;
 
                   for (vit  = m_xhatIPFeas.begin();
-                        vit != m_xhatIPFeas.end(); vit++) {
+                        vit != m_xhatIPFeas.end(); ++vit) {
                      const DecompSolution* xhatIPFeas = *vit;
                      const double*          values
                      = xhatIPFeas->getValues();
@@ -2196,7 +2186,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
             DecompSolution* viBest = NULL;
             double bestBoundUB = m_nodeStats.objBest.second;
 
-            for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); vi++) {
+            for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); ++vi) {
                const DecompSolution* xhatIPFeas = *vi;
 
                if (xhatIPFeas->getQuality() <= bestBoundUB) {
@@ -2231,7 +2221,6 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
             //---   if not, make sure the columns just added cannot be
             //---   deleted
             //---
-            int i;
             UTIL_DEBUG(m_param.LogDebugLevel, 3,
                        (*m_osLog)
                        << "m_masterObjLast = " << setw(10)
@@ -2254,7 +2243,7 @@ DecompStatus DecompAlgo::processNode(const AlpsDecompTreeNode* node,
                if (m_nodeStats.varsThisCall > 0) {
                   int sz = static_cast<int>(m_masterColType.size());
 
-                  for (i  = sz - 1;
+                  for (int i  = sz - 1;
                         i >= sz - m_nodeStats.varsThisCall; i--) {
                      UTIL_DEBUG(m_param.LogDebugLevel, 3,
                                 (*m_osLog) << "Col " << i << " has type "
@@ -2400,7 +2389,7 @@ void DecompAlgo::setMasterBounds(const double* lbs,
       double*               denseS    = new double[nCols];
       map<int, DecompSubModel>::iterator mit;
 
-      for (li = m_vars.begin(); li != m_vars.end(); li++) {
+      for (li = m_vars.begin(); li != m_vars.end(); ++li) {
          masterColIndex = (*li)->getColMasterIndex();
          assert(isMasterColStructural(masterColIndex));
          mit = m_modelRelax.find((*li)->getBlockId());
@@ -2613,7 +2602,7 @@ DecompStatus DecompAlgo::solutionUpdate(const DecompPhase phase,
 	 CPXENVptr env = masterCpxSI->getEnvironmentPtr();
 	 CPXLPptr lp = 
 	    masterCpxSI->getLpPtr(OsiCpxSolverInterface::KEEPCACHED_ALL);
-	 //CPXhybbaropt(env, lp, 0);//if crossover, defeat purpose
+	 //CPXhybopt(env, lp, 0);//if crossover, defeat purpose
 	 CPXbaropt(env, lp);
 	 //cpxMethod = CPXgetmethod(env, lp);
 	 //cpxStat = CPXgetstat(env, lp);
@@ -2804,6 +2793,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 {
 #ifdef DIP_HAS_CPX
    bool useMultiRay = true;
+   vector<double*> rays;
    if (useMultiRay){ 
       OsiCpxSolverInterface* siCpx
 	 = dynamic_cast<OsiCpxSolverInterface*>(m_masterSI);
@@ -2812,7 +2802,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
       const double* rowRhs    = m_masterSI->getRightHandSide();
       const char*    rowSense  = m_masterSI->getRowSense();
       int r, b, c;
-      vector<double*> rays;
+   
       //Ax + Is = b
       // ax     <= b
       // ax + s  = b, s >= 0
@@ -2823,7 +2813,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 		 for (r = 0; r < m; r++) {
 		    (*m_osLog) << "Row r: " << r << " sense: " << rowSense[r]
 			       << " rhs: " << rowRhs[r] << endl;
-		 }
+		    }
 		 );
       m_masterSI->enableSimplexInterface(false);
       double* tabRhs   = new double[m];
@@ -2961,10 +2951,11 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 			  );
 	       double* dualRay  = new double[m];
 	       m_masterSI->getBInvRow(r, dualRay);
-	       transform(dualRay, dualRay + m, dualRay, negate<double>());
+	       std::transform(dualRay, dualRay + m, dualRay, negate<double>());
 	       rays.push_back(dualRay);
 	    }
-	 } else {
+	 
+    }else {
 	    bool allpos = true;
 	    m_masterSI->getBInvARow(r, bInvARow);
 	    UTIL_DEBUG(m_param.LogDebugLevel, 6,
@@ -2992,7 +2983,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 	       rays.push_back(dualRay);
 	    }
 	 }
-      }
+    
       
       UTIL_DELARR(tabRhs);
       UTIL_DELARR(basics);
@@ -3002,7 +2993,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
       m_masterSI->disableSimplexInterface();
       printf("rays.size = %d\n", static_cast<int>(rays.size()));
       
-      if (rays.size() <= 0) {
+      if (rays.size() <= 0) 
 	 printf("NO RAYS using standard lookup - try dualfarkas\n");
 	 double   proof_p;
 	 double* dualRay = new double[m];
@@ -3017,7 +3008,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
 	 }
 	 
 	 rays.push_back(dualRay);
-      }
+    }
       
       //NOTE: you will have dup rays here - need to filter out...
       printf("rays.size = %d", static_cast<int>(rays.size()));
@@ -3067,7 +3058,7 @@ vector<double*> DecompAlgo::getDualRaysCpx(int maxNumRays)
       cout << "After dual farkas proof_p = " << proof_p << "\n";
       //We have to flip because in this context we want to max B-1Ax, x in P'
       double* pneg = new double[m];
-      transform(ray, ray + m, pneg, negate<double>());
+      std::transform(ray, ray + m, pneg, negate<double>());
       rays.push_back(pneg);
 #if 1
       UTIL_DEBUG(m_app->m_param.LogDebugLevel, 5,
@@ -3116,7 +3107,7 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
       const int n = m_masterSI->getNumCols();
       const double* rowRhs    = m_masterSI->getRightHandSide();
       const char*    rowSense  = m_masterSI->getRowSense();
-      int i, r, b, c;
+      int r, b, c;
       vector<double*> rays;
       UtilPrintFuncBegin(m_osLog, m_classTag,
 			 "getDualRays()", m_param.LogDebugLevel, 2);
@@ -3140,7 +3131,7 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
       m_masterSI->getBasics(basics);
       
       for (r = 0; r < m; r++) {
-	 i = basics[r];
+	 int i = basics[r];
 	 
 	 if (i < n) {
 	    tabRhs[r] = primSolution[i]; //should == B-1b
@@ -3211,7 +3202,6 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
 	    UTIL_DEBUG(m_param.LogDebugLevel, 6,
 		       (*m_osLog) << "B-1ARow r: " << r << ": ";
 		       );
-	    allneg = true;
 	    
 	    for (c = 0; c < n; c++) {
 	       UTIL_DEBUG(m_param.LogDebugLevel, 6,
@@ -3239,7 +3229,6 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
 	    UTIL_DEBUG(m_param.LogDebugLevel, 6,
 		       (*m_osLog) << "B-1ARow r: " << r << ": ";
 		       );
-	    allpos = true;
 	    
 	    for (c = 0; c < n; c++) {
 	       UTIL_DEBUG(m_param.LogDebugLevel, 6,
@@ -3333,7 +3322,7 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
       const int                m         = rowMatrix->getNumRows();
       double yb = 0.0;
       
-      for (i = 0; i < m; i++) {
+      for (int i = 0; i < m; i++) {
 	 yb += rayT[i] * rowRhs[i]; //safe to use rowRhs? or flips in tab going on
       }
       
@@ -3394,8 +3383,9 @@ vector<double*> DecompAlgo::getDualRaysOsi(int maxNumRays)
 int DecompAlgo::generateInitVars(DecompVarList& initVars)
 {
    int          c, attempts;
-   double       aveC;
    DecompConstraintSet* modelCore = m_modelCore.getModel();
+   // the LimitInitVars could be related to the number of constraints in the model
+   // sometimes the default value is too small
    const int      limit      = m_param.InitVarsLimit;
    // Need to get the different strategies for generating initial Vars
    const int      limit2     = 2 * limit;
@@ -3449,7 +3439,7 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
       //---
       double* costeps = new double[nCoreCols];
       assert(objCoeff);
-      aveC = UtilAve(objCoeff, nCoreCols);
+      double aveC = UtilAve(objCoeff, nCoreCols);
       attempts = 0;
       DecompSolverResult subprobResult(m_infinity);//nCoreCols);
 
@@ -3474,37 +3464,67 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
          //---
          map<int, DecompSubModel>::iterator mit;
          double sumInitLB = 0.0; //like LR with 0 dual (only first pass)
-         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
-            DecompSubModel& subModel = (*mit).second;
-	    timeLimit = max(m_param.SubProbTimeLimitExact - 
-			    m_stats.timerOverall.getRealTime(), 0.0);
-            solveRelaxed(costeps,               //reduced cost (fake here)
-                         objCoeff,              //original cost vector
-                         9e15,                  //alpha        (fake here)
-                         nCoreCols,             //num core columns
-                         false,                 //isNested
-                         subModel,
-                         &subprobResult,        //results
-                         initVars,             //var list to populate
-			 timeLimit);
 
-            if (attempts == 0) {
-               //TODO: have to treat masterOnly differently
-               //  we don't correctly populate LB/UB in
-               //  subprobResult object - so contribution is wrong
-               sumInitLB += subprobResult.m_objLB;
-               //printf("ThisLB = %g, sumInitLB = %g\n",
-               //     subprobResult.m_objLB, sumInitLB);
-            }
-         }
+#ifdef _OPENMP
+         UTIL_DEBUG(m_app->m_param.LogDebugLevel, 3,
+                    (*m_osLog) 
+                    << "===== START Threaded solve of subproblems. =====\n";);
+#endif
+#ifdef _OPENMP
+        // Avoid the case when the allocated threads is greater than the
+        // number of blocks
+        int numThreads;
 
+        if (m_numConvexCon < m_param.NumConcurrentThreadsSubProb)
+        {   
+           numThreads = min(m_param.NumConcurrentThreadsSubProb, m_numConvexCon);
+        }
+        else
+        {  
+           numThreads = m_param.NumConcurrentThreadsSubProb;
+        }
+        omp_set_num_threads(numThreads);
+//#pragma omp parallel for schedule(dynamic, m_param.SubProbParallelChunksize)
+#endif
+        for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit)
+        {
+           DecompSubModel& subModel = (*mit).second;
+           timeLimit = max(m_param.SubProbTimeLimitExact -
+              m_stats.timerOverall.getRealTime(), 0.0);
+           solveRelaxed(costeps,               //reduced cost (fake here)
+              objCoeff,              //original cost vector
+              9e15,                  //alpha        (fake here)
+              nCoreCols,             //num core columns
+              false,                 //isNested
+              subModel,
+              &subprobResult,        //results
+              initVars,             //var list to populate
+              timeLimit);
+
+           if (attempts == 0)
+           {
+              //TODO: have to treat masterOnly differently
+              //  we don't correctly populate LB/UB in
+              //  subprobResult object - so contribution is wrong
+              sumInitLB += subprobResult.m_objLB;
+              //printf("ThisLB = %g, sumInitLB = %g\n",
+              //     subprobResult.m_objLB, sumInitLB);
+           }
+        }
+
+
+#ifdef _OPENMP
+            UTIL_DEBUG(m_app->m_param.LogDebugLevel, 3,
+            (*m_osLog)
+             << "===== END   Threaded solve of subproblems. =====\n";);
+#endif
          map<int, vector<DecompSubModel> >::iterator mivt;
          vector<DecompSubModel>           ::iterator vit;
 
          for (mivt  = m_modelRelaxNest.begin();
-               mivt != m_modelRelaxNest.end(); mivt++) {
+               mivt != m_modelRelaxNest.end(); ++mivt) {
             for (vit  = (*mivt).second.begin();
-                  vit != (*mivt).second.end(); vit++) {
+                  vit != (*mivt).second.end(); ++vit) {
 	       timeLimit = max(m_param.SubProbTimeLimitExact - 
 			       m_stats.timerOverall.getRealTime(), 0.0);
                solveRelaxed(costeps,               //reduced cost (fake here)
@@ -3562,12 +3582,11 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
       DecompSolution* bestSol = NULL;
       vector<DecompSolution*>::iterator it;
       //there will be just one, i think, just need to copy it over here
-      double thisBound;
       double bestBoundUB = m_nodeStats.objBest.second;
 
       for (it  = cpm.m_xhatIPFeas.begin();
-            it != cpm.m_xhatIPFeas.end(); it++) {
-         thisBound = (*it)->getQuality();
+            it != cpm.m_xhatIPFeas.end(); ++it) {
+         double thisBound = (*it)->getQuality();
          printf("From init vars, IP Feasible with Quality = %g\n", thisBound);
 
          if ((*it)->getQuality() <= bestBoundUB) {
@@ -3591,11 +3610,10 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
    if (m_param.InitVarsWithIP) {
       printf("======= BEGIN Gen Init Vars - call Direct IP solver\n");
       DecompAlgoC          direct(m_app, *m_utilParam);
-      DecompSolverResult* result = NULL;
+      DecompSolverResult* result = direct.solveDirect();
       double oldSetting = m_param.TimeLimit;
       m_param.TimeLimit = m_param.InitVarsWithIPTimeLimit;
-      result = direct.solveDirect();
-      m_param.TimeLimit = oldSetting;
+	  m_param.TimeLimit = oldSetting;
 
       if (result->m_nSolutions) {
          //---
@@ -3613,7 +3631,7 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
          } else {
             map<int, DecompSubModel>::iterator mid;
 
-            for (mid = m_modelRelax.begin(); mid != m_modelRelax.end(); mid++) {
+            for (mid = m_modelRelax.begin(); mid != m_modelRelax.end(); ++mid) {
                int               blockId       = (*mid).first;
                DecompSubModel& modelRelax    = (*mid).second;
                vector<int>&      activeColumns
@@ -3624,7 +3642,7 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
                vector<int>::iterator it;
 
                for (it  = activeColumns.begin();
-                     it != activeColumns.end(); it++) {
+                     it != activeColumns.end(); ++it) {
                   if (!UtilIsZero(solution[*it])) {
                      ind.push_back(*it);
                      els.push_back(solution[*it]);
@@ -3663,7 +3681,7 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
    if (m_numConvexCon == 1) {
       DecompVarList::iterator vli;
 
-      for (vli = initVars.begin(); vli != initVars.end(); vli++) {
+      for (vli = initVars.begin(); vli != initVars.end(); ++vli) {
          //---
          //--- unlikey to happen - but we should check ALL columns
          //---  to see if they are IP feasible
@@ -3748,8 +3766,24 @@ bool DecompAlgo::updateObjBound(const double mostNegRC)
       zDW_UBDual += dualSol[r] * rowRhs[r];
    }
 
+
+   const double* sol = m_masterSI->getColSolution();
+     // need to consider the master only variable's contribution to the lower bound
+   double masterOnlyContri(0.0);
+   DecompConstraintSet* modelCore = m_modelCore.getModel();
+   std::vector<int>::iterator intIt;
+   /*
+   for (intIt = modelCore->masterOnlyCols.begin(); intIt != modelCore->masterOnlyCols.end();
+        ++ intIt)
+   {
+      masterOnlyContri += sol[m_masterOnlyColsMap[*intIt]] * mostNegRC;
+   }
+   */
+   //zDW_LB = zDW_UBDual + mostNegRC + masterOnlyContri;
+
    //zDW_LB = zDW_UBDual + mostNegRC;
    zDW_LB = zDW_UBPrimal + mostNegRC;
+
    setObjBound(zDW_LB, zDW_UBPrimal);
    /*
    double actDiff = fabs(zDW_UBDual - zDW_UBPrimal);
@@ -3885,7 +3919,7 @@ void DecompAlgo::masterPhaseItoII()
 
    DecompVarList::iterator li;
 
-   for (li = m_vars.begin(); li != m_vars.end(); li++) {
+   for (li = m_vars.begin(); li != m_vars.end(); ++li) {
       assert(isMasterColStructural((*li)->getColMasterIndex()));
       m_masterSI->setObjCoeff((*li)->getColMasterIndex(),
                               (*li)->getOriginalCost());
@@ -3918,7 +3952,7 @@ void DecompAlgo::masterPhaseItoII()
 
    DecompVarList::iterator li;
 
-   for (li = m_vars.begin(); li != m_vars.end(); li++) {
+   for (li = m_vars.begin(); li != m_vars.end(); ++li) {
       assert(isMasterColStructural((*li)->getColMasterIndex()));
       m_masterSI->setObjCoeff((*li)->getColMasterIndex(),
                               (*li)->getOriginalCost());
@@ -4101,7 +4135,7 @@ void DecompAlgo::phaseUpdate(DecompPhase&   phase,
          m_nodeStats.resetCutRound();
          m_nodeStats.resetPriceRound();
          m_nodeStats.resetBestLB();
-
+         subProbSolvePhase = SUBSOLVE_PHASE_EXACT;
          if (m_algo == DECOMP) {
             nextPhase  = PHASE_DONE;
             nextStatus = STAT_FEASIBLE;
@@ -4848,7 +4882,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
 	    t, static_cast<int>(arg[t].vars->size()));
 	 */
 	 for (it  = potentialVarsT[subprobIndex].begin();
-	      it != potentialVarsT[subprobIndex].end(); it++) {
+	      it != potentialVarsT[subprobIndex].end(); ++it) {
 	    varRedCost = (*it)->getReducedCost();
 	    whichBlock = (*it)->getBlockId();
 	    
@@ -4875,7 +4909,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
       //put the vars from all threads into one vector
       for (int subprobIndex = 0; subprobIndex < m_numConvexCon; subprobIndex++) {
 	 for (it  = potentialVarsT[subprobIndex].begin();
-	      it != potentialVarsT[subprobIndex].end(); it++) {
+	      it != potentialVarsT[subprobIndex].end(); ++it) {
 	    potentialVars.push_back(*it);
 	 }
       }
@@ -4886,8 +4920,8 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
       map<int, vector<DecompSubModel> >::iterator mivt;
       vector<DecompSubModel>           ::iterator vit;
 
-      for (mivt  = m_modelRelaxNest.begin(); mivt != m_modelRelaxNest.end(); mivt++) {
-	 for (vit  = (*mivt).second.begin(); vit != (*mivt).second.end(); vit++) {
+      for (mivt  = m_modelRelaxNest.begin(); mivt != m_modelRelaxNest.end(); ++mivt) {
+	 for (vit  = (*mivt).second.begin(); vit != (*mivt).second.end(); ++vit) {
 	    b         = (*vit).getBlockId();
 	    alpha     = u[nBaseCoreRows + b];
 	    UTIL_DEBUG(m_app->m_param.LogDebugLevel, 4,
@@ -4913,7 +4947,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
       //put the vars from all threads into one vector
       for (int subprobIndex = 0; subprobIndex < m_numConvexCon; subprobIndex++) {
 	 for (it  = potentialVarsT[subprobIndex].begin();
-	      it != potentialVarsT[subprobIndex].end(); it++) {
+	      it != potentialVarsT[subprobIndex].end(); ++it) {
 	    potentialVars.push_back(*it);
 	 }
       }
@@ -5047,7 +5081,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
          m_rrLastBlock = b;
          foundNegRC    = false;
 
-         for (it = potentialVars.begin(); it != potentialVars.end(); it++) {
+         for (it = potentialVars.begin(); it != potentialVars.end(); ++it) {
             varRedCost = (*it)->getReducedCost();
 
             if (varRedCost < - m_param.RedCostEpsilon) { //TODO: strict, -dualTOL?
@@ -5074,7 +5108,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
          //TODO: make this a function (to solve all blocks)
          map<int, DecompSubModel>::iterator mit;
 
-         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
+         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); ++mit) {
             DecompSubModel& subModel = (*mit).second;
             b         = subModel.getBlockId();
             UTIL_DEBUG(m_app->m_param.LogDebugLevel, 4,
@@ -5113,9 +5147,9 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
          vector<DecompSubModel>           ::iterator vit;
 
          for (mivt  = m_modelRelaxNest.begin();
-               mivt != m_modelRelaxNest.end(); mivt++) {
+               mivt != m_modelRelaxNest.end(); ++mivt) {
             for (vit  = (*mivt).second.begin();
-                  vit != (*mivt).second.end(); vit++) {
+                  vit != (*mivt).second.end(); ++vit) {
                b         = (*vit).getBlockId();
                alpha     = u[nBaseCoreRows + b];
                UTIL_DEBUG(m_app->m_param.LogDebugLevel, 4,
@@ -5143,7 +5177,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
       }
    }//END: else(doAllBlocks)
 
-   for (it = potentialVars.begin(); it != potentialVars.end(); it++) {
+   for (it = potentialVars.begin(); it != potentialVars.end(); ++it) {
       varRedCost = (*it)->getReducedCost();
       whichBlock = (*it)->getBlockId();
       alpha      = u[nBaseCoreRows + whichBlock];
@@ -5239,7 +5273,7 @@ int DecompAlgo::generateVars(DecompVarList&     newVars,
    potentialVars.clear(); //THINK? what does clear do exactly ?
    UTIL_DEBUG(m_app->m_param.LogDebugLevel, 4,
 
-   for (it = newVars.begin(); it != newVars.end(); it++) {
+   for (it = newVars.begin(); it != newVars.end(); ++it) {
       (*it)->print(m_infinity, m_osLog, m_app);
    }
              );
@@ -5348,7 +5382,7 @@ int DecompAlgo::generateCuts(double*         xhat,
       double bestBoundUB = m_nodeStats.objBest.second;
 
       for (it  = D.m_xhatIPFeas.begin();
-            it != D.m_xhatIPFeas.end(); it++) {
+            it != D.m_xhatIPFeas.end(); ++it) {
          thisBound = (*it)->getQuality();
          UTIL_DEBUG(m_param.LogDebugLevel, 3,
                     (*m_osLog) << "From DECOMP, IP Feasible with Quality =";
@@ -5443,7 +5477,7 @@ void DecompAlgo::addVarsToPool(DecompVarList& newVars)
    bool foundGoodCol = false;
    DecompVarList::iterator li;
 
-   for (li = newVars.begin(); li != newVars.end(); li++) {
+   for (li = newVars.begin(); li != newVars.end(); ++li) {
       //---
       //--- get dense column = A''s, append convexity constraint on end
       //---    THINK: PC specific
@@ -5713,7 +5747,7 @@ void DecompAlgo::addVarsFromPool()
    //---
    int index = 0;
 
-   for (vi = m_varpool.begin(); vi != m_varpool.end(); vi++) {
+   for (vi = m_varpool.begin(); vi != m_varpool.end(); ++vi) {
       if (m_algo != RELAX_AND_CUT) { //THINK??
          if ((*vi).getReducedCost() >  -0.0000001) { //TODO - param
             break;
@@ -5754,7 +5788,7 @@ void DecompAlgo::addVarsFromPool()
 
    index = 0;
 
-   for (vi = m_varpool.begin(); vi != m_varpool.end(); vi++) {
+   for (vi = m_varpool.begin(); vi != m_varpool.end(); ++vi) {
       if (index >= n_newcols) {
          break;
       }
@@ -5818,7 +5852,7 @@ void DecompAlgo::addVarsFromPool()
    //---
    //THINK is this all neccessary? just to keep memory small? or
    //doing this for some reason of efficiency?
-   for (vi = m_varpool.begin(); vi != viLast; vi++) {
+   for (vi = m_varpool.begin(); vi != viLast; ++vi) {
       (*vi).deleteCol();
       (*vi).clearVar(); //needed? dangling pointer if not
    }
@@ -5861,9 +5895,8 @@ void DecompAlgo::addCutsToPool(const double*    x,
    DecompConstraintSet*           modelCore   = m_modelCore.getModel();
    int  r, cutIndex = 0;
    bool isViolated = false;
-   bool isDupCore;//also check relax?
+   //also check relax?
    bool isDupPool;
-   bool addCut;
    DecompCutPool::iterator ci;
    DecompCutList::iterator li = newCuts.begin();
 
@@ -5893,8 +5926,8 @@ void DecompAlgo::addCutsToPool(const double*    x,
 
 #endif
       //here we will use a hash table - or just STL map
-      addCut    = true;
-      isDupCore = false;
+      bool addCut    = true;
+      bool isDupCore = false;
 
       for (r = 0; r < modelCore->getNumRows(); r++) {
          //override isSame( )
@@ -5936,7 +5969,7 @@ void DecompAlgo::addCutsToPool(const double*    x,
          //---
          isDupPool = false;
 
-         for (ci = m_cutpool.begin(); ci != m_cutpool.end(); ci++) {
+         for (ci = m_cutpool.begin(); ci != m_cutpool.end(); ++ci) {
             if ((*li)->getStrHash() == (*ci).getCutPtr()->getStrHash()) {
                UTIL_MSG(m_app->m_param.LogDebugLevel, 4,
                         (*m_osLog) << "Cut is Duplicate with Pool\n";
@@ -5961,7 +5994,7 @@ void DecompAlgo::addCutsToPool(const double*    x,
       if (addCut) {
          DecompWaitingRow waitingRow(*li, row);
          m_cutpool.push_back(waitingRow);
-         li++;
+         ++li;
       } else {
          //---
          //--- cut is not violated, do not put in cut pool, delete memory
@@ -6015,7 +6048,7 @@ int DecompAlgo::addCutsFromPool()
    int index = 0;
    DecompCutPool::iterator li;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if ((*li).getViolation() < DecompEpsilon) { //PARM
          break;
       }
@@ -6039,7 +6072,7 @@ int DecompAlgo::addCutsFromPool()
    //int              colIndex;
    index = 0;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (index >= n_newrows) {
          break;
       }
@@ -6112,7 +6145,7 @@ int DecompAlgo::addCutsFromPool()
    //clean up
    index = 0;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (index >= n_newrows) {
          break;
       }
@@ -6271,7 +6304,7 @@ FUNC_EXIT:
 }
 
 //--------------------------------------------------------------------- //
-DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
+void DecompAlgo::solveRelaxed(const double*         redCostX,
                                       const double*         origCost,
                                       const double          alpha,
                                       const int             n_origCols,
@@ -6326,6 +6359,10 @@ DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
    bool doCutoff = m_param.SubProbUseCutoff;
    bool doExact  = isNested ? false : true;
    doExact       = m_function == DecompFuncGenerateInitVars ? false : doExact;
+   if (subProbSolvePhase == SUBSOLVE_PHASE_INEXACT)
+   {
+ 	   doExact = false;   
+  	}
    DecompSolverStatus solverStatus = DecompSolStatNoSolution;
    DecompVarList userVars;
 
@@ -6342,7 +6379,7 @@ DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
 
       DecompVarList::iterator it;
 
-      for (it = userVars.begin(); it != userVars.end(); it++) {
+      for (it = userVars.begin(); it != userVars.end(); ++it) {
          if ((*it)->getBlockId() == whichBlock) {
             if ((*it)->getVarType() == DecompVar_Point) {
                (*it)->setReducedCost((*it)->getReducedCost() - alpha);
@@ -6494,7 +6531,7 @@ DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
                const map<int, int>& sparseToOrig = model->getMapSparseToOrig();
 
                for (mcit  = sparseToOrig.begin();
-                     mcit != sparseToOrig.end(); mcit++) {
+                     mcit != sparseToOrig.end(); ++mcit) {
                   i = mcit->first;  //sparse-index
                   c = mcit->second; //original-index
 
@@ -6571,7 +6608,7 @@ DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
       assert(xTemp);
       DecompVarList::iterator it;
 
-      for (it = vars.begin(); it != vars.end(); it++) {
+      for (it = vars.begin(); it != vars.end(); ++it) {
          int               whichBlock     = (*it)->getBlockId();
 
          if (whichBlock != -1) {
@@ -6602,7 +6639,6 @@ DecompStatus DecompAlgo::solveRelaxed(const double*         redCostX,
 
    UtilPrintFuncEnd(m_osLog, m_classTag,
                     "solveRelaxed()", m_param.LogDebugLevel, 2);
-   return STAT_UNKNOWN;
 }
 
 
@@ -6677,7 +6713,7 @@ void DecompAlgo::recomposeSolution(const double* solution,
    int                    nColNames = static_cast<int>(colNames.size());
    DecompVarList::const_iterator li;
 
-   for (li = m_vars.begin(); li != m_vars.end(); li++) {
+   for (li = m_vars.begin(); li != m_vars.end(); ++li) {
       colIndex = (*li)->getColMasterIndex();
       lamSol   = solution[colIndex];
       assert(colIndex < m_masterSI->getNumCols());
@@ -6804,7 +6840,7 @@ bool DecompAlgo::isTailoffLB(const int    changeLen,
    double aveDiff   = 0.0;
    double perDiff   = 0.0;
 
-   for (it++; it != m_nodeStats.objHistoryBound.rend(); it++) {
+   for (++it; it != m_nodeStats.objHistoryBound.rend(); ++it) {
       diff       = fabs(prevBound - (*it).bestBound);
       UTIL_DEBUG(m_param.LogDebugLevel, 3,
                  (*m_osLog)

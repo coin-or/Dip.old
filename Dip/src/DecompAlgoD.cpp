@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -55,7 +55,7 @@ void DecompAlgoD::phaseUpdate(DecompPhase&   phase,
       double aveDiff   = 0.0;
       double perDiff   = 0.0;
 
-      for ( ; it != m_phaseIObj.rend(); it++) {
+      for ( ; it != m_phaseIObj.rend(); ++it) {
          diff = fabs(prevBound - (*it));
          UTIL_DEBUG(m_param.LogDebugLevel, 3,
                     (*m_osLog)
@@ -498,12 +498,11 @@ void DecompAlgoD::createMasterProblem(DecompVarList& initVars)
    }
    */
    int colIndex     = 0;
-   int blockIndex   = 0;
    DecompVarList::iterator li;
 
    //TODO:
    //  this should be calling a function to add var to lp so don't dup code
-   for (li = initVars.begin(); li != initVars.end(); li++) {
+   for (li = initVars.begin(); li != initVars.end(); ++li) {
       //---
       //--- appending these variables (lambda) to end of matrix
       //---   after the artificials
@@ -518,7 +517,7 @@ void DecompAlgoD::createMasterProblem(DecompVarList& initVars)
       //---
       //--- we expect the user to define the block id in the var object
       //---
-      blockIndex = (*li)->getBlockId();
+      int blockIndex = (*li)->getBlockId();
       //---
       //--- give the column a name
       //---

@@ -237,7 +237,7 @@ void MILPBlock_DecompApp::readBlockFile(){
    //--- and copy into class object m_blocks
    //---
    blockId = 0;
-   for(blocksIt = blocks.begin(); blocksIt != blocks.end(); blocksIt++){
+   for(blocksIt = blocks.begin(); blocksIt != blocks.end(); ++blocksIt){
       m_blocks.insert(make_pair(blockId, blocksIt->second));
       blockId++;
    }
@@ -245,9 +245,9 @@ void MILPBlock_DecompApp::readBlockFile(){
    if(m_appParam.LogLevel >= 3){
       map<int, vector<int> >::iterator mit;
       vector<int>           ::iterator vit;
-      for(mit = m_blocks.begin(); mit != m_blocks.end(); mit++){
+      for(mit = m_blocks.begin(); mit != m_blocks.end(); ++mit){
          (*m_osLog) << "Block " << (*mit).first << " : ";
-         for(vit = (*mit).second.begin(); vit != (*mit).second.end(); vit++)
+         for(vit = (*mit).second.begin(); vit != (*mit).second.end(); ++vit)
             (*m_osLog) << (*vit) << " ";
          (*m_osLog) << endl;
       }
@@ -283,7 +283,7 @@ void MILPBlock_DecompApp::readInitSolutionFile(DecompVarList & initVars){
    map<int, DecompConstraintSet*>::iterator mit;
    const double * colLB = m_modelC->getColLB();
    const double * colUB = m_modelC->getColUB();
-   for(mit = m_modelR.begin(); mit != m_modelR.end(); mit++){
+   for(mit = m_modelR.begin(); mit != m_modelR.end(); ++mit){
       int                   blockIndex = mit->first;
       DecompConstraintSet * model      = mit->second;
       /*
@@ -295,7 +295,7 @@ void MILPBlock_DecompApp::readInitSolutionFile(DecompVarList & initVars){
       */{         
          const vector<int> & activeColumns = model->getActiveColumns();
          vector<int>::const_iterator vit;
-         for(vit = activeColumns.begin(); vit != activeColumns.end(); vit++){
+         for(vit = activeColumns.begin(); vit != activeColumns.end(); ++vit){
             colIndexToBlockIndex.insert(make_pair(*vit, blockIndex));
 	 }
       }
@@ -364,7 +364,7 @@ void MILPBlock_DecompApp::readInitSolutionFile(DecompVarList & initVars){
    //---
    //--- create DecompVar's from varTemp
    //---
-   for(it = varTemp.begin(); it != varTemp.end(); it++){
+   for(it = varTemp.begin(); it != varTemp.end(); ++it){
       const pair<int,int>                 & indexPair  = it->first;
       pair< vector<int>, vector<double> > & columnPair = it->second;
       double      origCost = 0.0;
@@ -403,7 +403,7 @@ MILPBlock_DecompApp::findActiveColumns(const vector<int> & rowsPart,
    //---
    int k, r;
    vector<int>::const_iterator it;
-   for(it = rowsPart.begin(); it != rowsPart.end(); it++){
+   for(it = rowsPart.begin(); it != rowsPart.end(); ++it){
       r    = *it;
       indR = ind + beg[r];
       for(k = 0; k < len[r]; k++){
@@ -501,9 +501,9 @@ MILPBlock_DecompApp::createModelPart(DecompConstraintSet * model,
    //--- set the row upper and lower bounds
    //--- set the col upper and lower bounds
    //---
-   int i, r;
+   int i;
    for(i = 0; i < nRowsPart; i++){
-      r = rowsPart[i];
+      int r = rowsPart[i];
       if(m_appParam.UseNames){
 	 const char * rowName = m_mpsIO.rowName(r);
 	 if(rowName)
@@ -581,7 +581,7 @@ MILPBlock_DecompApp::createModelPartSparse(DecompConstraintSet * model,
    vector<int>::iterator vit;
    newIndex = 0;
    for(vit  = model->activeColumns.begin();
-       vit != model->activeColumns.end(); vit++){
+       vit != model->activeColumns.end(); ++vit){
       origIndex = *vit;
       if(integerVars && integerVars[origIndex])
          isInteger  = true;
@@ -628,7 +628,7 @@ MILPBlock_DecompApp::createModelPartSparse(DecompConstraintSet * model,
    //---
    //--- for each row in rowsPart, create the row using sparse mapping
    //---
-   int                      i, k, r, begInd;
+   int                      i, k, begInd;
    const map<int,int>     & origToSparse   = model->getMapOrigToSparse();   
    const CoinPackedMatrix * M              = m_mpsIO.getMatrixByRow(); 
    const int              * matInd         = M->getIndices();
@@ -646,7 +646,7 @@ MILPBlock_DecompApp::createModelPartSparse(DecompConstraintSet * model,
    begInd = 0;
    rowBeg.push_back(0);
    for(i = 0; i < nRowsPart; i++){
-      r = rowsPart[i];
+      int r = rowsPart[i];
       if(m_appParam.UseNames){
 	 const char * rowName = m_mpsIO.rowName(r);
 	 if(rowName)
@@ -692,7 +692,7 @@ void MILPBlock_DecompApp::createModels(){
 
    map<int, vector<int> >::iterator mit;
    nRowsRelax = 0;
-   for(mit = m_blocks.begin(); mit != m_blocks.end(); mit++)
+   for(mit = m_blocks.begin(); mit != m_blocks.end(); ++mit)
       nRowsRelax += static_cast<int>((*mit).second.size());   
    nRowsCore = nRows - nRowsRelax; 
 
@@ -713,10 +713,10 @@ void MILPBlock_DecompApp::createModels(){
    int * rowsCore   = new int[nRowsCore];   
    UtilFillN(rowsMarker, nRows, -1);//-1 will mark core rows
 
-   for(mit = m_blocks.begin(); mit != m_blocks.end(); mit++){
+   for(mit = m_blocks.begin(); mit != m_blocks.end(); ++mit){
       vector<int> & rowsRelax = (*mit).second;
       vector<int>::iterator vit;
-      for(vit = rowsRelax.begin(); vit != rowsRelax.end(); vit++)
+      for(vit = rowsRelax.begin(); vit != rowsRelax.end(); ++vit)
          rowsMarker[*vit] = (*mit).first;
    }
    
@@ -762,7 +762,7 @@ void MILPBlock_DecompApp::createModels(){
    //---
    //--- Construct the relaxation matrices.
    //---
-   for(mit = m_blocks.begin(); mit != m_blocks.end(); mit++){
+   for(mit = m_blocks.begin(); mit != m_blocks.end(); ++mit){
       vector<int> & rowsRelax  = (*mit).second;
       int           nRowsRelax = static_cast<int>(rowsRelax.size());
 
@@ -779,7 +779,7 @@ void MILPBlock_DecompApp::createModels(){
       set<int>::iterator sit;
       set<int> activeColsSet;
       findActiveColumns(rowsRelax, activeColsSet);
-      for(sit = activeColsSet.begin(); sit != activeColsSet.end(); sit++)
+      for(sit = activeColsSet.begin(); sit != activeColsSet.end(); ++sit)
          modelRelax->activeColumns.push_back(*sit);      	 
       
       if(m_appParam.UseSparse){
@@ -812,9 +812,9 @@ void MILPBlock_DecompApp::createModels(){
    
    vector<int>                      ::iterator vi;
    map   <int, DecompConstraintSet*>::iterator mdi;
-   for(mdi = m_modelR.begin(); mdi != m_modelR.end(); mdi++){
+   for(mdi = m_modelR.begin(); mdi != m_modelR.end(); ++mdi){
       vector<int> & activeColumns = (*mdi).second->activeColumns;
-      for(vi = activeColumns.begin(); vi != activeColumns.end(); vi++){
+      for(vi = activeColumns.begin(); vi != activeColumns.end(); ++vi){
 	 colMarker[*vi] = 1;
       }
    }
@@ -843,7 +843,7 @@ void MILPBlock_DecompApp::createModels(){
    //---
    setModelCore(modelCore, "core");
    
-   for(mdi = m_modelR.begin(); mdi != m_modelR.end(); mdi++){
+   for(mdi = m_modelR.begin(); mdi != m_modelR.end(); ++mdi){
       DecompConstraintSet * modelRelax = (*mdi).second;
       //---
       //--- set system in framework

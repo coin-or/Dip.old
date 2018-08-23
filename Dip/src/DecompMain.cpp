@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, and Ted Ralphs//
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, and Ted Ralphs//
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -231,7 +231,7 @@ void blockNumberFinder(DecompParam decompParam,
       histogramTable.open(path1.c_str());
 
       for (histIter = histogram.begin(); histIter != histogram.end();
-            histIter++) {
+            ++histIter) {
          histogramTable << histIter->first << " " << histIter->second << "\n";
       }
 
@@ -319,7 +319,7 @@ void blockNumberFinder(DecompParam decompParam,
 
       while (counter) {
          blockNums.push_back(*setIter);
-         setIter++ ;
+         ++setIter;
          --counter;
       }
    }
@@ -578,7 +578,7 @@ DecompSolverResult* solveDirect(const DecompApp& decompApp)
    //--- as an interface to call standalone branch-and-cut solver
    //---
 
-   OsiSolverInterface *m_problemSI;
+   OsiSolverInterface *m_problemSI = NULL;
 
    if (decompApp.m_param.DecompIPSolver == "SYMPHONY"){
 #ifdef DIP_HAS_SYMPHONY
@@ -633,12 +633,12 @@ DecompSolverResult* solveDirect(const DecompApp& decompApp)
    }
 
    m_problemSI->readMps(fileName.c_str());
-   int numCols    = decompApp.m_mpsIO.getNumCols();
-   int nNodes;
+   int numCols    = decompApp.m_mpsIO.getNumCols(); 
    double objLB   = -m_problemSI->getInfinity();
    double objUB   = m_problemSI->getInfinity();
    double timeLimit = decompApp.m_param.TimeLimit;
    UtilTimer timer;
+   int nNodes(0); 
    timer.start();
    DecompSolverResult* result = new DecompSolverResult(m_problemSI->getInfinity());
    if (decompApp.m_param.DecompIPSolver == "Cbc"){
@@ -704,16 +704,24 @@ DecompSolverResult* solveDirect(const DecompApp& decompApp)
       //--- set the time limit
       //---
       status = CPXsetdblparam(cpxEnv, CPX_PARAM_TILIM, timeLimit);
+
+	  if (status)
+	  {
+		  throw UtilException("CPXsetdblparam failure",
+			  "solveDirect", "DecompAlgoC");
+	  }
+
       //---
       //--- set the thread limit, otherwise CPLEX will use all the resources
       //---
       status = CPXsetintparam(cpxEnv, CPX_PARAM_THREADS,
 			      decompApp.m_param.NumThreadsIPSolver);
       
-      if (status)
-	 throw UtilException("CPXsetdblparam failure",
-			     "solveDirect", "DecompAlgoC");
-      
+	  if (status)
+	  {
+		  throw UtilException("CPXsetintparam failure",
+			  "solveDirect", "DecompAlgoC");
+	  }
       //---
       //--- solve the MILP
       //---

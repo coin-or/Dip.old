@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 /*--------------------------------------------------------------------------
@@ -519,7 +519,7 @@ void UtilGraphLib::read_data(const char* datafile)
 //This function computes the cost of the edge from va to vb
 int UtilGraphLib::compute_icost(const int wtype, const int va, const int vb)
 {
-   double q1, q2, q3, dx, dy, dz;
+   double q2, q3, dx, dy, dz;
    int cost = 0;
    const double RRR      = 6378.388;
    enum DIST {_EXPLICIT, _EUC_2D, _EUC_3D, _MAX_2D, _MAX_3D,
@@ -527,7 +527,7 @@ int UtilGraphLib::compute_icost(const int wtype, const int va, const int vb)
              };
 
    if (wtype == _GEO) {
-      q1 = cos( coordy[va] - coordy[vb] );
+      double q1 = cos( coordy[va] - coordy[vb] );
       q2 = cos( coordx[va] - coordx[vb] );
       q3 = cos( coordx[va] + coordx[vb] );
       cost = (int) (RRR * acos(0.5 * ((1.0 + q1) * q2 - (1.0 - q1) * q3)) + 1.0);

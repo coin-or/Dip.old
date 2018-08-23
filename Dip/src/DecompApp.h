@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -203,7 +203,7 @@ public:
    // it harder to view this as an interface class - it is unclear
    // what the user must do vs can do
    inline void setModelCore(DecompConstraintSet* model,
-                            const std::string          modelName) {
+                            const std::string       &   modelName) {
       assert(model);
 
       if (!model->hasPrepRun()) {
@@ -239,7 +239,7 @@ public:
     * not deriving the function DecompApp::solveRelaxed.
     */
    void setModelRelax(DecompConstraintSet* model,
-		      const std::string    modelName = "",
+		      const std::string  &  modelName = "",
 		      const int            blockId   = 0);
 
    /**
@@ -247,7 +247,7 @@ public:
     *  (for a particular block).
     */
    void setModelRelaxNest(DecompConstraintSet* model,
-			  const std::string    modelName,
+			  const std::string  &  modelName,
 			  const int            blockId = 0);
 
    /**

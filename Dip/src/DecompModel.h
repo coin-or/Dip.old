@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, and Ted Ralphs//
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, and Ted Ralphs//
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -46,7 +46,7 @@ public:
    void setModel    (DecompConstraintSet* model) {
       m_model = model;
    }
-   void setModelName(const std::string modelName) {
+   void setModelName(const std::string & modelName) {
       m_modelName = modelName;
    }
    void setBlockId  (const int blockId) {
@@ -54,6 +54,15 @@ public:
    }
 
 public:
+   /*
+   DecompModel() :
+      m_model(NULL),
+      m_modelName(""),
+      m_blockId(0),
+      m_utilParam(NULL)
+   {
+   }
+   */
    DecompModel(const DecompModel& appModel) {
       m_model     = appModel.m_model;
       m_modelName = appModel.m_modelName;
@@ -61,6 +70,7 @@ public:
       m_utilParam = appModel.m_utilParam;
    }
    
+   DecompModel() {}; 
    DecompModel& operator=(const DecompModel& rhs) {
       m_model     = rhs.m_model;
       m_modelName = rhs.m_modelName;
@@ -75,8 +85,8 @@ public:
       m_blockId  (0),
       m_utilParam(&utilParam){};
 
-   DecompModel(DecompConstraintSet* model,
-	       std::string          modelName,
+   DecompModel( DecompConstraintSet* model,
+	       const std::string &           modelName,
 	       int                  blockId,
 	       UtilParameters&      utilParam) :
       m_model    (model),
@@ -104,7 +114,7 @@ public:
       return m_counter;
    }
 
-   void setOsi(OsiSolverInterface* osi) {
+   void setOsi( OsiSolverInterface* osi) {
       m_osi = osi;
 
       if (!m_colIndices) {
@@ -136,7 +146,7 @@ public:
          std::map<int, int>::const_iterator mcit;
 
          for (mcit = origToSparse.begin();
-               mcit != origToSparse.end(); mcit++) {
+               mcit != origToSparse.end(); ++mcit) {
             m_osi->setObjCoeff(mcit->second,           //sparse-index
                                objCoeff[mcit->first]); //original-index
          }
@@ -160,7 +170,7 @@ public:
          std::map<int, int>::const_iterator mcit;
 
          for (mcit  = origToSparse.begin();
-               mcit != origToSparse.end(); mcit++) {
+               mcit != origToSparse.end(); ++mcit) {
             m_osi->setColLower(mcit->second,        //sparse-index
                                colLB[mcit->first]); //original-index
             m_osi->setColUpper(mcit->second,        //sparse-index
@@ -174,7 +184,7 @@ public:
          if (activeColumns.size()) {
             std::vector<int>::iterator vi;
 
-            for (vi = activeColumns.begin(); vi != activeColumns.end(); vi++) {
+            for (vi = activeColumns.begin(); vi != activeColumns.end(); ++vi) {
                //printf("setColBounds i:%d to LB:%g UB:%g\n",
                //     *vi, colLB[*vi], colUB[*vi]);
                m_osi->setColBounds(*vi, colLB[*vi], colUB[*vi]);
@@ -239,6 +249,7 @@ public:
                         const double   feasConTol = 1.0e-4);
 
 public:
+
    DecompSubModel(const DecompModel& appModel) :
       DecompModel(appModel),
       m_osi         (NULL),
@@ -252,6 +263,17 @@ public:
       return *this;
    }
 
+
+   /*
+   DecompSubModel() :
+      DecompModel(),
+      m_osi(NULL),
+      m_numCols(0),
+      m_colIndices(NULL),
+      m_counter(0)
+   {
+   }
+   */
    DecompSubModel(UtilParameters &utilParam) :
       DecompModel(utilParam),
       m_osi         (NULL),

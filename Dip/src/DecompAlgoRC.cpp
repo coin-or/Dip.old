@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -168,7 +168,7 @@ void DecompAlgoRC::phaseDone()
    UTIL_DELARR(obj);
    UTIL_DELARR(zeroSol);
 #endif
-   m_status = DecompAlgo::solutionUpdate(PHASE_UNKNOWN, 99999, 99999);
+   m_status = DecompAlgo::solutionUpdate(PHASE_UNKNOWN, true, 99999, 99999);
 
    //---
    //--- check if IP feasible (are we done?)
@@ -198,7 +198,7 @@ void DecompAlgoRC::phaseDone()
       DecompSolution* viBest = NULL;
       double bestBoundUB = m_nodeStats.objBest.second;
 
-      for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); vi++) {
+      for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); ++vi) {
          const DecompSolution* xhatIPFeas = *vi;
 
          if (isIPFeasible(xhatIPFeas->getValues())) {
@@ -359,7 +359,7 @@ int DecompAlgoRC::generateVars(DecompVarList&     newVars,
    DecompVarList::iterator it;
    double varRedCost;
 
-   for (it = potentialVars.begin(); it != potentialVars.end(); it++) {
+   for (it = potentialVars.begin(); it != potentialVars.end(); ++it) {
       varRedCost = (*it)->getReducedCost();
       newVars.push_back(*it);
 

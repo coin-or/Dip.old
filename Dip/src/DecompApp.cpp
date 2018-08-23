@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -59,9 +59,6 @@ void DecompApp::startupLog()
             <<   "\nDistributed under the Eclipse Public License 1.0"
             <<   "\nVersion: " << DIP_VERSION
             <<   "\nBuild Date: " << __DATE__
-#ifdef DIP_SVN_REV
-            <<   "\nRevision Number: " << DIP_SVN_REV
-#endif
             << "\n========================================================"
             << "\n========================================================"
             << "\n";
@@ -432,14 +429,15 @@ void DecompApp::readBlockFile()
       int numBlocks = 0;
       string tmp, rowName;
 
-      while (!numBlocks) {
+      while (!numBlocks)
+      {
          is >> tmp;
 
-         if (tmp == "NBLOCKS") {
+         if (tmp == "NBLOCKS")
+         {
             is >> numBlocks;
          }
       }
-
       while (tmp != "BLOCK") {
          is >> tmp;
       }
@@ -590,7 +588,7 @@ void DecompApp::readBlockFile()
    //---
    blockId = 0;
 
-   for (blocksIt = blocks.begin(); blocksIt != blocks.end(); blocksIt++) {
+   for (blocksIt = blocks.begin(); blocksIt != blocks.end(); ++blocksIt) {
       m_blocks.insert(make_pair(blockId, blocksIt->second));
       blockId++;
    }
@@ -599,10 +597,10 @@ void DecompApp::readBlockFile()
       map<int, vector<int> >::iterator mit;
       vector<int>           ::iterator vit;
 
-      for (mit = m_blocks.begin(); mit != m_blocks.end(); mit++) {
+      for (mit = m_blocks.begin(); mit != m_blocks.end(); ++mit) {
          (*m_osLog) << "Block " << (*mit).first << " : ";
 
-         for (vit = (*mit).second.begin(); vit != (*mit).second.end(); vit++) {
+         for (vit = (*mit).second.begin(); vit != (*mit).second.end(); ++vit) {
             (*m_osLog) << (*vit) << " ";
          }
 
@@ -643,13 +641,13 @@ void DecompApp::readInitSolutionFile(DecompVarList& initVars)
    map<int, int> colIndexToBlockIndex;
    map<int, DecompConstraintSet*>::iterator mit;
 
-   for (mit = m_modelR.begin(); mit != m_modelR.end(); mit++) {
+   for (mit = m_modelR.begin(); mit != m_modelR.end(); ++mit) {
       int                   blockIndex = mit->first;
       DecompConstraintSet* model      = mit->second;
       const vector<int>& activeColumns = model->getActiveColumns();
       vector<int>::const_iterator vit;
 
-      for (vit = activeColumns.begin(); vit != activeColumns.end(); vit++) {
+      for (vit = activeColumns.begin(); vit != activeColumns.end(); ++vit) {
          colIndexToBlockIndex.insert(make_pair(*vit, blockIndex));
       }
    }
@@ -666,7 +664,7 @@ void DecompApp::readInitSolutionFile(DecompVarList& initVars)
    //---
    //--- create variables for each block of each solution
    //---
-   int    solutionIndex, colIndex, blockIndex;
+   int    solutionIndex, blockIndex;
    string colName;
    double colValue;
    char   line[1000];
@@ -687,7 +685,7 @@ void DecompApp::readInitSolutionFile(DecompVarList& initVars)
          break;
       }
 
-      colIndex        = colNameToIndex[colName];
+      int colIndex        = colNameToIndex[colName];
       blockIndex      = colIndexToBlockIndex[colIndex];
       /*
       const double* colLB = m_modelC->getColLB();
@@ -726,7 +724,7 @@ void DecompApp::readInitSolutionFile(DecompVarList& initVars)
    //---
    //--- create DecompVar's from varTemp
    //---
-   for (it = varTemp.begin(); it != varTemp.end(); it++) {
+   for (it = varTemp.begin(); it != varTemp.end(); ++it) {
       const pair<int, int>&                  indexPair  = it->first;
       pair< vector<int>, vector<double> >& columnPair = it->second;
       double      origCost = 0.0;
@@ -772,12 +770,12 @@ void DecompApp::findActiveColumns(const vector<int>& rowsPart,
    //---
    //--- which columns are present in this part's rows
    //---
-   int k, r;
+   int k;
 
    vector<int>::const_iterator it;
 
-   for (it = rowsPart.begin(); it != rowsPart.end(); it++) {
-      r    = *it;
+   for (it = rowsPart.begin(); it != rowsPart.end(); ++it) {
+      int r    = *it;
       indR = ind + beg[r];
 
       for (k = 0; k < len[r]; k++) {
@@ -831,10 +829,10 @@ void DecompApp::createModelPart(DecompConstraintSet* model,
    //--- set the row upper and lower bounds
    //--- set the col upper and lower bounds
    //---
-   int i, r;
+   int i;
 
    for (i = 0; i < nRowsPart; i++) {
-      r = rowsPart[i];
+      int r = rowsPart[i];
 
       if (m_param.UseNames) {
          const char* rowName = NULL;
@@ -949,7 +947,7 @@ void DecompApp::createModelPartSparse(DecompConstraintSet* model,
    newIndex = 0;
 
    for (vit  = model->activeColumns.begin();
-         vit != model->activeColumns.end(); vit++) {
+         vit != model->activeColumns.end(); ++vit) {
       origIndex = *vit;
 
       if (integerVars && integerVars[origIndex]) {
@@ -1111,7 +1109,7 @@ void DecompApp::createModels()
    map<int, vector<int> >::iterator mit;
    nRowsRelax = 0;
 
-   for (mit = m_blocks.begin(); mit != m_blocks.end(); mit++) {
+   for (mit = m_blocks.begin(); mit != m_blocks.end(); ++mit) {
       nRowsRelax += static_cast<int>((*mit).second.size());
    }
 
@@ -1132,11 +1130,11 @@ void DecompApp::createModels()
    int* rowsCore   = new int[nRowsCore];
    UtilFillN(rowsMarker, nRows, -1);//-1 will mark core rows
 
-   for (mit = m_blocks.begin(); mit != m_blocks.end(); mit++) {
+   for (mit = m_blocks.begin(); mit != m_blocks.end(); ++mit) {
       vector<int>& rowsRelax = (*mit).second;
       vector<int>::iterator vit;
 
-      for (vit = rowsRelax.begin(); vit != rowsRelax.end(); vit++) {
+      for (vit = rowsRelax.begin(); vit != rowsRelax.end(); ++vit) {
          rowsMarker[*vit] = (*mit).first;
       }
    }
@@ -1164,6 +1162,7 @@ void DecompApp::createModels()
    double* objective = new double[nCols];
 
    if (!objective) {
+      delete objective;  
       throw UtilExceptionMemory("createModels", "DecompApp");
    }
 
@@ -1195,7 +1194,7 @@ void DecompApp::createModels()
    //---
    //--- Construct the relaxation matrices.
    //---
-   for (mit = m_blocks.begin(); mit != m_blocks.end(); mit++) {
+   for (mit = m_blocks.begin(); mit != m_blocks.end(); ++mit) {
       vector<int>& rowsRelax  = (*mit).second;
       int           nRowsRelax = static_cast<int>(rowsRelax.size());
 
@@ -1212,7 +1211,7 @@ void DecompApp::createModels()
       set<int> activeColsSet;
       findActiveColumns(rowsRelax, activeColsSet);
 
-      for (sit = activeColsSet.begin(); sit != activeColsSet.end(); sit++) {
+      for (sit = activeColsSet.begin(); sit != activeColsSet.end(); ++sit) {
          modelRelax->activeColumns.push_back(*sit);
       }
 
@@ -1248,10 +1247,10 @@ void DecompApp::createModels()
    vector<int>                      ::iterator vi;
    map   <int, DecompConstraintSet*>::iterator mdi;
 
-   for (mdi = m_modelR.begin(); mdi != m_modelR.end(); mdi++) {
+   for (mdi = m_modelR.begin(); mdi != m_modelR.end(); ++mdi) {
       vector<int>& activeColumns = (*mdi).second->activeColumns;
 
-      for (vi = activeColumns.begin(); vi != activeColumns.end(); vi++) {
+      for (vi = activeColumns.begin(); vi != activeColumns.end(); ++vi) {
          colMarker[*vi] = 1;
       }
    }
@@ -1289,7 +1288,7 @@ void DecompApp::createModels()
    //---
    setModelCore(modelCore, "core");
 
-   for (mdi = m_modelR.begin(); mdi != m_modelR.end(); mdi++) {
+   for (mdi = m_modelR.begin(); mdi != m_modelR.end(); ++mdi) {
       DecompConstraintSet* modelRelax = (*mdi).second;
       //---
       //--- set system in framework
@@ -1637,8 +1636,8 @@ void DecompApp::singlyBorderStructureDetection()
       // coupling net set, and then removes it
       std::vector<int> temp;
 
-      for (rowIter = numRowIndex.begin(); rowIter != numRowIndex.end(); rowIter ++) {
-         for (netIter = netSet.begin(); netIter != netSet.end(); netIter ++) {
+      for (rowIter = numRowIndex.begin(); rowIter != numRowIndex.end(); ++rowIter) {
+         for (netIter = netSet.begin(); netIter != netSet.end(); ++netIter ) {
             if ((*rowIter) == (*netIter)) {
                temp.push_back(*rowIter);
             }
@@ -1655,7 +1654,7 @@ void DecompApp::singlyBorderStructureDetection()
          blockdata << "BLOCK " << (truePartNum + 1) << "\n";
 
          for (rowIter = numRowIndex.begin(); rowIter != numRowIndex.end();
-               rowIter++) {
+               ++rowIter) {
             if (m_param.InstanceFormat == "MPS") {
                blockdata << m_mpsIO.rowName(*rowIter) << "\n";
             } else if (m_param.InstanceFormat == "LP") {
@@ -1719,7 +1718,7 @@ void DecompApp::singlyBorderStructureDetection()
 
 //===========================================================================//
 void DecompApp::setModelRelax(DecompConstraintSet* model,
-			      const std::string    modelName,
+			      const std::string  &  modelName,
 			      const int            blockId) {
    if (model && !model->hasPrepRun()) {
       model->prepareModel(m_infinity);
@@ -1744,7 +1743,7 @@ void DecompApp::setModelRelax(DecompConstraintSet* model,
 
 //===========================================================================//
 void DecompApp::setModelRelaxNest(DecompConstraintSet* model,
-				  const std::string    modelName,
+				  const std::string &   modelName,
 				  const int            blockId) {
    assert(model);
    

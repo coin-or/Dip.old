@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -90,7 +90,7 @@ void DecompConstraintSet::prepareModel(double infinity, bool modelIsCore)
       activeColumns.reserve(m_sparseToOrig.size());
 
       for (mcit  = m_sparseToOrig.begin();
-            mcit != m_sparseToOrig.end(); mcit++) {
+            mcit != m_sparseToOrig.end(); ++mcit) {
          activeColumnsSet.insert(mcit->second);
       }
 
@@ -98,7 +98,7 @@ void DecompConstraintSet::prepareModel(double infinity, bool modelIsCore)
       activeColumns.clear();
 
       for (sit  = activeColumnsSet.begin();
-            sit != activeColumnsSet.end(); sit++) {
+            sit != activeColumnsSet.end(); ++sit) {
          activeColumns.push_back(*sit);
       }
    } else {
@@ -121,7 +121,7 @@ void DecompConstraintSet::prepareModel(double infinity, bool modelIsCore)
    //---
    vector<int>::iterator vit;
 
-   for (vit = activeColumns.begin(); vit != activeColumns.end(); vit++) {
+   for (vit = activeColumns.begin(); vit != activeColumns.end(); ++vit) {
       activeColumnsS.insert(*vit);
    }
 
@@ -139,7 +139,7 @@ void DecompConstraintSet::prepareModel(double infinity, bool modelIsCore)
    if (modelIsCore) {
       UtilFillN(integerMark, numColsOrig, 'C');
 
-      for (vit = integerVars.begin(); vit != integerVars.end(); vit++) {
+      for (vit = integerVars.begin(); vit != integerVars.end(); ++vit) {
          integerMark[*vit] = 'I';
       }
    }
@@ -235,7 +235,7 @@ void DecompConstraintSet::fixNonActiveColumns()
    UtilFillN(marker, numCols, 0);
    vector<int>::iterator vi;
 
-   for (vi = activeColumns.begin(); vi != activeColumns.end(); vi++) {
+   for (vi = activeColumns.begin(); vi != activeColumns.end(); ++vi) {
       marker[*vi] = 1;
    }
 

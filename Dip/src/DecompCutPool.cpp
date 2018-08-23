@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -65,7 +65,7 @@ bool DecompCutPool::calcViolations(const double*             x,
 {
    bool found_violated_cut = false;
 
-   for (DecompCutPool::iterator vi = first; vi != last; vi++) {
+   for (DecompCutPool::iterator vi = first; vi != last; ++vi) {
       // ---
       // --- calculate and set the violations for the cuts
       // --- which are pointed to in this pool, if any have vio > 0,
@@ -91,7 +91,7 @@ void DecompCutPool::reExpand(const DecompVarList& vars,
    //---
    DecompCutPool::iterator vi;
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       //only need to do this reformulation in PC...
       //make this re-expansion a function? - also called in addCutsToPool
       CoinPackedVector* rowReform = createRowReform(n_coreCols,
@@ -136,7 +136,6 @@ DecompCutPool::createRowReform(const int                n_coreCols,
    //--- So,   lam[1]'s coeff   = a[1] s1[1] + a[2] s1[2]
    //---       lam[2]'s coeff   = a[1] s2[1] + a[2] s2[2]
    //---
-   double             coeff;
    int                colIndex;
    CoinPackedVector* rowReform = new CoinPackedVector();
    //---
@@ -147,13 +146,13 @@ DecompCutPool::createRowReform(const int                n_coreCols,
    DecompVarList::const_iterator vli;
    vector<string> noNames;
 
-   for (vli = vars.begin(); vli != vars.end(); vli++) {
+   for (vli = vars.begin(); vli != vars.end(); ++vli) {
       //printf("REFORM ROW for CUT on var master index = %d\n",
       //    (*vli)->getColMasterIndex());
       //UtilPrintPackedVector((*vli)->m_s, &cout,
       //		   noNames,
       //		   rowDense);
-      coeff = (*vli)->m_s.dotProduct(rowDense);
+      double coeff = (*vli)->m_s.dotProduct(rowDense);
 
       //printf("COEFF using dotProduct = %12.10f\n", coeff);
       if (fabs(coeff) > DecompZero) {
@@ -175,7 +174,7 @@ void DecompCutPool::print(ostream* os) const
 {
    vector<DecompWaitingRow>::const_iterator vi;
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       (*vi).getCutPtr()->print(os);
    }
 }

@@ -165,7 +165,7 @@ int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
 int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
                                      vector<int>&          whichKnaps)
 {
-   int          i, j, b, colIndex;
+   int          i, j, colIndex;
    int          status     = GAPStatusOk;
    int          nTasks     = m_instance.getNTasks();    //n
    int          nMachines  = m_instance.getNMachines(); //m
@@ -223,8 +223,8 @@ int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
    //---
    vector<int>::iterator it;
 
-   for (it = whichKnaps.begin(); it != whichKnaps.end(); it++) {
-      b = *it;
+   for (it = whichKnaps.begin(); it != whichKnaps.end(); ++it) {
+      int b = *it;
 
       for (i = 0; i < nMachines; i++)
          for (j = 0; j < nTasks; j++)
@@ -248,7 +248,7 @@ int GAP_DecompApp::createModelPartKP(DecompConstraintSet* model,
    const map<int, int>&   origToSparse = model->getMapOrigToSparse();
    map<int, int>::const_iterator mit;
 
-   for (it = whichKnaps.begin(); it != whichKnaps.end(); it++) {
+   for (it = whichKnaps.begin(); it != whichKnaps.end(); ++it) {
       i = *it;
       CoinPackedVector row;
       string           rowName = "k(i_" + UtilIntToStr(i) + ")";

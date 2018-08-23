@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -30,7 +30,6 @@ bool DecompVar::doesSatisfyBounds(int                     denseLen,
                                   const double*           ubs)
 {
    int            j;
-   double         xj;//, lb, ub;
    vector<int> ::const_iterator it;
    map<int, int>::const_iterator mcit;
    DecompConstraintSet* modelRelax    = model.getModel();
@@ -41,9 +40,9 @@ bool DecompVar::doesSatisfyBounds(int                     denseLen,
    //---
    fillDenseArr(denseLen, denseArr);//TODO: expensive...
 
-   for (it = activeColumns.begin(); it != activeColumns.end(); it++) {
+   for (it = activeColumns.begin(); it != activeColumns.end(); ++it) {
       j  = *it;
-      xj = denseArr[j];
+      double xj = denseArr[j];
 
       if (xj < (lbs[j] - DecompEpsilon) ||
             xj > (ubs[j] + DecompEpsilon)) {

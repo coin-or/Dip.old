@@ -319,7 +319,7 @@ void MMKP_DecompApp::createModelPartMDKP(DecompConstraintSet * model,
    //--- Multi-Dimensional Knapsack Polytope
    //---  sum{i in 1..n, j in 1..l[i]}  r[k,i,j] x[i,j] <= b[k], k in K
    //---   
-   int             i, j, colIndex;
+   int             i, j;
    int             nGroupRows    = m_instance.getNGroupRows();
    int             nGroupCols    = m_instance.getNGroupCols();
    const double *  capacity      = m_instance.getCapacity();
@@ -341,10 +341,10 @@ void MMKP_DecompApp::createModelPartMDKP(DecompConstraintSet * model,
    //---  sum{i in 1..n, j in 1..l[i]}  r[k,i,j] x[i,j] <= b[k], k in K
    //---      
    vector<int>::const_iterator vi;
-   for(vi = whichKnaps.begin(); vi != whichKnaps.end(); vi++){
+   for(vi = whichKnaps.begin(); vi != whichKnaps.end(); ++vi){
       CoinPackedVector   rowK;
       const double     * weightK = weight[*vi];
-      colIndex = 0;
+      int colIndex = 0;
       for(i = 0; i < nGroupRows; i++){
          for(j = 0; j < nGroupCols; j++){
             rowK.insert(colIndex, weightK[colIndex]);
@@ -448,7 +448,7 @@ void MMKP_DecompApp::createModelPartMCKP(DecompConstraintSet * model,
    //---  s.t. sum{i in 1..n, j in 1..l[i]}  r[k,i,j] x[i,j] <= b[k]
    //---   
    vector<int>::const_iterator vi;
-   for(vi = whichKnaps.begin(); vi != whichKnaps.end(); vi++){
+   for(vi = whichKnaps.begin(); vi != whichKnaps.end(); ++vi){
       CoinPackedVector   rowK;
       const double     * weightK = weight[*vi];
       colIndex  = 0;

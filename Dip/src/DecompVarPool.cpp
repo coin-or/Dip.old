@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -75,7 +75,7 @@ bool DecompVarPool::isParallel(const DecompVarList&     vars,
       return false;
    }
 
-   for (vi = vars.begin(); vi != vars.end(); vi++) {
+   for (vi = vars.begin(); vi != vars.end(); ++vi) {
       //---
       //--- if different blocks, it doesn't matter if rest of var
       //---   is close to parallel
@@ -153,7 +153,7 @@ bool DecompVarPool::isDuplicate(const DecompVarList&     vars,
    DecompVarList::const_iterator vi;
    DecompVar* var = wcol.getVarPtr();
 
-   for (vi = vars.begin(); vi != vars.end(); vi++) {
+   for (vi = vars.begin(); vi != vars.end(); ++vi) {
       if (((*vi)->getBlockId() == var->getBlockId()) &&
             ((*vi)->getStrHash() == var->getStrHash())) {
          return true;
@@ -169,7 +169,7 @@ bool DecompVarPool::isDuplicate(const DecompWaitingCol& wcol)
    vector<DecompWaitingCol>::const_iterator vi;
    DecompVar* var1 = wcol.getVarPtr();
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       DecompVar* var2 = (*vi).getVarPtr();
 
       if ((var1->getBlockId() == var2->getBlockId()) &&
@@ -190,7 +190,7 @@ bool DecompVarPool::setReducedCosts(const double*             u,
    //printf("\nHERE DecompVarPool::setReducedCosts");
    bool found_negrc_var = false;
 
-   for (DecompVarPool::iterator vi = first; vi != last; vi++) {
+   for (DecompVarPool::iterator vi = first; vi != last; ++vi) {
       // ---
       // --- calculate and set the reduced costs for the variables
       // --- which are pointed to in this pool, if any have rc < 0,
@@ -216,7 +216,7 @@ void DecompVarPool::reExpand(const DecompConstraintSet& modelCore,
    double* denseCol = new double[modelCore.getNumRows() + 1];
    vector<DecompWaitingCol>::iterator vi;
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       // ---
       // --- get dense column = A''s, append convexity constraint on end
       // ---
@@ -241,7 +241,7 @@ void DecompVarPool::print(double infinity, ostream* os) const
 {
    vector<DecompWaitingCol>::const_iterator vi;
 
-   for (vi = begin(); vi != end(); vi++) {
+   for (vi = begin(); vi != end(); ++vi) {
       (*vi).getVarPtr()->print(infinity, os);
    }
 }

@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -69,15 +69,13 @@ AlpsTreeNode* AlpsDecompModel::createRoot()
 //===========================================================================//
 bool AlpsDecompModel::fathomAllNodes()
 {
-   double feasBound   = ALPS_OBJ_MAX;
    double relBound    = ALPS_OBJ_MAX;
    double gapVal      = ALPS_OBJ_MAX;
    double currAbsGap_ = ALPS_OBJ_MAX;
    double currRelGap_ = ALPS_OBJ_MAX;
-   AlpsTreeNode* bestNode = NULL;
    // Compute gap
-   feasBound = broker_->getIncumbentValue();
-   bestNode  = broker_->getBestNode();
+   double feasBound = broker_->getIncumbentValue();
+   AlpsTreeNode* bestNode  = broker_->getBestNode();
 
    //printf("feasBound= %12.10f\n", feasBound);
    if (bestNode) {
@@ -161,9 +159,8 @@ AlpsExitStatus AlpsDecompModel::solve()
    m_nodesProcessed = alpsBroker.getNumNodesProcessed();
 
    if (alpsBroker.getSolStatus() != AlpsExitStatusOptimal) {
-      AlpsTreeNode* bestNode = NULL;
       //if stops on time, have the nodes been free'd?
-      bestNode = alpsBroker.getBestNode();
+	  AlpsTreeNode* bestNode = alpsBroker.getBestNode();
 
       if (bestNode) {
          m_bestLB = bestNode->getQuality();

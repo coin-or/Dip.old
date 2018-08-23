@@ -21,10 +21,10 @@
 PyObject* pyTupleList_FromDoubleArray(const double* values, PyObject* pList)
 {
    int len = PyObject_Length(pList);
-   PyObject* pTupleList = PyList_New(len), *pObj;
+   PyObject* pTupleList = PyList_New(len);
 
    for (int i = 0; i < len; i++) {
-      pObj = PyList_GetItem(pList, i);
+      PyObject* pObj = PyList_GetItem(pList, i);
       Py_XINCREF(pObj);
       insertTupleToPyList(pTupleList, i, pObj, PyFloat_FromDouble(values[i]));
    }
@@ -94,7 +94,7 @@ PyObject* pyTupleList_FromNode(DecompAlgo* algo, DecompStatus decompStatus)
                                    (algo->getCurrentNode()->getDesc())->getBranchedDir()));
    // Copy the current solution into a Python list
    const double* xhat = algo->getXhat();
-   DippyDecompApp* app = (DippyDecompApp*)algo->getDecompApp();
+   const DippyDecompApp* app = dynamic_cast<const DippyDecompApp*>(algo->getDecompApp());
    PyObject* pSolutionList = pyTupleList_FromDoubleArray(xhat,
                              app->m_colList);
    addTupleToPyList(pOutput, PyString_FromString("xhat"), pSolutionList);
@@ -178,12 +178,12 @@ void pyColDict_AsPairedVector(PyObject* pColDict, vector<pair<int, double> >& ve
 {
    int len = PyObject_Length(pColDict);
    vec.clear();
-   PyObject* pKeys = PyDict_Keys(pColDict), *pCol;
+   PyObject* pKeys = PyDict_Keys(pColDict);
    double value;
    int index;
 
    for (int i = 0; i < len; i++) {
-      pCol = PyList_GetItem(pKeys, i);
+      PyObject* pCol = PyList_GetItem(pKeys, i);
       value = PyFloat_AsDouble(PyDict_GetItem(pColDict, pCol));
       index = indices[pCol];
 
@@ -216,12 +216,11 @@ int pyColDict_AsPackedArrays(PyObject* pColDict, map<PyObject*, int> indices, in
    *inds = new int[len];
    *vals = new double[len];
    PyObject* pKeys = PyDict_Keys(pColDict);
-   PyObject* pCol;
    double value;
    int index;
 
    for (int i = 0; i < len; i++) {
-      pCol = PyList_GetItem(pKeys, i);
+      PyObject* pCol = PyList_GetItem(pKeys, i);
       value = PyFloat_AsDouble(PyDict_GetItem(pColDict, pCol));
       index = indices[pCol];
 

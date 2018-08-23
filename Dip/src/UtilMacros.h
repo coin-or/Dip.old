@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -84,7 +84,7 @@ enum UtilStatus {
 #define UtilAssert(expression,errorMsg,os) assert(expresssion)
 #else
 inline void UtilAssert(bool      expression,
-                       std::string    errorMsg,
+                       std::string &   errorMsg,
                        std::ostream* os)
 {
    //---
@@ -138,7 +138,7 @@ UtilPrintVector(const std::vector<T>& v,
 {
    typename std::vector<T>::const_iterator it;
 
-   for (it = v.begin(); it != v.end(); it++) {
+   for (it = v.begin(); it != v.end(); ++it) {
       (*os) << *it << " ";
    }
 
@@ -153,7 +153,7 @@ UtilPrintVector(const std::vector<T>&       v,
 {
    typename std::vector<T>::const_iterator it;
 
-   for (it = v.begin(); it != v.end(); it++) {
+   for (it = v.begin(); it != v.end(); ++it) {
       (*os) << std::setw(5) << *it << " -> "
             << std::setw(25) << label[*it] << std::endl;
    }
@@ -167,7 +167,7 @@ UtilPrintList(const std::list<T>& v,
    typename std::list<T>::const_iterator it;
    (*os) << "\n";
 
-   for (it = v.begin(); it != v.end(); it++) {
+   for (it = v.begin(); it != v.end(); ++it) {
       (*os) << *it << " ";
    }
 }
@@ -613,7 +613,7 @@ void UtilDeleteVectorPtr(std::vector<T*>& vectorPtr,
 {
    typename std::vector<T*>::iterator it;
 
-   for (it = first; it != last; it++) {
+   for (it = first; it != last; ++it) {
       delete *it;
    }
 
@@ -633,7 +633,7 @@ template <class T> void UtilDeleteListPtr(std::list<T*>& listPtr,
 {
    typename std::list<T*>::iterator it;
 
-   for (it = first; it != last; it++) {
+   for (it = first; it != last; ++it) {
       delete *it;
    }
 
@@ -654,7 +654,7 @@ void UtilDeleteMapPtr(std::map<S, T*>& mapPtr,
 {
    typename std::map<S, T*>::iterator it;
 
-   for (it = first; it != last; it++) {
+   for (it = first; it != last; ++it) {
       delete (*it).second;
    }
 
@@ -675,7 +675,7 @@ void UtilDeleteMapVecPtr(std::map<S, std::vector<T*> >& mapPtr,
 {
    typename std::map<S, std::vector<T*> >::iterator it;
 
-   for (it = first; it != last; it++) {
+   for (it = first; it != last; ++it) {
       UtilDeleteVectorPtr((*it).second);
    }
 
@@ -933,5 +933,39 @@ inline int UtilOpenFile(std::ifstream&      is,
 }
 
 
+//#ifndef OptMemUsage_h__
+//#define OptMemUsage_h__
 
+/*
+* Author:  David Robert Nadeau
+* Site:    http://NadeauSoftware.com/
+* License: Creative Commons Attribution 3.0 Unported License
+*          http://creativecommons.org/licenses/by/3.0/deed.en_US
+*/
+
+#include <cstddef>
+
+namespace OptMemUsage
+{
+   /**
+   * Returns the peak (maximum so far) resident set size (physical
+   * memory use) measured in bytes, or zero if the value cannot be
+   * determined on this OS.
+   */
+   std::size_t getPeakRSS();
+
+   /**
+   * Returns the current resident set size (physical memory use) measured
+   * in bytes, or zero if the value cannot be determined on this OS.
+   */
+   std::size_t getCurrentRSS();
+
+   void printMemUsage();
+
+   const int KB_BYTES = 1024;
+   const int MB_BYTES = 1024 * KB_BYTES;
+   const int GB_BYTES = 1024 * MB_BYTES;
+}
+
+//#endif // OptMemUsage_h__
 #endif

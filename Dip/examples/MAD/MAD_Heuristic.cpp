@@ -101,7 +101,7 @@ int MAD_DecompApp::heuristicGreedy(vector<GreedyPoint>     & greedyPoints,
       for(bp = 0; bp < m_beta; bp++){
          if(bp == b)
             continue;
-         for(vit = blocks[bp].begin(); vit != blocks[bp].end(); vit++){
+         for(vit = blocks[bp].begin(); vit != blocks[bp].end(); ++vit){
             if(GRAPH_IS_EDGE_FAST(m_conflictGraph, i, *vit)){
                assignOk = false;
                break;
@@ -127,7 +127,7 @@ int MAD_DecompApp::heuristicGreedy(vector<GreedyPoint>     & greedyPoints,
    double * greedySol    = m_auxMemPool.dblArrNCoreCols;
    UtilFillN(greedySol, n_origCols, 0.0);
    for(b = 0; b < m_beta; b++){
-      for(vit = blocks[b].begin(); vit != blocks[b].end(); vit++){
+      for(vit = blocks[b].begin(); vit != blocks[b].end(); ++vit){
 	 xInd              = xIndex(*vit,b);
          greedySol[xInd]   = 1.0;
 	 solValueOrigCost += origCost[xInd];
@@ -135,7 +135,7 @@ int MAD_DecompApp::heuristicGreedy(vector<GreedyPoint>     & greedyPoints,
    }
    if(redCost){
       for(b = 0; b < m_beta; b++){
-	 for(vit = blocks[b].begin(); vit != blocks[b].end(); vit++){
+	 for(vit = blocks[b].begin(); vit != blocks[b].end(); ++vit){
 	    solValueRedCost += redCost[xIndex(*vit,b)];
 	 }
       }

@@ -50,8 +50,9 @@ int SDPUC_Instance::readInstance(string & fileName,
             return 1;
          }
          m_problemName = name;
-         m_arcs        = new arc[m_numArcs + (addDummyArcs ? 0 : 0)];
-         if(!m_arcs)
+         //m_arcs        = new arc[m_numArcs + (addDummyArcs ? 0 : 0)];
+         m_arcs = new arc[m_numArcs];    
+	 if(!m_arcs)
             throw UtilExceptionMemory("readInstance", "MCF_DecompApp");
          m_nodes = new node[m_numNodes];
          if(!m_nodes)
@@ -112,11 +113,10 @@ int SDPUC_Instance::readInstance(string & fileName,
          }*/
 		 
 		 nt = 0;
-		 char * pch;
 		 //printf ("Splitting string \"%s\" into tokens:\n",line);
-		 pch = strtok (line,"\t");  //stripping the initial 't'
+		 //char* pch = strtok (line,"\t");  //stripping the initial 't'
 		 //printf ("%s ",pch);
-		 pch = strtok (NULL, "\t"); //timeseries id
+		 char* pch = strtok (NULL, "\t"); //timeseries id
 		 m_timeseries[ts_read].id = atoi(pch);
 		 //printf ("%s\n",pch);
 		 while (pch != NULL && nt < m_numTimeperiods)

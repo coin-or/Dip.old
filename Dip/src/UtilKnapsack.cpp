@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -53,9 +53,8 @@
 SOR_IntDblArrPtr SOR_IntDblArrNew (int    size,
                                    int*   pstatus)
 {
-   SOR_IntDblArrPtr A = NULL;
    *pstatus = OK;
-   A = (SOR_IntDblArrPtr) malloc(sizeof(SOR_IntDblArr));
+   SOR_IntDblArrPtr A = (SOR_IntDblArrPtr) malloc(sizeof(SOR_IntDblArr));
 
    if (A == NULL) {
       *pstatus = ERR_NO_MEMORY;
@@ -167,8 +166,7 @@ int KnapsackSortRatio(const int      n,
    //---
    int i;
    int status = 0;
-   SOR_IntDblArrPtr ratio = NULL;
-   ratio = SOR_IntDblArrNew(n, &status);
+   SOR_IntDblArrPtr ratio = SOR_IntDblArrNew(n, &status);
 
    if (status != OK) {
       return status;
@@ -268,7 +266,7 @@ int KnapsackOptimizeHS(const int      n,
    int i, j, r, k, iter;
    double zhat; // curr solution value = sum{j = 0..n-1} p[j] xhat[j]
    double chat; // curr residual capacity = c - sum{j = 0..n-1} w[j] xhat[j]
-   double wSum, pSum, u;
+   double wSum, pSum;
    int* xhat = NULL;
    *pstatus = OK;
    DEBUG_KNAP(
@@ -398,7 +396,7 @@ int KnapsackOptimizeHS(const int      n,
       assert(r >= 0 && r <= n);
       wSum -= w[r];
       pSum -= p[r];
-      u = pSum + floor((chat - wSum) * p[r] / w[r]);
+      double u = pSum + floor((chat - wSum) * p[r] / w[r]);
       DEBUG_KNAP(printf("\n" "z, %g, zhat: %g, u: %g r: %d ws: %g, ps: %g",
                         *z, zhat, u, r, wSum, pSum);
                 );

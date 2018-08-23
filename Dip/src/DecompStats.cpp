@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -102,7 +102,7 @@ void DecompNodeStats::printObjHistoryBound(ostream* os) const
          << setw(10) << "BestIP"
          << endl;
 
-   for (it = objHistoryBound.begin(); it != objHistoryBound.end(); it++) {
+   for (it = objHistoryBound.begin(); it != objHistoryBound.end(); ++it) {
       (*os) << setw(6)  << (*it).phase
             << setw(6)  << (*it).cutPass
             << setw(6)  << (*it).pricePass

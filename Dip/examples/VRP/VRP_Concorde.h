@@ -153,13 +153,12 @@ class VRP_Concorde {
       //--- NOTE: changed to remove depot-to-depot edges, now using
       //---   a mapping for the book-keeping
       //---
-      int i, j, edgeIndex;
+      int i, j, edgeIndex= 0;
       const UtilGraphLib & graphLib  = m_vrp->m_graphLib;
       const int nRoutes              = m_vrp->m_numRoutes;
       int       nCustomers           = graphLib.n_vertices - 1;
       int       nVerts               = nCustomers + nRoutes;
       int       nEdges               = UtilNumEdgesU(nVerts);
-      int     * edgeList             = NULL;
       //int     * edgeMapCtoN          = NULL;
       //int     * edgeMapNtoC          = NULL;
       
@@ -170,9 +169,8 @@ class VRP_Concorde {
       //--- Number of edges: m = (n^2 - n)/2 - (nR^2 - nR)/2
       //---
       m_cgExpand.init(nVerts, nEdges);
-      edgeIndex   = 0;
       //edgeIndexC  = 0;
-      edgeList    = m_cgExpand.m_edgeList;
+      int * edgeList    = m_cgExpand.m_edgeList;
       //edgeMapCtoN = m_cgExpand.m_edgeMapCtoN;
       //edgeMapNtoC = m_cgExpand.m_edgeMapNtoC;
       for(i = 1; i < nVerts; i++){
@@ -269,10 +267,9 @@ class VRP_Concorde {
       //---   check for integer overflow
       //---
       int    bigCost    = 0;
-      double bigCostDbl = 0.0;
       int    maxEdgeLen = *max_element(origGraphCostInt,
                                        origGraphCostInt+nOrigEdges);
-      bigCostDbl = ((double)maxEdgeLen+1.0) * (double)m_cgExpand.m_nVerts;
+      double bigCostDbl = ((double)maxEdgeLen+1.0) * (double)m_cgExpand.m_nVerts;
       if((256*bigCostDbl) > (double)CCutil_MAXINT) {
          printf("WARNING: Large edge lengths!!!!\n");
          bigCost = CCutil_MAXINT / 256;         
@@ -302,8 +299,7 @@ class VRP_Concorde {
       //--- duplicate the original depot to customer edges for dummies
       //---
       int origDepot = 0;      
-      int origCost  = 0;
-      int u, v, d, d1, d2, origIndex, newIndex, custIndex, depot;
+      int u, v, d, d1, d2, origIndex, newIndex, depot;
       for(u = 1; u < nOrigVerts; u++){
 	 for(v = 1; v < u; v++){
 	    origIndex = UtilIndexU(u,v);
@@ -321,9 +317,9 @@ class VRP_Concorde {
       for(u = 1; u <= nCustomers; u++){
          //get the original cost of customer to depot
 	 origIndex = UtilIndexU(u, origDepot);
-         origCost  = origGraphCostInt[origIndex];
+         int origCost  = origGraphCostInt[origIndex];
          //in the concorde graph, the customers are 0..c-1
-	 custIndex = u - 1;
+	 int custIndex = u - 1;
          //in the concorde graph, the depots    are c..c+r-1
 	 for(d = 0; d < nRoutes; d++){
 	    depot    = nCustomers + d; 
@@ -410,7 +406,6 @@ class VRP_Concorde {
       //---   - silent will suppress most output if set to a nonzero value.
       //---
       int returnCode = 0;
-      int silent     = 2;
       int success, foundtour, hit_timebound;
       
       CCrandstate rstate;
@@ -492,7 +487,7 @@ class VRP_Concorde {
 		   m_cgExpand.m_edgeValue[i]);
 	 }
 #endif
-	 
+         int silent = 2; 	 
 	 returnCode = CCtsp_solve_dat(m_cgExpand.m_nVerts,
 				      &dataGroup,
 				      NULL, //in_tour
@@ -545,7 +540,7 @@ class VRP_Concorde {
                                       vector<int>    & vrpRouteInd,
                                       vector<double> & vrpRouteEls){
       
-      int i, u, v;
+      int i, v;
       int        nVerts               = m_vrp->m_graphLib.n_vertices;
       int        nCustomers           = m_vrp->m_graphLib.n_vertices - 1;
       int      * depotEdges           = tmpIntNOrigE;
@@ -559,7 +554,7 @@ class VRP_Concorde {
 #endif
       for(i = 0; i < m_cgExpand.m_nVerts; i++){
          //for(i = 0; i < tspRouteLen-1; i++){
-         u = tspEdgeList[2*i];
+         int u = tspEdgeList[2*i];
          v = tspEdgeList[2*i+1];
 	 u = u >= nCustomers ? 0 : u+1;	 
 	 v = v >= nCustomers ? 0 : v+1;

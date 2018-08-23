@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -530,7 +530,7 @@ void DecompAlgo::printBasisInfo(OsiSolverInterface* si,
 
 //===========================================================================//
 void DecompAlgo::printCurrentProblemDual(OsiSolverInterface* si,
-      const string         baseName,
+      const string     &    baseName,
       const int            nodeIndex,
       const int            cutPass,
       const int            pricePass)
@@ -572,7 +572,7 @@ void DecompAlgo::printCurrentProblemDual(OsiSolverInterface* si,
 
 //===========================================================================//
 void DecompAlgo::printCurrentProblem(const OsiSolverInterface* si,
-                                     const string               baseName,
+                                     const string    &          baseName,
                                      const int                  nodeIndex,
                                      const int                  cutPass,
                                      const int                  pricePass,
@@ -598,7 +598,7 @@ void DecompAlgo::printCurrentProblem(const OsiSolverInterface* si,
 
 //===========================================================================//
 void DecompAlgo::printCurrentProblem(const OsiSolverInterface* si,
-                                     const string               fileName,
+                                     const string        &       fileName,
                                      const bool                 printMps,
                                      const bool                 printLp)
 {
@@ -734,7 +734,7 @@ void DecompAlgo::printVars(ostream* os)
    DecompVarList::iterator it;
    int var_index = 0;
 
-   for (it = m_vars.begin(); it != m_vars.end(); it++) {
+   for (it = m_vars.begin(); it != m_vars.end(); ++it) {
       (*os) << "VAR " << var_index++ << " : ";
       (*it)->print(m_infinity, os, m_app);
       (*os) << endl;
@@ -744,7 +744,7 @@ void DecompAlgo::printVars(ostream* os)
 }
 
 //===========================================================================//
-void DecompAlgo::createFullMps(const string fileName)
+void DecompAlgo::createFullMps(const string & fileName)
 {
    CoinAssert(m_algo == CUT);
    DecompConstraintSet*           modelCore   = m_modelCore.getModel();
@@ -760,7 +760,7 @@ void DecompAlgo::printCuts(ostream* os)
    DecompCutList::iterator it;
    int cut_index = 0;
 
-   for (it = m_cuts.begin(); it != m_cuts.end(); it++) {
+   for (it = m_cuts.begin(); it != m_cuts.end(); ++it) {
       (*os) << "CUT " << cut_index++ << " : ";
       (*it)->print(os);
    }
@@ -820,7 +820,7 @@ void DecompAlgo::checkReducedCost(const double *u, const double *u_adjusted)
    //---
 
    DecompVarList::iterator it;
-   int b, var_index = 0;
+   int var_index = 0;
    double*       redCostX      = NULL;
    const double* objC = m_masterSI->getObjCoefficients();
    const double* rcLP = m_masterSI->getReducedCost();
@@ -830,12 +830,12 @@ void DecompAlgo::checkReducedCost(const double *u, const double *u_adjusted)
    int           nBaseCoreRows = modelCore->nBaseRows;
    const double* origObjective = getOrigObjective();
 
-   for (it = m_vars.begin(); it != m_vars.end(); it++) {
-      double redCost = 0.0;
+   for (it = m_vars.begin(); it != m_vars.end(); ++it) {
+
       //m_s      is a sparse vector in x-space (the column)
       //redCostX is a dense  vector in x-space (the cost in subproblem)
-      b       = (*it)->getBlockId();
-      redCost = (*it)->m_s.dotProduct(redCostX);//??
+      int b       = (*it)->getBlockId();
+      double redCost = (*it)->m_s.dotProduct(redCostX);//??
 
       if ( (*it)->getVarType() == DecompVar_Point) {
 	 alpha   = u[nBaseCoreRows + b];
@@ -1013,7 +1013,7 @@ DecompSolverResult* DecompAlgoC::solveDirect(const DecompSolution* startSol)
    UtilPrintFuncBegin(m_osLog, m_classTag,
                       "solveDirect()", m_param.LogDebugLevel, 2);
    DecompVarList dummy;
-   int           i, nNodes;
+   int nNodes = 0; 
    double        objLB      = -m_infinity;
    double        objUB      =  m_infinity;
    int           logIpLevel = m_param.LogIpLevel;
@@ -1042,7 +1042,7 @@ DecompSolverResult* DecompAlgoC::solveDirect(const DecompSolution* startSol)
    //---
    //--- set integer vars
    //---
-   for (i = 0; i < numInts; i++) {
+   for (int i = 0; i < numInts; i++) {
       m_masterSI->setInteger(modelCore->integerVars[i]);
    }
 
@@ -1217,15 +1217,21 @@ DecompSolverResult* DecompAlgoC::solveDirect(const DecompSolution* startSol)
       //--- set the time limit
       //---
       status = CPXsetdblparam(cpxEnv, CPX_PARAM_TILIM, timeLimit);
-      //---
+	  if (status)
+	  {
+		  throw UtilException("CPXsetdblparam failure",
+			  "solveDirect", "DecompAlgoC");
+	  }
+	  //---
       //--- set the thread limit, otherwise CPLEX will use all the resources
       //---
       status = CPXsetintparam(cpxEnv, CPX_PARAM_THREADS, m_param.NumThreadsIPSolver);
       
-      if (status)
-	 throw UtilException("CPXsetdblparam failure",
-			     "solveDirect", "DecompAlgoC");
-      
+	  if (status)
+	  {
+		  throw UtilException("CPXsetintparam failure",
+			  "solveDirect", "DecompAlgoC");
+	  }
       //---
       //--- solve the MILP
       //---

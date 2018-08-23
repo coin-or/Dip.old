@@ -116,11 +116,10 @@ class MAD_Qualex{
       u_long * dataSrc  = NULL;
       u_long * dataDst  = NULL;
       unsigned int i;
-      int      dataSize = 0;
       for(i = 0; i < m_graphOrig->mates.size(); i++){
          dataSrc  = m_graphOrig->mates[i].data;
          dataDst  = m_graph->mates[i].data;         
-         dataSize = m_graph->mates[i].data_size;
+         int dataSize = m_graph->mates[i].data_size;
          memcpy(dataDst, dataSrc, dataSize * sizeof(u_long));         
       }
 
@@ -185,7 +184,7 @@ class MAD_Qualex{
 	 if(m_info->lower_clique_bound > m_cliqueWeight) {
 	    m_cliqueWeight = m_info->lower_clique_bound;
 	    m_clique.erase(m_clique.begin(), m_clique.end());
-	    for(it = m_info->clique.begin(); it != m_info->clique.end(); it++)
+	    for(it = m_info->clique.begin(); it != m_info->clique.end(); ++it)
 	       m_clique.push_back(m_residual[*it]);
 	 }
       }
@@ -216,7 +215,7 @@ class MAD_Qualex{
          fflush(stdout);
          
          //this should not be called before Greedy
-         int      i,j;
+         int      i;
          int      n     = m_graph->n;
          double * sqrtw = m_info->sqrtw;
          
@@ -224,7 +223,8 @@ class MAD_Qualex{
          for(i = 0; i < n; i++) {
             m_ijMatrix[i*(n+1)] = m_graph->weights[i] - m_info->w_min;
             bit_iterator bi(m_graph->mates[i]);
-            while((j = bi.next()) > -1) {
+	    int j = bi.next(); 
+            while( j > -1) {
                if(j > i) 
                   break;
                m_ijMatrix[i*n+j] = m_ijMatrix[j*n+i] = sqrtw[i] * sqrtw[j];
@@ -239,7 +239,7 @@ class MAD_Qualex{
          if(m_info->lower_clique_bound > m_cliqueWeight) {
             m_cliqueWeight = m_info->lower_clique_bound;
             m_clique.erase(m_clique.begin(), m_clique.end());
-            for(it = m_info->clique.begin(); it != m_info->clique.end(); it++)
+            for(it = m_info->clique.begin(); it != m_info->clique.end(); ++it)
                m_clique.push_back(m_residual[*it]);
          }
 

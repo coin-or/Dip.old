@@ -125,7 +125,6 @@ void MMKP_MCKnap::setMCKnapData(const double   capacity,
                                 const double * weight){
 
    int       i, j, colIndex;      
-   itemset * setPtr    = NULL;
    itemrec * recPtr    = NULL;
       
    //TODO: allow pass in arrFrac to this util function, for speed
@@ -146,7 +145,7 @@ void MMKP_MCKnap::setMCKnapData(const double   capacity,
    m_setset->fset = (itemset*) malloc(m_setset->size * sizeof(itemset));
    assert(m_setset->fset);
    
-   setPtr = m_setset->fset;
+   itemset* setPtr = m_setset->fset;
    colIndex = 0;
    for(i = 0; i < m_setset->size; i++){
       setPtr->size = m_nGroupCols;
@@ -217,14 +216,13 @@ void MMKP_MCKnap::solveMCKnap(const double   * redCost,
    m_cscale = UtilScaleDblToIntArr(m_nCols, m_costDbl, m_cost, MCKP_EPSILON);
 
 #ifdef MMKP_MCKNAP_DEBUG
-   double diff;
    printf("\noffset   = %g", offset);
    printf("\nm_cscale = %d", m_cscale);
    printf("\nm_wscale = %d", m_wscale);
    printf("\ncapacity = %d", m_capacity);
    for(i = 0; i < m_nCols; i++){
       pair<int,int> ij = getIndexInv(i);
-      diff = fabs((m_costDbl[i]*m_cscale) - m_cost[i]);
+      double diff = fabs((m_costDbl[i]*m_cscale) - m_cost[i]);
       printf("\n[%d: %d, %d]: dbl-> %12.5f int-> %8d diff-> %12.5f",
 	     i, ij.first, ij.second, m_costDbl[i], m_cost[i], diff);
       assert( diff < 0.99 );
@@ -248,13 +246,12 @@ void MMKP_MCKnap::solveMCKnap(const double   * redCost,
    //---
    //--- setup the data structures for mcknap
    //---
-   itemset * setPtr    = m_setset->fset;
    itemrec * recPtr    = NULL;
    itemrec * recSolPtr = NULL;
    
    //THINK: reset - assume memory is still there
    m_setset->size  = m_nGroupRows;
-   setPtr = m_setset->fset;
+   itemset* setPtr = m_setset->fset;
    for(i = 0; i < m_setset->size; i++){
       setPtr->size = m_nGroupCols;
       recPtr       = setPtr->fset;    
@@ -326,12 +323,12 @@ void MMKP_MCKnap::solveMCKnap(const double   * redCost,
 #endif
 	  
 	  
-	 int c, i, j, g;
+	 int i, j, g;
 	 for(g = 0; g < m_setset->size; g++){
 	    recSolPtr = &solRec[g];
 	    i         = recSolPtr->i;//was missing - STOP
 	    j         = recSolPtr->j;//was missing
-	    c         = getIndexIJ(i, j);
+	    int c         = getIndexIJ(i, j);
 	    solInd.push_back(c);
 	    varRedCost  += redCost[c];
 	    varOrigCost += origCost[c];

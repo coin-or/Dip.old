@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, and Ted Ralphs//
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, and Ted Ralphs//
 // All Rights Reserved.                                                      //
 //                                                                           //
 // Interface to Gurobi is Copyright 2015 Jazz Aviation LP                    //
@@ -223,7 +223,7 @@ int DecompAlgoPC::adjustColumnsEffCnt()
                       "adjustColumnsEffCnt()", m_param.LogDebugLevel, 2);
    DecompVarList::iterator li;
 
-   for (li = m_vars.begin(); li != m_vars.end(); li++) {
+   for (li = m_vars.begin(); li != m_vars.end(); ++li) {
       colMasterIndex = (*li)->getColMasterIndex();
       redCostI       = redCost[colMasterIndex];
       assert(isMasterColStructural(colMasterIndex));
@@ -410,7 +410,7 @@ int DecompAlgoPC::compressColumns()
       //---
       if (m_masterColType[colMasterIndex] == DecompCol_Structural_NoDelete
           || m_masterColType[colMasterIndex] == DecompCol_MasterOnly) {
-         li++;
+         ++li;
          nColsNoDel++;
          continue;
       }
@@ -428,7 +428,7 @@ int DecompAlgoPC::compressColumns()
       }
 
       if (isBasic[colMasterIndex] || ((*li)->getEffectiveness() >= 0)) {
-         li++;
+         ++li;
          continue;
       }
 
@@ -497,7 +497,7 @@ int DecompAlgoPC::compressColumns()
       //---
       //--- reset the master index in m_vars
       //---
-      for (li = m_vars.begin(); li != m_vars.end(); li++) {
+      for (li = m_vars.begin(); li != m_vars.end(); ++li) {
          colMasterIndex = (*li)->getColMasterIndex();
          (*li)->setColMasterIndex(colMasterIndex - indexShift[colMasterIndex]);
       }
@@ -512,7 +512,7 @@ int DecompAlgoPC::compressColumns()
          if (*vi == DecompCol_ToBeDeleted) {
             vi = m_masterColType.erase(vi);
          } else {
-            vi++;
+            ++vi;
          }
       }
 
@@ -524,7 +524,7 @@ int DecompAlgoPC::compressColumns()
       nMasterColsStruct  = 0;
       assert(nMasterColsNew == static_cast<int>(m_masterColType.size()));
 
-      for (li = m_vars.begin(); li != m_vars.end(); li++) {
+      for (li = m_vars.begin(); li != m_vars.end(); ++li) {
          colMasterIndex = (*li)->getColMasterIndex();
          assert(isMasterColStructural(colMasterIndex));
       }
@@ -553,7 +553,7 @@ int DecompAlgoPC::compressColumns()
       //---
       //--- if any vars were deleted, do a solution update to refresh
       //---
-      status = solutionUpdate(m_phase, 99999, 99999);
+      status = solutionUpdate(m_phase, true, 99999, 99999);
    }
 
    m_stats.thisCompressCols.push_back(m_stats.timerOther1.getRealTime());
@@ -664,7 +664,7 @@ void DecompAlgoPC::solveMasterAsMIP()
          vector<DecompSolution*>::iterator vit;
 
          for (vit  = m_xhatIPFeas.begin();
-               vit != m_xhatIPFeas.end(); vit++) {
+               vit != m_xhatIPFeas.end(); ++vit) {
             const DecompSolution* xhatIPFeas = *vit;
             const double*          values
             = xhatIPFeas->getValues();
@@ -691,7 +691,7 @@ void DecompAlgoPC::solveMasterAsMIP()
             DecompSolution* viBest = NULL;
             double bestBoundUB = m_nodeStats.objBest.second;
 
-            for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); vi++) {
+            for (vi = m_xhatIPFeas.begin(); vi != m_xhatIPFeas.end(); ++vi) {
                const DecompSolution* xhatIPFeas = *vi;
 
                if (xhatIPFeas->getQuality() <= bestBoundUB) {
@@ -1223,7 +1223,6 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
    bool isDupCore;//also check relax?
    bool isDupPool;
    bool isViolated; //TODO: do something similiar to check for pos-rc vars
-   bool addCut;
    DecompConstraintSet*           modelCore   = m_modelCore.getModel();
    DecompCutPool::iterator ci;
    DecompCutList::iterator li = newCuts.begin();
@@ -1251,7 +1250,7 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
       //--- check the the cut is already in the model core
       //---   NOTE: if so this is an error (always?)
       //---
-      addCut    = true;
+      bool addCut    = true;
       isDupCore = false;
 
       for (r = 0; r < modelCore->getNumRows(); r++) {
@@ -1319,7 +1318,7 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
          int cutIndexPool = 0;
          isDupPool = false;
 
-         for (ci = m_cutpool.begin(); ci != m_cutpool.end(); ci++) {
+         for (ci = m_cutpool.begin(); ci != m_cutpool.end(); ++ci) {
             if ((*li)->getStrHash() == (*ci).getCutPtr()->getStrHash()) {
                UTIL_MSG(m_param.LogLevel, 3,
                         (*m_osLog) << "CUT "              << cutIndex
@@ -1370,10 +1369,9 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
          = m_cutpool.createRowReform(modelCore->getNumCols(),
                                      row,
                                      m_vars);
-	 int tempIndex(0); 
 	 map<int, int >:: iterator mit;
 	 for (int i = 0; i < row->getNumElements(); i++){
-	   tempIndex = row->getIndices()[i];
+	   int tempIndex = row->getIndices()[i];
 	   mit =  m_masterOnlyColsMap.find(tempIndex);
 	   if (mit != m_masterOnlyColsMap.end()){
 	     rowReform->insert(mit->second, row->getElements()[i]);
@@ -1388,12 +1386,12 @@ void DecompAlgoPC::addCutsToPool(const double*    x,
          } else {
             DecompWaitingRow waitingRow(*li, row, rowReform);
             //do this in a separate function so addCutsTo is not dependent
-            //on passing in osolution for DecompVar
+            //on passing in solution for DecompVar
             //waitingRow.setViolation(x);//always on original solution!
             m_cutpool.push_back(waitingRow);
          }
 
-         li++;
+         ++li;
       } else {
          //---
          //--- cut is not being added to pool, delete memory
@@ -1435,7 +1433,7 @@ int DecompAlgoPC::addCutsFromPool()
    //---
    DecompCutPool::iterator li;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (m_param.LogDebugLevel >= 3) {
          (*m_osLog) << "CUT VIOLATION = " << (*li).getViolation() << endl;
       }
@@ -1472,7 +1470,7 @@ int DecompAlgoPC::addCutsFromPool()
    rowIndex0 = m_masterSI->getNumRows();
    colIndex0 = m_masterSI->getNumCols();
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (index >= n_newrows) {
          break;
       }
@@ -1595,7 +1593,7 @@ int DecompAlgoPC::addCutsFromPool()
    //---
    index = 0;
 
-   for (li = m_cutpool.begin(); li != m_cutpool.end(); li++) {
+   for (li = m_cutpool.begin(); li != m_cutpool.end(); ++li) {
       if (index >= n_newrows) {
          break;
       }

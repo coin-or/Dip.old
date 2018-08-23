@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -183,10 +183,12 @@ void UtilParameters::LoadParamFile(string& paramFileName)
             cerr << "UtilParameters: syntax error on line "
                  << lineNum << " '" << buf << "'" << endl;
          }
-
-         *ptr = '\0';
-         curSection = buf + 1;
-         continue;
+         else
+         {
+            *ptr = '\0';
+            curSection = buf + 1;
+            continue;
+         }
       }
 
       //---
@@ -289,7 +291,7 @@ std::string* UtilParameters::Find(const char* section,
 
 // ------------------------------------------------------------------------- //
 string UtilParameters::GetSetting(const char* name,
-                                  const std::string  defaultValue,
+                                  const std::string & defaultValue,
                                   const char* section)
 {
    //---
