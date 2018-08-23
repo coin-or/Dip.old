@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //                                                                           //
 // Interface to Gurobi is Copyright 2015 Jazz Aviation LP                    //
@@ -157,7 +157,11 @@ const std::string DecompAlgoStopStr[7] = {
    "DecompStopIterLimit"
 };
 
-
+enum DecompSubSolvePhase
+{
+   SUBSOLVE_PHASE_INEXACT,
+   SUBSOLVE_PHASE_EXACT
+};
 //===========================================================================//
 //---
 //--- DECOMP enums (for phases)
