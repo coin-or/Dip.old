@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, and Ted Ralphs//
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, and Ted Ralphs//
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -54,6 +54,15 @@ public:
    }
 
 public:
+   /*
+   DecompModel() :
+      m_model(NULL),
+      m_modelName(""),
+      m_blockId(0),
+      m_utilParam(NULL)
+   {
+   }
+   */
    DecompModel(const DecompModel& appModel) {
       m_model     = appModel.m_model;
       m_modelName = appModel.m_modelName;
@@ -239,6 +248,7 @@ public:
                         const double   feasConTol = 1.0e-4);
 
 public:
+
    DecompSubModel(const DecompModel& appModel) :
       DecompModel(appModel),
       m_osi         (NULL),
@@ -252,6 +262,17 @@ public:
       return *this;
    }
 
+
+   /*
+   DecompSubModel() :
+      DecompModel(),
+      m_osi(NULL),
+      m_numCols(0),
+      m_colIndices(NULL),
+      m_counter(0)
+   {
+   }
+   */
    DecompSubModel(UtilParameters &utilParam) :
       DecompModel(utilParam),
       m_osi         (NULL),

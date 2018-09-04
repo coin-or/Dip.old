@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, and Ted Ralphs//
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, and Ted Ralphs//
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -3474,8 +3474,32 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
          //---
          map<int, DecompSubModel>::iterator mit;
          double sumInitLB = 0.0; //like LR with 0 dual (only first pass)
-         for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++) {
-            DecompSubModel& subModel = (*mit).second;
+
+#ifdef _OPENMP
+         UTIL_DEBUG(m_app->m_param.LogDebugLevel, 3,
+         (*m_osLog)
+         << "===== START Threaded solve of subproblems. =====\n";);
+#endif
+#ifdef _OPENMP
+       // Avoid the case when the allocated threads is greater than the
+       // number of blocks
+       int numThreads;
+     
+       if (m_numConvexCon < m_param.NumConcurrentThreadsSubProb)
+       {
+         numThreads = min(m_param.NumConcurrentThreadsSubProb, m_numConvexCon);
+       }
+       else
+       {
+         numThreads = m_param.NumConcurrentThreadsSubProb;
+       }
+       omp_set_num_threads(numThreads);
+//#pragma omp parallel for schedule(dynamic, m_param.SubProbParallelChunksize)
+#endif
+       for (mit = m_modelRelax.begin(); mit != m_modelRelax.end(); mit++)
+       {
+          DecompSubModel& subModel = (*mit).second;
+      
 	    timeLimit = max(m_param.SubProbTimeLimitExact - 
 			    m_stats.timerOverall.getRealTime(), 0.0);
             solveRelaxed(costeps,               //reduced cost (fake here)
@@ -3498,6 +3522,12 @@ int DecompAlgo::generateInitVars(DecompVarList& initVars)
             }
          }
 
+
+#ifdef _OPENMP
+            UTIL_DEBUG(m_app->m_param.LogDebugLevel, 3,
+            (*m_osLog)
+             << "===== END   Threaded solve of subproblems. =====\n";);
+#endif
          map<int, vector<DecompSubModel> >::iterator mivt;
          vector<DecompSubModel>           ::iterator vit;
 
@@ -3748,8 +3778,20 @@ bool DecompAlgo::updateObjBound(const double mostNegRC)
       zDW_UBDual += dualSol[r] * rowRhs[r];
    }
 
-   //zDW_LB = zDW_UBDual + mostNegRC;
-   zDW_LB = zDW_UBPrimal + mostNegRC;
+   const double* sol = m_masterSI->getColSolution();
+     // need to consider the master only variable's contribution to the lower bound
+   double masterOnlyContri(0.0);
+   DecompConstraintSet* modelCore = m_modelCore.getModel();
+   std::vector<int>::iterator intIt;
+   /*
+   for (intIt = modelCore->masterOnlyCols.begin(); intIt != modelCore->masterOnlyCols.end();
+        ++ intIt)
+   {
+      masterOnlyContri += sol[m_masterOnlyColsMap[*intIt]] * mostNegRC;
+   }
+   */
+   //zDW_LB = zDW_UBDual + mostNegRC + masterOnlyContri;
+   zDW_LB = zDW_UBPrimal + mostNegRC + masterOnlyContri;
    setObjBound(zDW_LB, zDW_UBPrimal);
    /*
    double actDiff = fabs(zDW_UBDual - zDW_UBPrimal);

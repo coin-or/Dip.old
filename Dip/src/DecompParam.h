@@ -6,9 +6,9 @@
 //                                                                           //
 // Authors: Matthew Galati, SAS Institute Inc. (matthew.galati@sas.com)      //
 //          Ted Ralphs, Lehigh University (ted@lehigh.edu)                   //
-//          Jiadong Wang, Lehigh University (jiw408@lehigh.edu)              //
+//          Jiadong Wang, Lehigh University (jiw508@lehigh.edu)              //
 //                                                                           //
-// Copyright (C) 2002-2015, Lehigh University, Matthew Galati, Ted Ralphs    //
+// Copyright (C) 2002-2018, Lehigh University, Matthew Galati, Ted Ralphs    //
 // All Rights Reserved.                                                      //
 //===========================================================================//
 
@@ -105,7 +105,7 @@ public:
    int    CutCglOddHole;
    int    CutCglGomory;
 
-   int    SubProbUseCutoff;
+   bool    SubProbUseCutoff;
 
    double SubProbGapLimitExact;
    double SubProbGapLimitInexact;
@@ -320,13 +320,44 @@ public:
    std::string SolutionOutputFileName;
 
    bool WarmStart;
-
+   bool BranchPriorityMasterOnly;
+   // The following parameters are for the SYMPHONY warmstarting capability
+   // Setting this parameter will start the warm start routine using only the
+   // first warm_start_node_limit nodes generated during the previous solve
+   //  procedure. The rest of the tree will be trimmed. 
+   int WarmStartNodeLimit;
+   // Setting this parameter will start the warm start routine using only the
+   // first warm_start_node_ratio% of the nodes generated during the previous
+   //  solve procedure.
+   double WarmStartNodeRatio;
+   
+   // Setting this parameter will start the warm start routine using all the nodes
+   // above the level warm_start_node_level of the tree generated during the
+   // previous solve procedure. The rest of the tree will be trimmed.
+   int WarmStartNodeLevel;
+   // Setting this parameter will start the warm start routine using all the
+   // nodes above the level warm_start_node_level% of the warm start tree depth.
+   // The rest of the tree will be trimmed
+   double WarmStartNodeLevelRatio;
+   
    std::string DecompLPSolver;
    std::string DecompIPSolver;
 
    bool UseMultiRay;
    bool DoInteriorPoint;
 
+   
+   // The iteration limit for inexact subproblem solving
+   int IterLimitInexactSubSolving;
+   
+   // The starting optimality gap for inexact subproblem solving
+   double InitialOptimalityGapInexactSubSolving;
+   // The optimality gap incremental step for inexact subproblem solving
+   // Here we assume that we provide a optimality gap , e.g. 0.5
+   // if the optimality gap increase step size is 0.1, then the next time
+   // the optimality gap is 0.6. The value continues to increase until it reaches
+   // 1 or the iteration limit for inexact subproblem solving is reached.
+   double OptimalGapStepSizeInexactSubSolving;
    /**
     * @}
     */
@@ -440,6 +471,14 @@ public:
       PARAM_getSetting("SolutionOutputToFile", SolutionOutputToFile);
       PARAM_getSetting("SolutionOutputFileName", SolutionOutputFileName);
       PARAM_getSetting("WarmStart", WarmStart);
+      PARAM_getSetting("BranchPriorityMasterOnly", BranchPriorityMasterOnly);
+      PARAM_getSetting("WarmStartNodeLimit", WarmStartNodeLimit);
+      PARAM_getSetting("WarmStartNodeRatio", WarmStartNodeRatio);
+      PARAM_getSetting("WarmStartNodeLevel", WarmStartNodeLevel);
+      PARAM_getSetting("WarmStartNodeLevelRatio", WarmStartNodeLevelRatio);
+      PARAM_getSetting("IterLimitInexactSubSolving", IterLimitInexactSubSolving);
+      PARAM_getSetting("InitialOptimalityGapInexactSubSolving", InitialOptimalityGapInexactSubSolving);
+      PARAM_getSetting("OptimalGapStepSizeInexactSubSolving", OptimalGapStepSizeInexactSubSolving);
       PARAM_getSetting("DecompIPSolver", DecompIPSolver);
       PARAM_getSetting("DecompLPSolver", DecompLPSolver);
       PARAM_getSetting("UseMultiRay", UseMultiRay);
@@ -589,6 +628,15 @@ public:
       UtilPrintParameter(os, sec, "SolutionOutputToFile", SolutionOutputToFile);
       UtilPrintParameter(os, sec, "SolutionOutputFileName", SolutionOutputFileName);
       UtilPrintParameter(os, sec, "WarmStart", WarmStart);
+      UtilPrintParameter(os, sec, "BranchPriorityMasterOnly", BranchPriorityMasterOnly);
+      UtilPrintParameter(os, sec, "WarmStartNodeLimit", WarmStartNodeLimit);
+      UtilPrintParameter(os, sec, "WarmStartNodeRatio", WarmStartNodeRatio);
+      UtilPrintParameter(os, sec, "WarmStartNodeLevel", WarmStartNodeLevel);
+      UtilPrintParameter(os, sec, "WarmStartNodeLevelRatio", WarmStartNodeLevelRatio);
+      UtilPrintParameter(os, sec, "WarmStartNodeLevelRatio", WarmStartNodeLevelRatio);
+      UtilPrintParameter(os, sec, "IterLimitInexactSubSolving", IterLimitInexactSubSolving);
+      UtilPrintParameter(os, sec, "InitialOptimalityGapInexactSubSolving", InitialOptimalityGapInexactSubSolving);
+      UtilPrintParameter(os, sec, "OptimalGapStepSizeInexactSubSolving", OptimalGapStepSizeInexactSubSolving);
       UtilPrintParameter(os, sec, "DecompIPSolver", DecompIPSolver);
       UtilPrintParameter(os, sec, "DecompLPSplver", DecompLPSolver);
       UtilPrintParameter(os, sec, "UseMultiRay", UseMultiRay);
@@ -628,14 +676,14 @@ public:
       CutCglClique         = 1;
       CutCglOddHole        = 1;
       CutCglGomory         = 1;
-      SubProbUseCutoff     = 0;
+      SubProbUseCutoff     = false;
       SubProbGapLimitExact   = 0.0001; // 0.01% gap
       SubProbGapLimitInexact = 0.1;    //10.00% gap
       SubProbTimeLimitExact   = DecompBigNum;
       SubProbTimeLimitInexact = DecompBigNum;
       NumConcurrentThreadsSubProb       = 4;
       NumThreadsIPSolver             = 1;
-      SubProbNumSolLimit      = 1;
+      SubProbNumSolLimit      = 10001;
       SubProbSolverStartAlgo = DecompDualSimplex;
       RoundRobinInterval   = 0;
       RoundRobinStrategy   = RoundRobinRotate;
@@ -687,7 +735,7 @@ public:
       SubProbParallelChunksize = 1;
       ConcurrentThreadsNum     = 4;
       BlockNumInput            = 0;
-      BlockFileOutput          = false;
+      BlockFileOutput          = true;
       RedCostEpsilon           = 0.0001;
       PhaseIObjTol             = 0.0005;
       CheckSpecialStructure    = false;
@@ -695,6 +743,14 @@ public:
       SolutionOutputToFile     = true;
       SolutionOutputFileName   = "";
       WarmStart                = false;
+      BranchPriorityMasterOnly = false;
+      WarmStartNodeLimit = 100;
+      WarmStartNodeRatio = 0.5;
+      WarmStartNodeLevel = 3;
+      WarmStartNodeLevelRatio = 0.5;
+      IterLimitInexactSubSolving = 5;
+      InitialOptimalityGapInexactSubSolving = 0.1;
+      OptimalGapStepSizeInexactSubSolving = 0.1;
       DecompIPSolver           = "Cbc";
       DecompLPSolver           = "Clp";
       UseMultiRay              = false;
